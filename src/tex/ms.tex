@@ -6,7 +6,7 @@
 \begin{document}
 
 % Title
-\title{An open source scientific article}
+\title{Nonparametric Spectral Siren Cosmology}
 
 % Author list
 \author{@afarah18}
@@ -27,30 +27,30 @@
     Duis eget orci sit amet orci dignissim rutrum.
 \end{abstract}
 
-% Main body with filler text
 \section{Introduction}
 \label{sec:intro}
 
-Lorem ipsum dolor sit amet, consectetuer adipiscing elit.
-Ut purus elit, vestibulum ut, placerat ac, adipiscing vitae, felis.
-Curabitur dictum gravida mauris, consectetuer id, vulputate a, magna.
-Donec vehicula augue eu neque, morbi tristique senectus et netus et.
-Mauris ut leo, cras viverra metus rhoncus sem, nulla et lectus vestibulum.
-Phasellus eu tellus sit amet tortor gravida placerat.
-Integer sapien est, iaculis in, pretium quis, viverra ac, nunc.
-Praesent eget sem vel leo ultrices bibendum.
-Aenean faucibus, morbi dolor nulla, malesuada eu, pulvinar at, mollis ac.
-Curabitur auctor semper nulla donec varius orci eget risus.
-Duis nibh mi, congue eu, accumsan eleifend, sagittis quis, diam.
-Duis eget orci sit amet orci dignissim rutrum.
-
-Nam dui ligula, fringilla a, euismod sodales, sollici- tudin vel, wisi.
-Morbi auctor lorem non justo, nam lacus libero, pretium at, lobortis vitae.
-Donec aliquet, tortor sed accumsan bibendum, erat ligula aliquet magna.
-Morbi ac orci et nisl hendrerit mollis, suspendisse ut massa, cras nec ante.
-Pellentesque a nulla cum sociis natoque penatibus et magnis dis parturient.
-Aliquam tincidunt urna, nulla ullamcorper vestibulum turpis.
-Pellentesque cursus luctus mauris \citep{Luger2021}.
+\section{Motivating Example: Fitting an incorrect functional form to the BBH mass distribution yields biased inference of cosmological parameters.}
+\section{Methods}
+\subsection{Data simulation}
+\begin{itemize}
+    \item \texttt{GWMockCat} with specific PSD and parameter uncertainty choices
+    \item explain how we estimate selection effects (injections, Pdet, etc.)
+\end{itemize}
+\subsection{Population inference}
+(the order of these points is probably not the best way to explain things, should rethink it)
+\begin{itemize}
+    \item explain spectral sirens in the generative way: choose one H0 draw, transform the masses using DL, use the source frame masses as inputs to the mass distribution, evaluate the likelihood of that mass distribution and that H0 draw, repeat.
+    \item explain HBA with selection effects
+    \item in the parametric way, $p(\theta|\Lambda)$ is evaluated with a specific model and $\Lambda$ is a small set of hyperparameters dictating the models exact shape. 
+    \item Now, hyperparameters are the rate at each PE sample's source frame mass value, subject to a hyper-prior set by the Gaussian process draw. Instead of a few hyperparameters, we have $N_{\text{evs}}\times M + N_{\text{inj}}$ hyperparameters, where $N$ is the number of events, $M$ is the number of PE samples per event, and $N_{\text{inj}}$ is the number of injections used to calculate the selection function $\xsi$.
+    \item note this is not the usual use case for GPs (regression, cite some examples in GW data analysis). We are instead using GPs as a prior family of functions so that the mass distribution is smooth. Cite Tom's AR paper
+    \item describe what a GP and kernel are, \citep{}
+    \item Kernel choice
+    \item Explain priors on hyper-hyper params: smoothness assumptions, PC priors~\citep{simpson_penalising_2017} (if used)
+    \item cite \texttt{tinygp}, \texttt{numpyro}, HMC/NUTS~\citep{hoffman_no-u-turn_2011}, etc.
+    \item mention any computational tricks: Quasi-separable kernels, sparse kernels, etc.
+\end{itemize}
 
 \bibliography{bib}
 
