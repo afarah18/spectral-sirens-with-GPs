@@ -1,5 +1,5 @@
 % Define document class
-\documentclass[twocolumn]{aastex631}
+\documentclass[]{aastex631}
 \usepackage{showyourwork}
 
 % Begin!
@@ -30,8 +30,10 @@
 \section{Introduction}
 \label{sec:intro}
 
-\section{Motivating Example: Fitting an incorrect functional form to the BBH mass distribution yields biased inference of cosmological parameters.}
+\section{Motivating Example}
+Fitting an incorrect functional form to the BBH mass distribution yields biased inference of cosmological parameters: Draw events from a Gaussian distribution, fit it with (A) a Gaussian distribution and (B) a truncated power law, show that you get the wrong H0 in case B but the right one in case A.
 \section{Methods}
+\label{sec:methods}
 \subsection{Data simulation}
 \begin{itemize}
     \item \texttt{GWMockCat} with specific PSD and parameter uncertainty choices
@@ -43,13 +45,29 @@
     \item explain spectral sirens in the generative way: choose one H0 draw, transform the masses using DL, use the source frame masses as inputs to the mass distribution, evaluate the likelihood of that mass distribution and that H0 draw, repeat.
     \item explain HBA with selection effects
     \item in the parametric way, $p(\theta|\Lambda)$ is evaluated with a specific model and $\Lambda$ is a small set of hyperparameters dictating the models exact shape. 
-    \item Now, hyperparameters are the rate at each PE sample's source frame mass value, subject to a hyper-prior set by the Gaussian process draw. Instead of a few hyperparameters, we have $N_{\text{evs}}\times M + N_{\text{inj}}$ hyperparameters, where $N$ is the number of events, $M$ is the number of PE samples per event, and $N_{\text{inj}}$ is the number of injections used to calculate the selection function $\xsi$.
+    \item Now, hyperparameters are the rate at each PE sample's source frame mass value, subject to a hyper-prior set by the Gaussian process draw. Instead of a few hyperparameters, we have $N_{\text{evs}}M + N_{\text{inj}}$ hyperparameters, where $N_{\text{ev}}$ is the number of events, $M$ is the number of PE samples per event, and $N_{\text{inj}}$ is the number of injections used to calculate the selection function $\xi$.
     \item note this is not the usual use case for GPs (regression, cite some examples in GW data analysis). We are instead using GPs as a prior family of functions so that the mass distribution is smooth. Cite Tom's AR paper
-    \item describe what a GP and kernel are, \citep{}
+    \item describe what a GP and kernel are, \citep{rasmussen_gaussian_2006}
     \item Kernel choice
     \item Explain priors on hyper-hyper params: smoothness assumptions, PC priors~\citep{simpson_penalising_2017} (if used)
     \item cite \texttt{tinygp}, \texttt{numpyro}, HMC/NUTS~\citep{hoffman_no-u-turn_2011}, etc.
     \item mention any computational tricks: Quasi-separable kernels, sparse kernels, etc.
+\end{itemize}
+\section{Results}
+\label{sec:results}
+\begin{itemize}
+    \item Figure of mass distribution fit
+    \item Figure of posterior on \Ho, \Omm
+    \item Can get constraints on \Ho to X\% by the end of O5
+    \item Comparison to fitting with correct parametric model with the same data: hopefully same central value but smaller error bars
+    \item Comparison to fitting with \emph{incorrect} parametric model with the same data: hopefully different central value    
+\end{itemize}
+\section{Discussion}
+\label{sec:discussion}
+\begin{itemize}
+    \item we are able to get constraints on comsological parameters with a very flexible model for the mass distribution
+    \item This is because the information in spectral sirens comes from assuming events come from the same overall mass distribution across redshift, and that mass distribution doesn't evolve with redshift in the same exact way as would be mimiced by cosmological redshifting.
+    \item future/in prep. work will do the same thing but for a mass distribution that is allowed to evolve with redshift, similarly to the parametric analysis done in~\cite{ezquiaga_spectral_2022}, but with the evolution with redshift allowed to be arbitrary so long as it does not mimic cosmology.
 \end{itemize}
 
 \bibliography{bib}
