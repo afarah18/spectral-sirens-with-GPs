@@ -3,6 +3,7 @@
 \usepackage{showyourwork}
 % \usepackage{macros}
 \usepackage{amsmath}
+\usepackage{enumerate}
 
 \newcommand{\Ho}{$H_0$}
 \newcommand{\Omm}{$\Omega_M$}
@@ -123,14 +124,14 @@ The full procedure for this mock data generation process is described in \citet{
     p(\Lambda|data) = p(\Lambda)\exp{-Nexp} \Pi L_i
     \label{eq:inhomog-poisson}
 \end{equation}
-We infer this posterior using the no-u-turn sampler for Hamiltonian Monte Carlo within `numpyro` \citep{hoffman_no-u-turn_2011, numpyro}. 
+We infer this posterior using the no-u-turn sampler for Hamiltonian Monte Carlo within \texttt{numpyro} \citep{hoffman_no-u-turn_2011, numpyro}. 
 
 The spectral siren method of measuring cosmological parameters relies on the assumption that all compact binaries follow the same mass distribution, regardless of redshift, or if the mass distribution evolves with redshift in any way besides a monotonic rightwards shift.
 The likelihood in Equation~\ref{eq:inhomog-poisson} is maximized when the relationship between redshift and luminosity distance makes all source frame masses to follow the same distribution\footnote{\citet{ezquiaga_spectral_2022} show that the source frame masses can follow different distributions at different redshifts, so long as this redshift evolution of the mass distribution does not exactly mimic cosmology (i.e. all features cannot exhibit a monotonic rightward shift with redshift).}.
 This is the basis of the spectral siren method of measuring cosmological parameters; we can simultaneously infer the relationship between redshift and luminosity distance with the parameters of the source frame mass distribution.
 The full set of hyper-parameters therefore includes the cosmological parameters that dictate the $D_L$-$z$ relation: \Ho, \Omm, $\Omega_\Lambda, \Omega_r,$ and $w$.
 In this work, we fix $\Omega_\Lambda=1-\Omega_M, \Omega_r=0$ and $w=1$ and use uniform priors on \Ho{} and \Omm{}.
-Algorithmically, this is equivalent to drawing a value of \Ho, using it to define a relationship between luminosity distance and redshift, then transforming detector frame masses to source frame masses according to $m_{\det} (1+z(D_L)) = m_{\text{source}}$, evaluating the source-frame mass distribution at these transformed values, and then evaluating the likelihood in Equation~\ref{eq:inhomog-poisson}.
+Algorithmically, this is equivalent to drawing a value of \Ho, using it to define a relationship between luminosity distance and redshift, then transforming detector frame masses to source frame masses according to $m_{\det} (1+z(D_L)) = m_{\source}$, evaluating the source-frame mass distribution at these transformed values, and then evaluating the likelihood in Equation~\ref{eq:inhomog-poisson}.
 The full process is outlined in Section~\ref{sec:model}.
 
 
@@ -147,7 +148,7 @@ In other words, when using parametric models, $p(\theta|\Lambda)$ in Equation~\r
 With the GP approach, the hyper-parameters describing the mass distribution are the rate at each event-level posterior sample's source frame mass, and the rate at each found injection's source frame mass.
 % The source frame mass is different for each possible value of \Ho{} and \Omm{}, so the hyper-parameters are defined in different locations for each draw from the hyper-posterior.
 We therefore have $N_{\text{evs}}M + N_{\text{inj}}$ mass hyper-parameters, where $N_{\text{ev}}$ is the number of events, $M$ is the number of PE samples per event, and $N_{\text{inj}}$ is the number of injections used to calculate the selection function $\xi$.
-We label these $\{\mathcal{R}_ij,\mathcal{R}_k\}$, and our full set of hyper-parameters is $\Lambda=\{\H_0, \Omega_M, \mathcal{R}_ij,\mathcal{R}_k\}$. 
+We label these $\{\mathcal{R}_ij,\mathcal{R}_k\}$, and our full set of hyper-parameters is $\Lambda=\{H_0, \Omega_M, \mathcal{R}_ij,\mathcal{R}_k\}$. 
 In this way, our GP-based mass distribution is similar to the autoregressive population models used in ~\citet{callister_ar}.
 Indeed, an autoregressive model is a Gaussian process with a particular choice of kernel.
 
