@@ -37,9 +37,8 @@ datasets:
 #     - src/data/gw_data/
 #   src/scripts/nonparametric_plots.py:
 #     - src/data/mcmc_nonparametric.nc4
-  src/tex/ms.tex:
-      - src/tex/macros.sty
-  #   - src/tex/stylesheet.tex
+# src/tex/ms.tex:
+#     - src/tex/stylesheet.tex
 
 # Name of the `.tex` manuscript and corresponding `.pdf` article
 ms_name: ms
@@ -61,6 +60,7 @@ overleaf:
   pull:
     - src/tex/ms.tex
     - src/tex/bib.bib
+    - src/tex/macros.sty
 
 # Always require all input files to be present on disk for workflow to pass?
 require_inputs: true
