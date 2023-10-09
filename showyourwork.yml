@@ -30,9 +30,13 @@ datasets:
   #     TOI640b.json: src/data/TOI640b.json
 
 # Custom file dependencies
-dependencies:
-  # src/scripts/my_script.py:
-  #   - src/data/dataset_for_my_script.dat
+# dependencies:
+#   src/scripts/nonparametric_inference.py:
+#     - src/data/gw_data/
+#   src/scripts/parametric_inference.py:
+#     - src/data/gw_data/
+#   src/scripts/nonparametric_plots.py:
+#     - src/data/mcmc_nonparametric.nc4
   # src/tex/ms.tex:
   #   - src/tex/stylesheet.tex
 

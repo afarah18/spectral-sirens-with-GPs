@@ -10,8 +10,6 @@ import jax
 import jax.numpy as jnp
 import numpyro
 import numpyro.distributions as dist
-from tinygp import kernels, GaussianProcess
-from tinygp.solvers import QuasisepSolver
 import arviz as az
 
 # data
@@ -40,11 +38,8 @@ def model(m1det,dL,m1det_inj,dL_inj,log_pinj,log_PE_prior=0.,remove_low_Neff=Fal
     H0 = numpyro.sample("H0",dist.Uniform(H0_PRIOR_MIN,H0_PRIOR_MAX))
     Om0=OM0_FID
 
-    # construct GP in the source frame
-    kernel = sigma**2 * kernels.quasisep.Matern52(rho) # can change kernel type
-    gp = GaussianProcess(kernel,TEST_M1S,mean=mean,diag=0.001,
-                         solver=QuasisepSolver,assume_sorted=True)
-    log_rate_test = numpyro.sample("log_rate_test",gp.numpyro_dist())
+    # construct mass dist in the source frame
+    log_rate = 
 
     # convert event data to source frame
     z = jgwcosmo.z_at_dl_approx(dL,H0,Om0,zmin=ZMIN,zmax=ZMAX+8.)
@@ -60,11 +55,7 @@ def model(m1det,dL,m1det_inj,dL_inj,log_pinj,log_PE_prior=0.,remove_low_Neff=Fal
     z_taper = - jnp.log(1.+(z/z_injs.min())**(-15.))
     p_z = jgwpop.unif_comoving(z,H0,Om0)
 
-    # interpolate GP
-    log_rate = numpyro.deterministic("log_rate", jnp.interp(m1source,
-                    TEST_M1S,log_rate_test, left=-jnp.inf, right=-jnp.inf)
-                    )
-    # total population is interpolated GP times redshift distribution 
+    # total population is mass dist times redshift distribution 
     # times jacobians for the transformation
     # this is the only line that is different for the hierarchical problem
     single_event_logL = jax.scipy.special.logsumexp(log_rate + jnp.log(p_z) + z_taper
@@ -73,8 +64,7 @@ def model(m1det,dL,m1det_inj,dL_inj,log_pinj,log_PE_prior=0.,remove_low_Neff=Fal
     numpyro.factor("logp",jnp.sum(single_event_logL))
     
     # evaluate the population for injections 
-    log_rate_injs = jnp.interp(m1_injs, TEST_M1S, log_rate_test, 
-                               left=-jnp.inf, right=-jnp.inf)
+    log_rate_injs = 
     log_jac_injs = 2*jnp.log1p(z_injs) + jnp.log(jnp.abs(jgwcosmo.dDLdz_approx(z_injs,H0,Om0))) # try negative
     p_z_injs = jgwcosmo.diff_comoving_volume_approx(z_injs,H0,Om0)
     z_taper_injs =  - jnp.log(1.+(z_injs/z_injs.min())**(-15.))
@@ -108,10 +98,10 @@ if  __name__ == "__main__":
     kwargs = dict(m1det=m1z_PE,dL=dL_PE, m1det_inj=m1zinj_det,dL_inj=dLinj_det,
                     log_pinj=log_pinj_det, log_PE_prior=log_PE_prior,
                     remove_low_Neff=remove_low_Neff)
-    mcmc = numpyro.infer.MCMC(nuts_kernel,num_warmup=10,num_samples=10,
+    mcmc = numpyro.infer.MCMC(nuts_kernel,num_warmup=1000,num_samples=1000,
                               num_chains=1,progress_bar=True)   
     mcmc.run(jax_rng,**kwargs)
 
     # save results
     id = az.from_numpyro(mcmc)
-    id.to_netcdf(paths.data / "mcmc_nonparametric.nc4")
+    id.to_netcdf(paths.data / "mcmc_parametric.nc4")
