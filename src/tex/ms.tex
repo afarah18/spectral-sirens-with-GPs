@@ -114,40 +114,68 @@ We use the software package \texttt{GWMockCat} \citep{farah_things_2023} to simu
 To determine the detectability of both injections and simulated events in O5, we use the projected O5 LIGO power spectral density \citep{dcc page} to calculate observed signal-to-noise ratios $\rho_{\text{obs}}$, and we consider events and injections with $\rho_{\text{obs}}>8$ to be detectable. 
 The full procedure for this mock data generation process is described in \citet{fishbach_where, farah_things_2023, essick_dagnabbit_2023}, and the exact settings used for \texttt{GWMockCat} are made available in the accompanying data release. \comment{TODO:put a showyourwork link here.}
 
-\subsection{Spectral sirens}
+\subsection{Spectral sirens and statistical framework}
 \label{sec:ss}
-\begin{itemize}
-    \item explain the basis of spectral sirens
-    \item explain HBA with selection effects (or don't and just reference papers).
-    \item ``Therefore, another way to think about it is... / Algorithmically, this is equivalent to..." explain spectral sirens in the generative way: choose one H0 draw, transform the masses using DL, use the source frame masses as inputs to the mass distribution, evaluate the likelihood of that mass distribution and that H0 draw, repeat.
-\end{itemize}
+\begin{enumerate}
+    \item Briefly explain HBA with selection effects.
+\end{enumerate}
+\begin{equation}
+    p(\Lambda|data) = p(\Lambda)\exp{-Nexp} \Pi L_i
+    \label{eq:inhomog-poisson}
+\end{equation}
+We infer this posterior using the no-u-turn sampler for Hamiltonian Monte Carlo within `numpyro` \citep{hoffman_no-u-turn_2011, numpyro}. 
+
+The spectral siren method of measuring cosmological parameters relies on the assumption that all compact binaries follow the same mass distribution, regardless of redshift, or if the mass distribution evolves with redshift in any way besides a monotonic rightwards shift.
+The likelihood in Equation~\ref{eq:inhomog-poisson} is maximized when the relationship between redshift and luminosity distance makes all source frame masses to follow the same distribution\footnote{\citet{ezquiaga_spectral_2022} show that the source frame masses can follow different distributions at different redshifts, so long as this redshift evolution of the mass distribution does not exactly mimic cosmology (i.e. all features cannot exhibit a monotonic rightward shift with redshift).}.
+This is the basis of the spectral siren method of measuring cosmological parameters; we can simultaneously infer the relationship between redshift and luminosity distance with the parameters of the source frame mass distribution.
+The full set of hyper-parameters therefore includes the cosmological parameters that dictate the $D_L$-$z$ relation: \Ho, \Omm, $\Omega_\Lambda, \Omega_r,$ and $w$.
+In this work, we fix $\Omega_\Lambda=1-\Omega_M, \Omega_r=0$ and $w=1$ and use uniform priors on \Ho{} and \Omm{}.
+Algorithmically, this is equivalent to drawing a value of \Ho, using it to define a relationship between luminosity distance and redshift, then transforming detector frame masses to source frame masses according to $m_\det (1+z(D_L)) = m_{\text{source}}$, evaluating the source-frame mass distribution at these transformed values, and then evaluating the likelihood in Equation~\ref{eq:inhomog-poisson}.
+The full process is outlined in Section~\ref{sec:model}.
+
 
 \subsection{Gaussian process-based mass distribution}
 \label{sec:model}
 Gaussian processes (GPs) are random processes for which any linear combination of outcomes are Gaussian distributed \citep{rasmussen_gaussian_2006}.
-Their smoothness properties allow them to be widely useful in GW data analysis and beyond for regression, such as modeling time-domain waveforms \citep{zoheyr, others} or density estimation, such as estimate posterior densities of single-event parameters from parameter estimation samples ~\citep{dangelo}, and as a prior on the bin heights of histograms describing the CBC mass distribution \citep{ray_2023}.
+Their smoothness properties make them widely useful in GW data analysis and beyond for regression problems, such as modeling time-domain waveforms \citep{zoheyr, huerta}, density estimation problems, such as estimating posterior densities of single-event parameters from parameter estimation samples ~\citep{dangelo}, and as a prior on histogram bin heights \citep{ray_2023,li_flexible_2021}.
 Our use case is slightly different.
 We will utilize a GP as a prior on the functions that describe the primary mass distribution of CBCs.
 This choice adds very little prior information about the shape of the mass distribution, besides enforcing that it must be smooth.
-Practically, the only difference in the inference of the population when using a GP vs other modeling choices is that $p(m_1|\Lambda)$ in Equation~\ref{eq:} is determined directly by a draw from the GP, rather than by drawing a handful of hyperparameters $\Lambda$ and then evaluating them on some analytical function.
+Practically, the only difference in the inference of the population when using a GP versus other modeling choices is that $p(m_1|\Lambda)$ in Equation~\ref{eq:inhomog-poisson} is determined directly by a realization of the GP, rather than by a handful of hyper-parameters $\Lambda$ and evaluated on an analytical function.
 
-In other words, when using parametric models, $p(\theta|\Lambda)$ in Equation~\ref{eq:} is calculated by evaluating a specific functional form described by a small set of hyperparameters, $\Lambda$. 
-With the GP approach, our hyperparameters are the rate at each event-level posterior sample's source frame mass value, and the rate at each found injection's source frame mass.
-The source frame mass is different for each possible value of \Ho{} and \Omm{}, so the hyperparemeters are defined in different locations for each draw from the hyperposterior. % can remove this sentence.
-We therefore have $N_{\text{evs}}M + N_{\text{inj}}$ hyperparameters, where $N_{\text{ev}}$ is the number of events, $M$ is the number of PE samples per event, and $N_{\text{inj}}$ is the number of injections used to calculate the selection function $\xi$.
-In this way, our GP-based mass distribution is similar to the autoregressive population models used in ~\citet{callister_ar_paper}.
-Indeed, an autoregressive model is a Gaussian process with a particular choice of kernel (described below). 
+In other words, when using parametric models, $p(\theta|\Lambda)$ in Equation~\ref{eq:} is calculated by evaluating a specific functional form described by a small set of hyper-parameters, $\Lambda$. 
+With the GP approach, the hyper-parameters describing the mass distribution are the rate at each event-level posterior sample's source frame mass, and the rate at each found injection's source frame mass.
+% The source frame mass is different for each possible value of \Ho{} and \Omm{}, so the hyper-parameters are defined in different locations for each draw from the hyper-posterior.
+We therefore have $N_{\text{evs}}M + N_{\text{inj}}$ mass hyper-parameters, where $N_{\text{ev}}$ is the number of events, $M$ is the number of PE samples per event, and $N_{\text{inj}}$ is the number of injections used to calculate the selection function $\xi$.
+We label these $\{\mathcal{R}_ij,\mathcal{R}_k\}$, and our full set of hyper-parameters is $\Lambda=\{\H_0, \Omega_M, \mathcal{R}_ij,\mathcal{R}_k\}$. 
+In this way, our GP-based mass distribution is similar to the autoregressive population models used in ~\citet{callister_ar}.
+Indeed, an autoregressive model is a Gaussian process with a particular choice of kernel.
 
+A kernel is a function that defines the covariance between input points in the GP (in our case, two source frame mass values). 
+It defines the notion of similarity between adjacent points and thereby encodes our assumptions about the smoothness of the source frame mass distribution \citep{rasmussen_gaussian_2006}.
+We use a Mat\'ern kernel \citep{handcock_and_stein,stein_1999} with $\nu = 5/2$, but have repeated the analysis with $\nu=3/2$ and $\infty$, finding little impact on the results, except that the $\nu=\infty$ case (also called the ``squared exponential'' kernel) produces a slightly more jagged mass distribution.
+Mat\'ern kernels have two parameters besides the mean variance that determine their properties: a length scale $l$ and variance $s$.
+In our use case, these are one level further removed from hyper-parameters, so we adopt the terminology used in \citet{callister_ar} and call them ``hyper-hyper-parameters.''
+We fit these hyper-hyper-parameters along with the hyper-parameters $\Lambda$ to minimize prior assumptions about the form of the mass distribution.
+We use ``penalized-complexity'' priors on the hyper-hyper-parameters to enforce that the model does not create small-scale structure uninformed by data, thereby avoiding over-fitting \citep{simpson_penalising_2017,simpson_garcpas_2022}. % remove this if we don't use it.
+Explicitly, the priors on $l$ and $s$ have less than 5\% support for correlation lengths smaller than the \result{minimum} spacing between event-level posterior samples.
 
+GP evaluations notoriously scale as the cube of the number of data points, making them unwieldy with large data sets such as the ones expected for O5.
+We therefore make two approximations to a full GP to increase computational efficiency.
+First, for each likelihood evaluation, we evaluate a full GP on a regular grid between $0\Msun$ and $250\Msun$ and then interpolate it at each data point.
+Second, we use the quasi-separability of Mat\'ern kernels to analytically perform the transformation between covariance matrix and GP draw.
+This second step is done using the \texttt{QuasisepSolver} module \citep{foreman-mackey_fast_2017} in the \texttt{tinygp} code base, and requires data to be sort-able (i.e. one-dimensional).
 
-\begin{itemize}
-    \item Normally it would be bad to have more hyperparameters than datapoints, but that's where the kernel comes in! it greatly limits the number of thigns we actually have to fit (cite someone, can't remember where I originally saw this)
-    \item Kernel choice   
-    \item Explain priors on hyper-hyper params: smoothness assumptions, PC priors~\citep{simpson_penalising_2017} (if used)
-    \item for computational efficiency, we don't actually evaluate the GP at every data point, and instead use an interpolant. Future work will develop faster computational methods for evaluating GPs on each individual data point.
-    \item We also use Quasi-separable kernels (Cite DFM) within the software package \texttt{tinygp} (cite) for further computational efficiency. 
-    \item cite \texttt{tinygp}, \texttt{numpyro}, HMC/NUTS~\citep{hoffman_no-u-turn_2011}, etc.
-\end{itemize}
+Algorithmically, each hyper-likelihood evaluation contains the following steps:
+\begin{enumerate}
+    \item Draw cosmological parameters \Ho{} and \Omm{} from the prior distributions described in Equation~\ref{eq:cosmo-priors}.
+    \item Transform the luminosity distances and detector frame masses of each event posterior sample and injection into redshifts and source frame masses according to the cosmology specified by step 1.
+    \item Draw hyper-hyper-parameters $l$ and $s$ from the penalized-complexity priors described above.
+    \item Draw a single GP realization with a kernel defined by $l$ and $s$. This is defined on a regular grid of source-frame masses and evaluated using the \texttt{QuasisepSolver}.
+    \item Interpolate the GP at each event posterior sample and injection source frame mass (from step 2)
+    \item Calculate the population likelihood according to Equation~\ref{eq:inhomog-poisson}.
+\end{enumerate}
+
 \section{Results}
 \label{sec:results}
 We fit the non-parametric population model described in Section~\ref{sec:model} to a simulated GW catalog of \result{1,000} GW events from an underlying mass distribution described by the \plp{} model and its maximum \emph{a posteriori} hyperparameters from \citet{o3b_pop}.
@@ -167,6 +195,7 @@ However, when using a model that cannot accurately represent the true shape of t
     \includegraphics{figures/O5_GP.pdf}
     \caption{Two-panel figure of mass distribution and \Ho{} posterior. If we end up fitting \Omm{} we can put a corner plot instead.}
     \label{fig:O5_GP}
+    \script{nonparametric_plots.py}
 \end{figure}
 
 \begin{figure}
