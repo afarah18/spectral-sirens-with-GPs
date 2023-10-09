@@ -37,7 +37,8 @@ datasets:
 #     - src/data/gw_data/
 #   src/scripts/nonparametric_plots.py:
 #     - src/data/mcmc_nonparametric.nc4
-  # src/tex/ms.tex:
+  src/tex/ms.tex:
+      - src/tex/macros.sty
   #   - src/tex/stylesheet.tex
 
 # Name of the `.tex` manuscript and corresponding `.pdf` article
