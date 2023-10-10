@@ -4,7 +4,7 @@ rule datagen:
     cache:
         True
     script:
-        "src/sripts/data_generation.py"
+        "src/scripts/data_generation.py"
 rule nonparinference:
     output:
         "src/data/mcmc_nonparametric.nc4"
