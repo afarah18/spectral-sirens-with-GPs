@@ -1,6 +1,6 @@
 """ General utilities to help with sampling, modeling, plotting, etc."""
 import numpy as np
-from jax.scipy.special import erf
+from scipy.special import erf
 from scipy.integrate import cumtrapz
 
 def butterworthFilter(x,loc,smooth):
