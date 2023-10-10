@@ -24,7 +24,7 @@ SNR_THRESH=8.
 NUM_INJ=N_SOURCES*50
 
 # random number generators
-np_rng = np.random.default_rng(442)
+np_rng = np.random.default_rng(4242)
 
 def true_vals_feature_full(rng, num_ridges=3, mmin=5, mmax=100,
                         n_sources=N_SOURCES,zmax=ZMAX):
@@ -92,7 +92,7 @@ if  __name__ == "__main__":
     np.save(paths.data / "gw_data/log_pinj_det.npy",log_pinj_det)
     ## find events and generate mock PE
     m1z_PE, dL_PE, log_PE_prior = gen_snr_scaled_PE(np_rng,m1s_true,dL_true/1000,osnr_interp,
-                                                            reference_distance,N_SAMPLES_PER_EVENT,H0_FID,OM0_FID)
+                                                    reference_distance,N_SAMPLES_PER_EVENT,H0_FID,OM0_FID)
     dL_PE *= 1000 # unit matching
     np.save(paths.data / "gw_data/m1z_PE.npy",m1z_PE)
     np.save(paths.data / "gw_data/dL_PE.npy",dL_PE)

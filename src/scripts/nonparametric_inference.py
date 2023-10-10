@@ -58,7 +58,7 @@ def model(m1det,dL,m1det_inj,dL_inj,log_pinj,log_PE_prior=0.,remove_low_Neff=Fal
     # evaluate z dist on data
     # make z dist taper to zero outside of injection bounds
     z_taper = - jnp.log(1.+(z/z_injs.min())**(-15.))
-    p_z = jgwpop.unif_comoving(z,H0,Om0)
+    p_z = jgwpop.unif_comoving_rate(z,H0,Om0)
 
     # interpolate GP
     log_rate = numpyro.deterministic("log_rate", jnp.interp(m1source,
@@ -98,9 +98,9 @@ if  __name__ == "__main__":
     log_PE_prior = np.load(paths.data / "gw_data/log_PE_prior.npy")
 
     # load injection set
-    m1zinj_det = np.load("path.data" / "gw_data/m1zinj_det.npy")
-    dLinj_det = np.load("path.data" / "gw_data/dLinj_det.npy")
-    log_pinj_det = np.load("path.data" / "gw_data/log_pinj_det.npy")
+    m1zinj_det = np.load(paths.data / "gw_data/m1zinj_det.npy")
+    dLinj_det = np.load(paths.data / "gw_data/dLinj_det.npy")
+    log_pinj_det = np.load(paths.data / "gw_data/log_pinj_det.npy")
 
     # Inference
     nuts_settings = dict(target_accept_prob=0.9, max_tree_depth=10,dense_mass=False)
