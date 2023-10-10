@@ -2,7 +2,7 @@ rule datagen:
     output:
         directory("src/data/gw_data")
     cache:
-        True
+        False
     script:
         "src/scripts/data_generation.py"
 rule nonparinference:
