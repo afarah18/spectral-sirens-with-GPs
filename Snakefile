@@ -16,7 +16,7 @@
 #         "src/scripts/nonparametric_inference.py"
 # rule nonparplots:
 #     output:
-#         "O5_GP.pdf"
+#         "src/tex/figures/O5_GP.pdf"
 #     input:
 #         "src/data/mcmc_nonparametric.nc4" # should I include the gw_data directory too?
 #     script:
