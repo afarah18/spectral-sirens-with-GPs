@@ -27,7 +27,7 @@ H0_PRIOR_MIN=30.
 H0_PRIOR_MAX=120.
 
 # random number generators
-jax_rng = jax.random.PRNGKey(42)
+jax_rng = jax.random.PRNGKey(425)
 
 # options
 remove_low_Neff=False
@@ -113,6 +113,5 @@ if  __name__ == "__main__":
     mcmc.run(jax_rng,**kwargs)
 
     # save results
-    print('saving')
     id = az.from_numpyro(mcmc)
     id.to_netcdf(paths.data / "mcmc_nonparametric.nc4")

@@ -33,7 +33,6 @@ def gen_snr_scaled_PE(rng, true_m1s, true_dl, osnr_interp, reference_distance, n
     cosmo = ap_cosmology.FlatLambdaCDM(H0=H0, Om0=Om0)
     cosmo_gwmc = cosmo_utils.interp_cosmology(zmin=0.,zmax=ZMAX+1.,cosmology=cosmo,dist_unit=u.Unit(reference_distance[-3:]))
     true_z = cosmo_gwmc['z_at_dL'](true_dl)
-    print(true_z.max())
     observed, detected_dict = posterior_utils.generate_obs_from_true_list(m1t=true_m1s,m2t=true_m1s,
                                                                                     zt=true_z,osnr_interp=osnr_interp,
                                                                                     cosmo_dict=cosmo_gwmc,rng=rng,
