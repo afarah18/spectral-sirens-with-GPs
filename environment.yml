@@ -5,3 +5,4 @@ dependencies:
   - pip:
       - matplotlib==3.4.3
       - arviz==0.12.1
+      - git+https://git.ligo.org/amanda.farah/mock-PE.git@main
