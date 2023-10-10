@@ -3,6 +3,8 @@ rule datagen:
         directory("src/data/gw_data")
     cache:
         False
+    input:
+        "src/data/optimal_snr_aplus_design_O5.h5"
     script:
         "src/scripts/data_generation.py"
 rule nonparinference:
