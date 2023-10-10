@@ -93,14 +93,14 @@ def model(m1det,dL,m1det_inj,dL_inj,log_pinj,log_PE_prior=0.,remove_low_Neff=Fal
 
 if  __name__ == "__main__":
     # load data
-    m1z_PE = np.save(paths.data / "gw_data/m1z_PE.npy")
-    dL_PE = np.save(paths.data / "gw_data/dL_PE.npy")
-    log_PE_prior = np.save(paths.data / "gw_data/log_PE_prior.npy")
+    m1z_PE = np.load(paths.data / "gw_data/m1z_PE.npy")
+    dL_PE = np.load(paths.data / "gw_data/dL_PE.npy")
+    log_PE_prior = np.load(paths.data / "gw_data/log_PE_prior.npy")
 
     # load injection set
-    m1zinj_det = np.save("path.data" / "gw_data/m1zinj_det.npy")
-    dLinj_det = np.save("path.data" / "gw_data/dLinj_det.npy")
-    log_pinj_det = np.save("path.data" / "gw_data/log_pinj_det.npy")
+    m1zinj_det = np.load("path.data" / "gw_data/m1zinj_det.npy")
+    dLinj_det = np.load("path.data" / "gw_data/dLinj_det.npy")
+    log_pinj_det = np.load("path.data" / "gw_data/log_pinj_det.npy")
 
     # Inference
     nuts_settings = dict(target_accept_prob=0.9, max_tree_depth=10,dense_mass=False)
