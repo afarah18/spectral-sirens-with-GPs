@@ -2,3 +2,8 @@
 backend: agg
 usetex: True
 font.family: serif
+font.size: 12 
+axes.labelsize:12 
+axes.titlesize:12 
+legend.fontsize:11
+# text.usetex:True
