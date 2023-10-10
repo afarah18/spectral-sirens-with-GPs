@@ -9,7 +9,7 @@ rule nonparinference:
     output:
         "src/data/mcmc_nonparametric.nc4"
     cache:
-        True
+        False
     input:
         "src/data/gw_data"
     script:

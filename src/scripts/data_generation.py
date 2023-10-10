@@ -24,7 +24,7 @@ SNR_THRESH=8.
 NUM_INJ=N_SOURCES*50
 
 # random number generators
-np_rng = np.random.default_rng(4242)
+np_rng = np.random.default_rng(442)
 
 def true_vals_feature_full(rng, num_ridges=3, mmin=5, mmax=100,
                         n_sources=N_SOURCES,zmax=ZMAX):

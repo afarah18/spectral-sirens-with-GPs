@@ -113,5 +113,6 @@ if  __name__ == "__main__":
     mcmc.run(jax_rng,**kwargs)
 
     # save results
+    print('saving')
     id = az.from_numpyro(mcmc)
     id.to_netcdf(paths.data / "mcmc_nonparametric.nc4")
