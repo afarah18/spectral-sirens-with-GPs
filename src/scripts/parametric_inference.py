@@ -98,7 +98,7 @@ if  __name__ == "__main__":
     kwargs = dict(m1det=m1z_PE,dL=dL_PE, m1det_inj=m1zinj_det,dL_inj=dLinj_det,
                     log_pinj=log_pinj_det, log_PE_prior=log_PE_prior,
                     remove_low_Neff=remove_low_Neff)
-    mcmc = numpyro.infer.MCMC(nuts_kernel,num_warmup=1000,num_samples=1000,
+    mcmc = numpyro.infer.MCMC(nuts_kernel,num_warmup=100,num_samples=100,
                               num_chains=1,progress_bar=True)   
     mcmc.run(jax_rng,**kwargs)
 
