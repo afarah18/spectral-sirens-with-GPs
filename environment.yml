@@ -6,3 +6,5 @@ dependencies:
       - matplotlib==3.4.3
       - arviz==0.12.1
       - git+https://git.ligo.org/amanda.farah/mock-PE.git@main
+      - jax==0.3.14
+      - jaxlib==0.3.14
