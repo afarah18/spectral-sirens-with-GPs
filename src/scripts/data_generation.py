@@ -5,6 +5,7 @@ Clight = gwcosmo.Clight
 from utils import inverse_transform_sample
 from mock_posteriors import gen_snr_scaled_PE
 
+import os
 import numpy as np
 from GWMockCat.vt_utils import draw_thetas, interpolate_optimal_snr_grid 
 
@@ -68,6 +69,7 @@ def make_injections(rng, alpha, mmax_inj, mmin_inj, zmax_inj=ZMAX,num_inj=NUM_IN
 if  __name__ == "__main__":
     # generate data and save 
     m1s_true, zt, m1z_true, dL_true = true_vals_feature_full(rng=np_rng, num_ridges=2)
+    os.mkdir(paths.data / "gw_data")
     np.save(paths.data / "gw_data/m1s_true_feature_full.npy", dL_true)
     np.save(paths.data / "gw_data/z_true_feature_full.npy", zt)
     np.save(paths.data / "gw_data/m1z_true_feature_full.npy",m1z_true)
