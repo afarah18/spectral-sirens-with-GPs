@@ -3,7 +3,6 @@ import numpy as np
 # import arviz as az
 
 import paths
-import gwpop
 
 # load in inference results
 # mcmc = az.InferenceData.from_netcdf(paths.data / "mcmc_nonparametric.nc4")
