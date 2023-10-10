@@ -15,7 +15,7 @@ rt = np.exp(samples['log_rate_test'][0])
 
 # plot them
 fig, axes = plt.subplots(ncols=2,figsize=(6.5,3))
-for i in range(10):
+for i in range(200):
     gp_norm = np.trapz(rt[i],TEST_M1S)
     axes[0].plot(TEST_M1S, rt[i]/gp_norm, lw=0.2, c='b',alpha=0.1)
 
