@@ -2,7 +2,7 @@ rule datagen:
     output:
         directory("src/data/gw_data")
     cache:
-        False
+        True
     input:
         "src/data/optimal_snr_aplus_design_O5.h5"
     script:
@@ -11,7 +11,7 @@ rule nonparinference:
     output:
         "src/data/mcmc_nonparametric.nc4"
     cache:
-        False
+        True
     input:
         "src/data/gw_data"
     script:
