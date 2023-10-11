@@ -2,7 +2,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 import arviz as az
 
-from nonparametric_inference import TEST_M1S, H0_FID
+from nonparametric_inference import TEST_M1S
+from data_generation import H0_FID
 import paths
 
 plt.style.use(paths.scripts / "matplotlibrc")
