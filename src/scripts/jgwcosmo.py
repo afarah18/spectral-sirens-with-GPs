@@ -1,7 +1,5 @@
-#import numpyro
 import jax.numpy as jnp
 from jax import jit
-#from constants import *
 Clight = 3e8
 
 def Ez_inv(z,Om0):
@@ -44,13 +42,6 @@ def dDLdz(z, H0, Om0):
     D_H = (Clight/1e3) / H0 #Mpc
     return jnp.abs(dL/(1.+z) + (1.+z)*D_H * Ez_i)
 
-@jit
-def dDLdz_approx(z, H0, Om0):
-    dL = dL_approx(z,H0,Om0)#Mpc
-    Ez_i = Ez_inv(z,Om0)
-    D_H = (Clight/1e3) / H0 #Mpc
-    return jnp.abs(dL/(1.+z) + (1.+z)*D_H * Ez_i)
-
 
 """Approximate luminosity distance"""
 #https://arxiv.org/pdf/1111.6396.pdf
@@ -67,6 +58,13 @@ def xx(z,Om0):
 def dL_approx(z,H0,Om0):
     D_H = (Clight/1.0e3)  / H0 #Mpc
     return 2.*D_H * (1.+z) * (Phi(xx(0.,Om0)) - Phi(xx(z,Om0))/jnp.sqrt(1.+z))/jnp.sqrt(Om0)
+
+@jit
+def dDLdz_approx(z, H0, Om0):
+    dL = dL_approx(z,H0,Om0)#Mpc
+    Ez_i = Ez_inv(z,Om0)
+    D_H = (Clight/1e3) / H0 #Mpc
+    return jnp.abs(dL/(1.+z) + (1.+z)*D_H * Ez_i)
 
 @jit
 def z_at_dl_approx(dl,H0,Om0,zmin=1e-3,zmax=100):
@@ -86,6 +84,13 @@ def diff_comoving_volume_approx(z,H0,Om0):
     Ez_i = Ez_inv(z,Om0)
     D_H = (Clight/1e3)  / H0 #Mpc
     return 1.0e-9 * (4.*jnp.pi) * jnp.power(dL,2) * D_H * Ez_i / jnp.power(1.+z,2.)
+
+@jit
+def log_diff_comoving_volume_approx(z,H0,Om0):
+    dL = dL_approx(z,H0,Om0) #Mpc
+    Ez_i = Ez_inv(z,Om0)
+    D_H = (Clight/1e3)  / H0 #Mpc
+    return  jnp.log(1.0e-9) + jnp.log(4.0*jnp.pi) + 2.0*jnp.log(dL) +jnp.log(D_H) +jnp.log(Ez_i)-2*jnp.log1p(z)
 
 @jit
 def dLdH_approx(z,Om0):    

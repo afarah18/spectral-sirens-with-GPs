@@ -1,21 +1,18 @@
 import numpy as np
-from utils import powerlaw, truncnorm, butterworthFilter
+from utils import powerlaw, truncnorm
 from gwcosmo import diff_comoving_volume_approx
 
 """ Mass distribution """
-maximum_mass_considered = 150
-minimum_mass_considered = 1
-
 
 def powerlaw_peak(m1,mMin,mMax,alpha,sig_m1,mu_m1,f_peak):
     tmp_min = 2.
-    tmp_max = 150.
+    tmp_max = 400.
     dmMax = 2
     dmMin = 1
 
     # Define power-law and peak
     p_m1_pl = powerlaw(m1,low=tmp_min,high=tmp_max,alpha=alpha)
-    p_m1_peak = np.exp(-(m1-mu_m1)**2/(2.*sig_m1**2))/np.sqrt(2.*np.pi*sig_m1**2)
+    p_m1_peak = truncnorm(m1, mu=mu_m1, sigma=sig_m1, high=tmp_max, low=tmp_min) #
 
     # Compute low- and high-mass filters
     low_filter = np.exp(-(m1-mMin)**2/(2.*dmMin**2))
@@ -42,20 +39,6 @@ def powerlaw_smooth(m,mMin,mMax,alpha):
 
     return pm_pl*low_filter*high_filter
 
-def pl_peak(m1,alpha,mu_m1,sig_m1,f_peak,mMax,mMin,low_smoothing, high_smoothing):
-    tmp_min = minimum_mass_considered
-    tmp_max = maximum_mass_considered
-    # Define power-law and peak
-    p_m1_pl = powerlaw(m1, alpha=alpha, high=tmp_max, low=tmp_min)
-    p_m1_peak = truncnorm(m1, mu=mu_m1, sigma=sig_m1, high=tmp_max, low=tmp_min)
-
-    # Compute low- and high-mass filters
-    low_filter = butterworthFilter(m1,mMin,-1*low_smoothing)
-    high_filter =  butterworthFilter(m1,mMax,high_smoothing)
-
-    # Apply filters to combined power-law and peak
-    return (f_peak*p_m1_peak + (1.-f_peak)*p_m1_pl)*low_filter*high_filter
-
 """ Redshift distribution """
 maximum_redshift_considered = 10
 minimum_redshift_considered = 0
@@ -76,3 +59,8 @@ def unif_comoving_rate(z,H0,Om0):
     dvc_dz = diff_comoving_volume_approx(z,H0,Om0)
     dtsrc_dtdet = (1 + z)
     return dvc_dz / dtsrc_dtdet
+
+def shouts_murmurs(z,H0,Om0,zp,alpha,beta):
+    unif_comov = unif_comoving_rate(z, H0, Om0)
+    c0 = 1 + (1 + zp)**(-alpha - beta)
+    return unif_comov * c0  * (1 + z)**alpha / ( 1 + (np.power((1.+z)/(1.+zp),(alpha+beta)))) 

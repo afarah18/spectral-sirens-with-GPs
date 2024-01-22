@@ -3,10 +3,6 @@ import numpy as np
 from scipy.special import erf
 from scipy.integrate import cumtrapz
 
-def butterworthFilter(x,loc,smooth):
-    # if smooth <0, its a low-pass. if smooth<0, its a high-pass
-    return 1./(1. + (x/loc)**smooth)
-
 def powerlaw(xx, alpha, high, low):
     r"""
     Normalized truncated power-law probability
@@ -94,24 +90,3 @@ def inverse_transform_sample(pdf, x_limits, rng, N=1000, **pdf_kwargs):
     samples = np.interp(y, cdf, xs)
 
     return samples
-
-def contour_plot(samples,theory,grid_m,grid_z, lognorm=True,
-                 contour_kwargs=dict(colors='k')):
-    import matplotlib.pyplot as plt
-    from scipy.stats import gaussian_kde
-    from matplotlib.colors import LogNorm, Normalize
-
-    if lognorm:
-        n = LogNorm()
-    else:
-        n = Normalize()
-
-    fig, ax = plt.subplots(figsize=(5,5))
-#     k = gaussian_kde(samples)
-#     positions = np.vstack([grid_m.ravel(), grid_z.ravel()])
-#     Z = np.reshape(k(positions).T, grid_m.shape)
-#     ax.contourf(grid_m,grid_z,Z,norm=n)
-    ax.hexbin(samples[0],samples[1],norm=n)
-    CS = ax.contour(grid_m, grid_z, theory,norm=n, **contour_kwargs)
-
-    return ax

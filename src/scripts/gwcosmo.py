@@ -71,7 +71,7 @@ def diff_comoving_volume_approx(z,H0,Om0):
     dL = dL_approx(z,H0,Om0) #Mpc
     Ez_i = Ez_inv(z,Om0)
     D_H = (Clight/1e3)  / H0 #Mpc
-    return 1.0e-9 * (4.*np.pi) * np.power(dL,2) * D_H * Ez_i / np.power(1.+z,2.)
+    return 1.0e-9 * (4.*np.pi) * np.power(dL,2) * D_H * Ez_i / np.power(1.+z,2.) # Mpc**3
 
 def dLdH_approx(z,Om0):    
     return 2. * (1.+z) * (Phi(xx(0.,Om0)) - Phi(xx(z,Om0))/np.sqrt(1.+z))/np.sqrt(Om0)
