@@ -16,7 +16,13 @@ OM0_FID = 0.3096
 ZMAX = 10.
 ZMIN = 1e-6 # can't be zero since we will eventually take the log of it
 
-N_SOURCES = 10000
+TRUEVALS = dict(
+    H0=H0_FID, OM0=OM0_FID,
+    alpha=-2.7,f_peak=0.05,mmax=78.0,mmin=10.0, mu_m1=30.0,sig_m1=7.0,
+    zp=2.4,alpha_z=1.,beta_z=3.4
+)
+
+N_SOURCES = 15000
 N_SAMPLES_PER_EVENT = 100
 SIGMA_M = 0.5
 SIGMA_DL = 1000
@@ -26,31 +32,22 @@ NUM_INJ=N_SOURCES*50
 # random number generators
 np_rng = np.random.default_rng(4242)
 
-def true_vals_feature_full(rng, num_ridges=3, mmin=5, mmax=100,
-                        n_sources=N_SOURCES,zmax=ZMAX):
-    assert N_SOURCES % num_ridges == 0 , "num_ridges must be a divisor of N_SOURCES"
-    num_sources_per_ridge = int(N_SOURCES/num_ridges)
-    ridge_width = ((mmax - mmin)/num_ridges )/2
-    ridge_leftedge = np.linspace(mmin,mmax-ridge_width,num=num_ridges)
-    mass_samples = []
-    for ridge in range(num_ridges):
-        mass_samples.append(rng.uniform(
-            low=ridge_leftedge[ridge],
-            high=ridge_leftedge[ridge]+ridge_width,
-            size=num_sources_per_ridge
-            )
-        )
-    m1s_true = np.array(mass_samples).flatten()
-    zt = inverse_transform_sample(gwpop.unif_comoving_rate, [1e-3,ZMAX], rng,
-                              N=N_SOURCES, H0=H0_FID,Om0=OM0_FID)
-    m1z_true = m1s_true * (1+zt)
+def true_vals_PLP(rng, n_sources=N_SOURCES):
+    m1s_true = inverse_transform_sample(gwpop.powerlaw_peak,[1,400],rng,N=n_sources,
+                                        alpha=TRUEVALS['alpha'],f_peak=TRUEVALS['f_peak'],
+                                        mMax=TRUEVALS['mmax'],mMin=TRUEVALS['mmin'],
+                                        mu_m1=TRUEVALS['mu_m1'],sig_m1=TRUEVALS['sig_m1'])
+    zt = inverse_transform_sample(gwpop.shouts_murmurs, [1e-3,ZMAX], rng, 
+                                N=n_sources,H0=H0_FID,Om0=OM0_FID,zp=TRUEVALS['zp'],
+                                alpha=TRUEVALS['alpha_z'],beta=TRUEVALS['beta_z'])
     dL_true = gwcosmo.dL_approx(zt,H0_FID,OM0_FID)
+    m1z_true = m1s_true * (1 + zt)
+
     return m1s_true, zt, m1z_true, dL_true
 
 def make_injections(rng, alpha, mmax_inj, mmin_inj, zmax_inj=ZMAX,num_inj=NUM_INJ):
     m1zinj = inverse_transform_sample(gwpop.powerlaw, [mmin_inj,mmax_inj],rng, N=num_inj, 
                                  alpha=-alpha, high=mmax_inj, low=mmin_inj)
-    p_inj = gwpop.powerlaw(m1zinj,-alpha,mmax_inj,mmin_inj )
     log_pinj = -alpha * np.log(m1zinj) + np.log(
         (-alpha + 1)/(mmax_inj**(-alpha + 1)-mmin_inj**(-alpha + 1)))
     dLinj = gwcosmo.dL_approx(inverse_transform_sample(
@@ -58,7 +55,7 @@ def make_injections(rng, alpha, mmax_inj, mmin_inj, zmax_inj=ZMAX,num_inj=NUM_IN
           H0=H0_FID, Om0=OM0_FID)
     z_integrand = np.linspace(ZMIN,zmax_inj,num=500)
     pdl = np.abs(gwpop.unif_comoving_rate(gwcosmo.z_at_dl_approx(dLinj,H0=H0_FID, Om0=OM0_FID,zmin=ZMIN,zmax=50),H0=H0_FID,Om0=OM0_FID # p(z)
-        )/np.trapz(y=gwcosmo.diff_comoving_volume_approx(z_integrand,H0=H0_FID, Om0=OM0_FID),x=z_integrand # normalization
+        )/np.trapz(y=gwpop.unif_comoving_rate(z_integrand,H0=H0_FID, Om0=OM0_FID),x=z_integrand # normalization
         )/gwcosmo.dDLdz_approx(gwcosmo.z_at_dl_approx(dLinj,H0_FID,OM0_FID,zmin=ZMIN,zmax=50), H0=H0_FID, Om0=OM0_FID) # convert to p(dl)
     )
     log_pinj += np.log(pdl)
@@ -68,14 +65,14 @@ def make_injections(rng, alpha, mmax_inj, mmin_inj, zmax_inj=ZMAX,num_inj=NUM_IN
 
 if  __name__ == "__main__":
     # generate data and save 
-    m1s_true, zt, m1z_true, dL_true = true_vals_feature_full(rng=np_rng, num_ridges=2)
+    m1s_true, zt, m1z_true, dL_true = true_vals_PLP(rng=np_rng)
     os.mkdir(paths.data / "gw_data")
-    np.save(paths.data / "gw_data/m1s_true_feature_full.npy", dL_true)
-    np.save(paths.data / "gw_data/z_true_feature_full.npy", zt)
-    np.save(paths.data / "gw_data/m1z_true_feature_full.npy",m1z_true)
-    np.save(paths.data / "gw_data/dL_true_feature_full.npy",dL_true)
+    np.save(paths.data / "gw_data/m1s_true_PLP.npy", dL_true)
+    np.save(paths.data / "gw_data/z_true_PLP.npy", zt)
+    np.save(paths.data / "gw_data/m1z_true_PLP.npy",m1z_true)
+    np.save(paths.data / "gw_data/dL_true_PLP.npy",dL_true)
     # generate injection set
-    m1zinj, dLinj, log_pinj = make_injections(np_rng,alpha=0.5,mmax_inj=350., mmin_inj=1.5)
+    m1zinj, dLinj, log_pinj = make_injections(np_rng,alpha=2.,mmax_inj=350., mmin_inj=1.5)
     
     # select injections and data based off of an SNR threshold
     osnr_interp, reference_distance = interpolate_optimal_snr_grid(
@@ -91,8 +88,10 @@ if  __name__ == "__main__":
     np.save(paths.data / "gw_data/dLinj_det.npy",dLinj_det)
     np.save(paths.data / "gw_data/log_pinj_det.npy",log_pinj_det)
     ## find events and generate mock PE
-    m1z_PE, dL_PE, log_PE_prior = gen_snr_scaled_PE(np_rng,m1s_true,dL_true/1000,osnr_interp,
-                                                    reference_distance,N_SAMPLES_PER_EVENT,H0_FID,OM0_FID)
+    m1z_PE, _, dL_PE, log_PE_prior = gen_snr_scaled_PE(np_rng,m1s_true,m1s_true,dL_true/1000,osnr_interp,
+                                                       reference_distance,N_SAMPLES_PER_EVENT,H0_FID,OM0_FID,
+                                                       return_og=False)
+
     dL_PE *= 1000 # unit matching
     np.save(paths.data / "gw_data/m1z_PE.npy",m1z_PE)
     np.save(paths.data / "gw_data/dL_PE.npy",dL_PE)
