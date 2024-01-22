@@ -20,7 +20,7 @@ def two_panel(path):
         r = np.nan_to_num(np.exp(samples['log_rate'][0]))
 
     fig, axes = plt.subplots(ncols=2,figsize=(20,8),facecolor='none',gridspec_kw={'width_ratios': [1.2, 1]})
-    for i in range(200):
+    for i in range(20):
         PLP_norm = np.trapz(r[i],TEST_M1S)*1.15
         axes[0].plot(TEST_M1S, r[i]/PLP_norm, lw=0.2, c="blue",alpha=0.1)
         
@@ -34,7 +34,7 @@ def two_panel(path):
     ho_kde=gaussian_kde(samples['H0'])
     axes[1].plot(prior,ho_kde(prior))
 
-    axes[1].axvline(67.66,color='k',ls='--',label="True value")
+    axes[1].axvline(H0_FID,color='k',ls='--',label="True value")
     axes[1].set_xlabel('$H_0$ [km/s/Mpc]')
     axes[1].set_ylabel('posterior density')
     axes[1].legend(framealpha=0)

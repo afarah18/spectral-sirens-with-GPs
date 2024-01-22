@@ -76,7 +76,7 @@ if  __name__ == "__main__":
     
     # select injections and data based off of an SNR threshold
     osnr_interp, reference_distance = interpolate_optimal_snr_grid(
-        fname=paths.data / "optimal_snr_aplus_design_O5.h5") # TODO: put this on zenodo as a static dataset
+        fname=paths.data / "optimal_snr_aplus_design_O5.h5")
     ## find injections
     thetas_inj = draw_thetas(len(dLinj),rng=np_rng)
     snr_true_inj = osnr_interp(m1zinj, m1zinj, grid=False)/dLinj * thetas_inj * 1000.
