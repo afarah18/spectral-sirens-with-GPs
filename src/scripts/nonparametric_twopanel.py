@@ -20,7 +20,7 @@ def two_panel(path):
         r = np.nan_to_num(np.exp(samples['log_rate'][0]))
 
     fig, axes = plt.subplots(ncols=2,figsize=(20,8),facecolor='none',gridspec_kw={'width_ratios': [1.2, 1]})
-    for i in range(20):
+    for i in range(5):
         PLP_norm = np.trapz(r[i],TEST_M1S)*1.15
         axes[0].plot(TEST_M1S, r[i]/PLP_norm, lw=0.2, c="blue",alpha=0.1)
     axes[0].plot([], lw=0.2, c="blue",alpha=0.1,label='Gaussian process fit')
