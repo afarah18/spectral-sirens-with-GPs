@@ -24,10 +24,10 @@ dag:
 
 
 # Externally-hosted datasets, e.g. on Zenodo
-datasets:
-  10.5281/zenodo.8428643:
-    contents:
-      optimal_snr_aplus_design_O5.h5: src/data/optimal_snr_aplus_design_O5.h5
+# datasets:
+#   10.5281/zenodo.8428643:
+#     contents:
+#       optimal_snr_aplus_design_O5.h5: src/data/optimal_snr_aplus_design_O5.h5
 
 # Custom file dependencies
 dependencies:
