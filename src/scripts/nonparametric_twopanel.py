@@ -23,18 +23,20 @@ def two_panel(path):
     for i in range(20):
         PLP_norm = np.trapz(r[i],TEST_M1S)*1.15
         axes[0].plot(TEST_M1S, r[i]/PLP_norm, lw=0.2, c="blue",alpha=0.1)
+    axes[0].plot([], lw=0.2, c="blue",alpha=0.1,label='Gaussian process fit')
         
     axes[0].plot(TEST_M1S, 7*powerlaw_peak(TEST_M1S,alpha=-2.7,f_peak=0.05,mMax=78.0,mMin=10.0,mu_m1=30.0,sig_m1=7.0),
-                c='k',lw=3,label='Underlying distribution')
+                c='k',lw=3,label='injected distribution')
     axes[0].set_yscale('log')
     axes[0].set_ylim(1e-5,1e-1)
     axes[0].set_xlim(1,80)
+    axes[0].legend(framealpha=0)
 
     prior=np.linspace(55,120,num=200)
     ho_kde=gaussian_kde(samples['H0'])
     axes[1].plot(prior,ho_kde(prior))
 
-    axes[1].axvline(H0_FID,color='k',ls='--',label="True value")
+    axes[1].axvline(H0_FID,color='k',ls='--',label="injected value")
     axes[1].set_xlabel('$H_0$ [km/s/Mpc]')
     axes[1].set_ylabel('posterior density')
     axes[1].legend(framealpha=0)
