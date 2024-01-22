@@ -37,7 +37,7 @@ dependencies:
     - src/data/gw_data/
   src/scripts/parametric_inference.py:
     - src/data/gw_data/
-  src/scripts/nonparametric_plots.py:
+  src/scripts/nonparametric_twopanel.py:
     - src/data/mcmc_nonparametric.nc4
 # src/tex/ms.tex:
 #     - src/tex/stylesheet.tex

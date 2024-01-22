@@ -20,6 +20,6 @@ rule nonparplots:
     output:
         "src/tex/figures/O5_GP.pdf"
     input:
-        "src/data/mcmc_nonparametric.nc4" # should I include the gw_data directory too?
+        "src/data/mcmc_nonparametric.nc4"
     script:
-        "src/scripts/nonparametric_plots.py"
+        "src/scripts/nonparametric_twopanel.py"
