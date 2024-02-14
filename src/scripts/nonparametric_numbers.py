@@ -9,4 +9,4 @@ print(len(h0samps))
 with open(paths.output / "nonparh0percent.txt", "w") as f:
     print(f"{np.std(h0samps)/np.mean(h0samps):.1f}", file=f)
 with open(paths.output / "nonparh0CI.txt", "w") as f:
-    print(f"{np.mean(h0samps):.1f}"+"^{+"+f"{np.percentile(h0samps,95)}"+"}"+"_{-"+f"{np.percentile(h0samps,95)}"+"}", file=f)
+    print(f"${np.mean(h0samps):.1f}"+"^{+"+f"{np.percentile(h0samps,95)}"+"}"+"_{-"+f"{np.percentile(h0samps,95)}"+"}$", file=f)
