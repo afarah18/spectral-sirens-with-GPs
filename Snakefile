@@ -1,3 +1,17 @@
+rule numevs:
+    output:
+        "src/tex/output/num_found_events.txt"
+    input:
+        "src/data/optimal_snr_aplus_design_O5.h5"
+    script:
+        "src/scripts/data_generation.py"
+rule h0fid:
+    output:
+        "src/tex/output/H0_FID.txt"
+    input:
+        "src/data/optimal_snr_aplus_design_O5.h5"
+    script:
+        "src/scripts/data_generation.py"
 rule datagen:
     output:
         directory("src/data/gw_data")
@@ -37,17 +51,3 @@ rule nonparh0percent:
         "src/data/mcmc_nonparametric.nc4" 
     script:
         "src/scripts/nonparametric_numbers.py"
-rule numevs:
-    output:
-        "src/tex/output/num_found_events.txt"
-    input:
-        "src/data/optimal_snr_aplus_design_O5.h5"
-    script:
-        "src/scripts/data_generation.py"
-rule h0fid:
-    output:
-        "src/tex/output/H0_FID.txt"
-    input:
-        "src/data/optimal_snr_aplus_design_O5.h5"
-    script:
-        "src/scripts/data_generation.py"
