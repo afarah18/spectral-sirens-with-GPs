@@ -185,7 +185,7 @@ We then use this catalog to infer \Ho{} using three different models for the sou
     \item the flexible, Gaussian process-based model described in Section~\ref{sec:model}, which can closely approximate the morphology of the true mass distribution, along with several other morphologies.
 \end{enumerate}
 The results of each of these fits are shown in Figure~\ref{fig:O5_GP}. 
-The \result{left} panel shows the inferred source frame mass distribution for each of the considered models, and the \result{right} panel shows the corresponding posteriors on \Ho{}.
+The left panel shows the inferred source frame mass distribution for each of the considered models, and the right panel shows the corresponding posteriors on \Ho{}.
 
 With \variable{output/num_found_events.txt}events, we find that using a parametric model of the same form as the true simulated distribution (\plp) recovers the injected value of \Ho{} within \result{X-$\sigma$}.
 However, when using a model that cannot accurately represent the true shape of the mass distribution, we recover a biased estimate of \Ho: the true value is offset from the mean of the posterior by \result{X}-$\sigma$.
@@ -193,7 +193,7 @@ This bias is not due to the need to know the morphology of the mass distribution
 The Gaussian process-based model does, however, obtain larger uncertainties on the inferred value of \Ho, as it has many more free parameters. 
 In reality, it is impossible to know the true functional form of the mass distribution, so the additional statistical uncertainty introduced by non-parametric approaches may be desirable over the systematic errors associated with choosing a parametric model.
 
-We have repeated this analysis with \result{50} separate simulated catalogs, and found that the power law model causes us to infer a \result{higher/lower} value of \Ho{} at greater than \result{X}-$\sigma$, \result{Y}\% of the time, whereas the Gaussian process-based model reaches that level of bias only \result{Z}\% of the time, and the \plp{} model reaches the same level of bias \result{A}\% of the time.
+We have repeated this analysis with \result{50} separate simulated catalogs, and found that the broken power law model causes us to infer a \result{higher/lower} value of \Ho{} at greater than \result{X}-$\sigma$, \result{Y}\% of the time, whereas the Gaussian process-based model reaches that level of bias only \result{Z}\% of the time, and the \plp{} model reaches the same level of bias \result{A}\% of the time.
 This indicates that prior knowledge of the shape of the mass distribution is not required to perform a spectral siren measurement, so long as strong assumptions about the shape of the mass distribution are not made.
 
 \jme{[I think it would be relevant to compare the forecast of the non-parametric and the right parametric model. Do we loose constrianing power by being flexible (probably)? how much?]} \comment{[I have now included this in the discussion.]}
@@ -204,7 +204,7 @@ This simulated catalog is designed to be representative of the gravitational wav
 The details of the data simulation are described in Appendix~\ref{ap:data generation}.
 
 The resulting inferred mass distribution is shown in Figure~\ref{fig:O5_GP}, along with the corresponding posterior on \Ho.
-The inferred mass distribution closely resembles the true, simulated distribution, and the injected value of \Ho (\result{67.66 km/s/Mpc}) is consistent with its inferred posterior distribution (\result{X}).
+The inferred mass distribution closely resembles the true, simulated distribution, and the injected value of \Ho (\variable km/s/Mpc) is consistent with its inferred posterior distribution (\result{X}).
 Additionally, the posterior on \Ho is distinct from its prior distribution, indicating that the data is informative despite the flexibility of the population model.
 
 This result also implies that we can expect to measure \Ho{} to \result{X\%} by the end of the LVK's fifth observing run using this method.
