@@ -39,6 +39,9 @@ dependencies:
     - src/data/gw_data/
   src/scripts/nonparametric_twopanel.py:
     - src/data/mcmc_nonparametric.nc4
+  src/scripts/nonparametric_numbers.py:
+    - src/data/mcmc_nonparametric.nc4
+  
 # src/tex/ms.tex:
 #     - src/tex/stylesheet.tex
 

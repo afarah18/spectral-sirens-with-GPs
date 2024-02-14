@@ -87,6 +87,7 @@ if  __name__ == "__main__":
     np.save(paths.data / "gw_data/m1zinj_det.npy",m1zinj_det)
     np.save(paths.data / "gw_data/dLinj_det.npy",dLinj_det)
     np.save(paths.data / "gw_data/log_pinj_det.npy",log_pinj_det)
+    
     ## find events and generate mock PE
     m1z_PE, _, dL_PE, log_PE_prior = gen_snr_scaled_PE(np_rng,m1s_true,m1s_true,dL_true/1000,osnr_interp,
                                                        reference_distance,N_SAMPLES_PER_EVENT,H0_FID,OM0_FID,
@@ -97,4 +98,7 @@ if  __name__ == "__main__":
     np.save(paths.data / "gw_data/dL_PE.npy",dL_PE)
     np.save(paths.data / "gw_data/log_PE_prior.npy",log_PE_prior)
 
-    
+    with open(paths.output / "num_found_events.txt", "w") as f:
+        print(len(dL_PE), file=f)
+    with open(paths.output / "H0_FID.txt", "w") as f:
+        print(H0_FID, file=f)
