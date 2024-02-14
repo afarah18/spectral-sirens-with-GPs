@@ -1,6 +1,8 @@
 rule datagen:
     output:
         directory("src/data/gw_data")
+        "src/tex/output/H0_FID.txt"
+        "src/tex/output/num_found_events.txt"
     cache:
         True
     input:
