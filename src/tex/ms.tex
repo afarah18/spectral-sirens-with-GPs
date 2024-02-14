@@ -175,7 +175,7 @@ Algorithmically, each hyper-likelihood evaluation contains the following steps:
 \subsection{Option 1: include parametric models}
 In this Section, we first show that fitting an incorrect functional form to the mass distribution of CBCs biases the inference of cosmological parameters when using the spectral siren methodology.
 We then demonstrate that our flexible model alleviates this bias without the need to know the mass distribution's morphology \emph{a priori}.
-To illustrate this, we generate a catalog of \result{1,000} GW events from an underlying mass distribution described by the \plp{} model, with hyperparameters consistent with those found in \citet{o3b_pop}.
+To illustrate this, we generate a catalog of \variable{output/num_found_events.txt}GW events from an underlying mass distribution described by the \plp{} model, with hyperparameters consistent with those found in \citet{o3b_pop}.
 This simulated catalog is designed to be representative of the gravitational wave transient catalog after the LVK's fifth observing run.
 The details of the data simulation are described in Appendix~\ref{ap:data generation}.
 We then use this catalog to infer \Ho{} using three different models for the source-frame mass distribution:
@@ -187,7 +187,7 @@ We then use this catalog to infer \Ho{} using three different models for the sou
 The results of each of these fits are shown in Figure~\ref{fig:O5_GP}. 
 The \result{left} panel shows the inferred source frame mass distribution for each of the considered models, and the \result{right} panel shows the corresponding posteriors on \Ho{}.
 
-With \result{1,000} events, we find that using a parametric model of the same form as the true simulated distribution (\plp) recovers the injected value of \Ho{} within \result{X-$\sigma$}.
+With \variable{output/num_found_events.txt}events, we find that using a parametric model of the same form as the true simulated distribution (\plp) recovers the injected value of \Ho{} within \result{X-$\sigma$}.
 However, when using a model that cannot accurately represent the true shape of the mass distribution, we recover a biased estimate of \Ho: the true value is offset from the mean of the posterior by \result{X}-$\sigma$.
 This bias is not due to the need to know the morphology of the mass distribution \emph{a priori}, as the Gaussian process-based model recovers the correct value of \Ho{} despite making minimal assumptions about the mass distribution.
 The Gaussian process-based model does, however, obtain larger uncertainties on the inferred value of \Ho, as it has many more free parameters. 
@@ -199,7 +199,7 @@ This indicates that prior knowledge of the shape of the mass distribution is not
 \jme{[I think it would be relevant to compare the forecast of the non-parametric and the right parametric model. Do we loose constrianing power by being flexible (probably)? how much?]} \comment{[I have now included this in the discussion.]}
 
 \subsection{Option 2: GP only}
-We fit the non-parametric population model described in Section~\ref{sec:model} to a simulated GW catalog of \result{1,000} GW events from an underlying mass distribution described by the \plp{} model, with hyperparameters consistent with those found in \citet{o3b_pop}.
+We fit the non-parametric population model described in Section~\ref{sec:model} to a simulated GW catalog of \variable{output/num_found_events.txt}GW events from an underlying mass distribution described by the \plp{} model, with hyperparameters consistent with those found in \citet{o3b_pop}.
 This simulated catalog is designed to be representative of the gravitational wave transient catalog after the LVK's fifth observing run.
 The details of the data simulation are described in Appendix~\ref{ap:data generation}.
 
@@ -274,7 +274,7 @@ We neglect spins entirely, as they do not carry cosmological information.
 \jme{[For O5 BNSs will be subdominant. I would focus on BBHs for simplicity]}
 \comment{[Ok, so we should say that although a putuative lower mass gap would give and additional feature, it is not expected to be constrained well in O5, so we focus on the BBH spectrum for now. In XG, though, it will be important to consider the full spectrum \citep{ezquiaga_spectral_2022}.]}
 
-After passing the simulated events through projected detector selection effects, the resulting catalog has \result{X} events, including \result{X} binary neutron star systems, \result{Y} NSBH systems, and \result{Z} BBH systems, consistent with the numbers projected for O5 by \citet{kiendrebogo_observing_2023}.
+After passing the simulated events through projected detector selection effects, the resulting catalog has \variable{output/num_found_events.txt}events, including \result{X} binary neutron star systems, \result{Y} NSBH systems, and \result{Z} BBH systems, consistent with the numbers projected for O5 by \citet{kiendrebogo_observing_2023}.
 We use the software package \texttt{GWMockCat} \citep{farah_things_2023} to simulate posterior samples for these events with measurement uncertainties typical of those expected from O5 detectors.
 \texttt{GWMockCat} also simulates a set of software injections, which we use to estimate selection effects in the inference.
 To determine the detectability of both injections and simulated events in O5, we use the projected O5 LIGO power spectral density \citep{dccpage} to calculate observed signal-to-noise ratios $\rho_{\text{obs}}$, and we consider events and injections with $\rho_{\text{obs}}>8$ to be detectable. 
