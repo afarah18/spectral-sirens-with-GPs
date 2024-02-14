@@ -1,14 +1,27 @@
 rule datagen:
     output:
         directory("src/data/gw_data")
-        "src/tex/output/H0_FID.txt"
-        "src/tex/output/num_found_events.txt"
     cache:
         True
     input:
         "src/data/optimal_snr_aplus_design_O5.h5"
     script:
         "src/scripts/data_generation.py"
+rule numevs:
+    output:
+        "src/tex/output/num_found_events.txt"
+    input:
+        "src/data/gw_data"
+    script:
+        "src/scripts/data_numbers.py"
+rule h0fid:
+    output:
+        "src/tex/output/H0_FID.txt"
+    input:
+        "src/data/gw_data"
+    script:
+        "src/scripts/data_numbers.py"
+
 rule nonparinference:
     output:
         "src/data/mcmc_nonparametric.nc4"
