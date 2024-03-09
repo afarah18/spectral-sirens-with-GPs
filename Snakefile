@@ -31,13 +31,20 @@ rule nonparinference:
         "src/data/gw_data"
     script:
         "src/scripts/nonparametric_inference.py"
-rule nonparplots:
+rule nonparpm:
     output:
-        "src/tex/figures/O5_GP.pdf"
+        "src/tex/figures/O5_GP_pm.pdf"
     input:
         "src/data/mcmc_nonparametric.nc4"
     script:
         "src/scripts/nonparametric_twopanel.py"
+rule nonparcorner:
+    output:
+        "src/tex/figures/O5_GP_corner.pdf"
+    input:
+        "src/data/mcmc_nonparametric_fitOm0.nc4"
+    script:
+        "src/scripts/nonparametric_corner.py"
 rule nonparh0CI:
     output:
         "src/tex/output/nonparh0CI.txt"
