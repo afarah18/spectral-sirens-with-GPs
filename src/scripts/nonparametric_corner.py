@@ -1,0 +1,101 @@
+import matplotlib.pyplot as plt
+import numpy as np
+import arviz as az
+from scipy.stats import gaussian_kde
+
+from data_generation import H0_FID, OM0_FID
+from nonparametric_inference import TEST_Z
+from gwcosmo import E_of_z
+
+import paths
+plt.style.use(paths.scripts / "matplotlibrc")
+
+def calc_Hz(z,H0,Om0):
+    E = E_of_z(z=z,Om0=Om0)
+    return H0 * E
+
+def Hz(id, ax=None,save=False,inset=True):
+    samples = id.posterior
+    try:
+        Om0=samples['Om0'][0].values
+        H0=samples['H0'][0].values
+        nsamps=len(H0)
+        if ax is None:
+            fig, ax = plt.subplots(figsize=(8,8))
+        H_z = np.zeros((nsamps,len(TEST_Z)))
+        for i in range(nsamps):
+            H_z[i] = calc_Hz(TEST_Z,H0[i],Om0[i])
+            ax.plot(TEST_Z,H_z[i],lw=0.2, c="blue",alpha=0.1)
+        ax.plot(TEST_Z, calc_Hz(TEST_Z,H0_FID,OM0_FID),c='k', lw=2,label="injected value")
+        ax.set_xlabel("$z$")
+        ax.set_ylabel("$H(z)$ [km/s/Mpc]")
+        ax.set_xlim(0,5)
+        ax.set_ylim(0,750)
+        ax.legend(framealpha=0,loc='lower right')
+        
+        if inset:
+            # find the best-measured redshift
+            a = np.argmin(H_z.std(axis=0))
+            zbest=TEST_Z[a]
+            H_of_zbest = H_z[:,a]
+
+            # calculate the truth there
+            H_of_zbest_true = calc_Hz(zbest,H0_FID,OM0_FID)            
+
+            # make the inset
+            iax = ax.inset_axes(bounds=[0.5,450,1.75,250],transform=ax.transData)
+            iax.set_xlabel("$H(z=%1.1f)$ [km/s/Mpc]"%zbest)
+            # arrow from the inset to zbest
+            # midpoint_x = 1.75/2 + 0.5
+            # offset_y= 50
+            # lowpoint_y = 450-offset_y
+            # ax.arrow(x=zbest,y=H_of_zbest+offset_y,dx=midpoint_x-zbest,dy = lowpoint_y-(H_of_zbest+offset_y+10),
+            #          head_width=0.1,overhang=0.2,length_includes_head=True, head_starts_at_zero=True,color='grey')
+        
+            # plot
+            prior=np.linspace(H_of_zbest.min(),H_of_zbest.max(),num=200)
+            kde=gaussian_kde(H_of_zbest)
+            iax.plot(prior,kde(prior))
+            iax.axvline(H_of_zbest_true,color='k',label="True value")
+            iax.set_ylabel('posterior density')
+            iax.tick_params(left=False,labelleft=False)
+
+        if save:
+            fig.savefig(paths.figures / "O5_GP_Hz.pdf")
+        else:
+            return ax
+    except KeyError:
+        pass
+
+def H0_Om_corner(id): 
+    samples = id.posterior
+    try:
+        samples['Om0']
+    except KeyError:
+        pass
+    fig = plt.figure(layout='constrained',figsize=(7.5,4*.75),facecolor='none')
+    subfigs = fig.subfigures(1,2,wspace=0.07,width_ratios=[1.2, 1])
+    for sf in subfigs:
+        sf.set_facecolor('none')
+
+    axsLeft=subfigs[0].subplots(2,2)
+    az.plot_pair(id,var_names=['H0','Om0'],marginals=True,kind='kde', ax=axsLeft,
+                 kde_kwargs={'plot_kwargs':{'color':'b'},'contourf_kwargs':{'cmap':'Blues'}},
+                 reference_values={'Om0':OM0_FID,'H0':H0_FID},
+                 reference_values_kwargs={'marker':'+','color':'k','ms':20,'mew':5})
+    # un-rotate Om0 plot
+    axsLeft[1,1].cla()
+    az.plot_dist(samples['Om0'][0],ax=axsLeft[1,1])
+    axsLeft[1,1].set_xlabel("$\Omega_m$")
+    # label axes
+    axsLeft[1,0].set_xlabel("$H_0$ [km/s/Mpc]")
+    axsLeft[1,0].set_ylabel("$\Omega_m$")
+    axsLeft[1,0].plot([],[],**{'marker':'+','color':'k','ms':15,'mew':3,'lw':0},label='injected value')
+    axsLeft[1,0].legend(framealpha=0)
+    
+    axsRight=subfigs[1].subplots(1,1)
+    Hz(id,ax=axsRight,save=False)
+    fig.savefig(paths.figures / "O5_GP_corner.pdf")
+
+id = az.InferenceData.from_netcdf(paths.data / "logm_gwmc_O5_errs_fit_Om0_samples_interpolant.nc4")
+H0_Om_corner(id)
