@@ -4,7 +4,7 @@ import arviz as az
 from scipy.stats import gaussian_kde
 
 from data_generation import H0_FID, OM0_FID
-from nonparametric_inference import TEST_Z
+from nonparametric_inference_fitOm0 import TEST_Z, NSAMPS
 from gwcosmo import E_of_z
 
 import paths
@@ -19,56 +19,56 @@ def Hz(id, ax=None,save=False,inset=True):
     try:
         Om0=samples['Om0'][0].values
         H0=samples['H0'][0].values
-        nsamps=len(H0)
-        if ax is None:
-            fig, ax = plt.subplots(figsize=(8,8))
-        H_z = np.zeros((nsamps,len(TEST_Z)))
-        for i in range(nsamps):
-            H_z[i] = calc_Hz(TEST_Z,H0[i],Om0[i])
-            ax.plot(TEST_Z,H_z[i],lw=0.2, c="blue",alpha=0.1)
-        ax.plot(TEST_Z, calc_Hz(TEST_Z,H0_FID,OM0_FID),c='k', lw=2,label="injected value")
-        ax.set_xlabel("$z$")
-        ax.set_ylabel("$H(z)$ [km/s/Mpc]")
-        ax.set_xlim(0,5)
-        ax.set_ylim(0,750)
-        ax.legend(framealpha=0,loc='lower right')
-        
-        if inset:
-            # find the best-measured redshift
-            a = np.argmin(H_z.std(axis=0))
-            zbest=TEST_Z[a]
-            H_of_zbest = H_z[:,a]
-            with open(paths.output / "mostsensitivez.txt", "w") as f:
-                print(f"{zbest:.1f}", file=f)
-
-            # calculate the truth there
-            H_of_zbest_true = calc_Hz(zbest,H0_FID,OM0_FID)            
-
-            # make the inset
-            iax = ax.inset_axes(bounds=[0.5,450,1.75,250],transform=ax.transData)
-            iax.set_xlabel("$H(z=%1.1f)$\n[km/s/Mpc]"%zbest,fontsize=10)
-            iax.set_xticks([100,125,150])
-            # iax.set_ylabel('posterior density',fontsize=8)
-            # arrow from the inset to zbest
-            # midpoint_x = 1.75/2 + 0.5
-            # offset_y= 50
-            # lowpoint_y = 450-offset_y
-            # ax.arrow(x=zbest,y=H_of_zbest+offset_y,dx=midpoint_x-zbest,dy = lowpoint_y-(H_of_zbest+offset_y+10),
-            #          head_width=0.1,overhang=0.2,length_includes_head=True, head_starts_at_zero=True,color='grey')
-        
-            # plot
-            prior=np.linspace(H_of_zbest.min(),H_of_zbest.max(),num=200)
-            kde=gaussian_kde(H_of_zbest)
-            iax.plot(prior,kde(prior))
-            iax.axvline(H_of_zbest_true,color='k',label="True value")
-            iax.tick_params(left=False,labelleft=False)
-
-        if save:
-            fig.savefig(paths.figures / "O5_GP_Hz.pdf")
-        else:
-            return ax
     except KeyError:
         pass
+        
+    if ax is None:
+        fig, ax = plt.subplots(figsize=(8,8))
+    H_z = np.zeros((NSAMPS,len(TEST_Z)))
+    for i in range(NSAMPS):
+        H_z[i] = calc_Hz(TEST_Z,H0[i],Om0[i])
+        ax.plot(TEST_Z,H_z[i],lw=0.2, c="blue",alpha=0.1)
+    ax.plot(TEST_Z, calc_Hz(TEST_Z,H0_FID,OM0_FID),c='k', lw=2,label="injected value")
+    ax.set_xlabel("$z$")
+    ax.set_ylabel("$H(z)$ [km/s/Mpc]")
+    ax.set_xlim(0,5)
+    ax.set_ylim(0,750)
+    ax.legend(framealpha=0,loc='lower right')
+    
+    if inset:
+        # find the best-measured redshift
+        a = np.argmin(H_z.std(axis=0))
+        zbest=TEST_Z[a]
+        H_of_zbest = H_z[:,a]
+        with open(paths.output / "mostsensitivez.txt", "w") as f:
+            print(f"{zbest:.1f}", file=f)
+
+        # calculate the truth there
+        H_of_zbest_true = calc_Hz(zbest,H0_FID,OM0_FID)            
+
+        # make the inset
+        iax = ax.inset_axes(bounds=[0.5,450,1.75,250],transform=ax.transData)
+        iax.set_xlabel("$H(z=%1.1f)$\n[km/s/Mpc]"%zbest,fontsize=10)
+        iax.set_xticks([100,125,150])
+        # iax.set_ylabel('posterior density',fontsize=8)
+        # arrow from the inset to zbest
+        # midpoint_x = 1.75/2 + 0.5
+        # offset_y= 50
+        # lowpoint_y = 450-offset_y
+        # ax.arrow(x=zbest,y=H_of_zbest+offset_y,dx=midpoint_x-zbest,dy = lowpoint_y-(H_of_zbest+offset_y+10),
+        #          head_width=0.1,overhang=0.2,length_includes_head=True, head_starts_at_zero=True,color='grey')
+    
+        # plot
+        prior=np.linspace(H_of_zbest.min(),H_of_zbest.max(),num=200)
+        kde=gaussian_kde(H_of_zbest)
+        iax.plot(prior,kde(prior))
+        iax.axvline(H_of_zbest_true,color='k',label="True value")
+        iax.tick_params(left=False,labelleft=False)
+
+    if save:
+        fig.savefig(paths.figures / "O5_GP_Hz.pdf")
+    else:
+        return ax
 
 def H0_Om_corner(id): 
     samples = id.posterior
@@ -103,5 +103,5 @@ def H0_Om_corner(id):
     Hz(id,ax=axsRight,save=False)
     fig.savefig(paths.figures / "O5_GP_corner.pdf")
 
-id = az.InferenceData.from_netcdf(paths.data / "mcmc_nonparametric_fit_Om0.nc4")
+id = az.InferenceData.from_netcdf(paths.data / "mcmc_nonparametric_fitOm0.nc4")
 H0_Om_corner(id)

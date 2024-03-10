@@ -3,12 +3,11 @@ import numpy as np
 import arviz as az
 from scipy.stats import gaussian_kde
 
-from nonparametric_inference import TEST_M1S
+from nonparametric_inference import TEST_M1S, NSAMPS
 from data_generation import H0_FID
 from gwpop import powerlaw_peak
 
 import paths
-NSAMPS = 500
 
 plt.style.use(paths.scripts / "matplotlibrc")
 

@@ -3,7 +3,8 @@ import jgwcosmo # for inference
 import jgwpop
 import paths
 Clight = jgwcosmo.Clight
-from data_generation import NUM_INJ, OM0_FID, ZMAX, ZMIN, N_SAMPLES_PER_EVENT
+from data_generation import NUM_INJ, ZMAX, ZMIN, N_SAMPLES_PER_EVENT
+from nonparametric_inference import TEST_Z, TEST_M1S, H0_PRIOR_MIN, H0_PRIOR_MAX, NSAMPS, remove_low_Neff
 
 # inference
 import jax
@@ -18,21 +19,10 @@ import arviz as az
 import numpy as np
 
 jax.config.update("jax_enable_x64", True)
-
-# Constants
-TEST_Z = jnp.linspace(ZMIN,ZMAX,num=100)
-TEST_M1S = jnp.linspace(0,250.,num=500)
-
-H0_PRIOR_MIN=30.
-H0_PRIOR_MAX=120.
-
-NSAMPS=5
-
 # random number generators
 jax_rng = jax.random.PRNGKey(425)
 
 # options
-remove_low_Neff=False
 
 def model(m1det,dL,m1det_inj,dL_inj,log_pinj,log_PE_prior=0.,remove_low_Neff=False):
     mean = numpyro.sample("mean",dist.Normal(0,3))
@@ -40,7 +30,7 @@ def model(m1det,dL,m1det_inj,dL_inj,log_pinj,log_PE_prior=0.,remove_low_Neff=Fal
     rho = numpyro.deterministic("rho",3.)
 
     H0 = numpyro.sample("H0",dist.Uniform(H0_PRIOR_MIN,H0_PRIOR_MAX))
-    Om0=OM0_FID
+    Om0 = numpyro.sample("Om0",dist.Uniform(0.01,0.99))
 
     # construct GP in the source frame
     kernel = sigma**2 * kernels.quasisep.Matern52(rho) # can change kernel type
@@ -116,4 +106,4 @@ if  __name__ == "__main__":
 
     # save results
     id = az.from_numpyro(mcmc)
-    id.to_netcdf(paths.data / "mcmc_nonparametric.nc4")
+    id.to_netcdf(paths.data / "mcmc_nonparametric_fitOm0.nc4")
