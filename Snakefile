@@ -31,6 +31,15 @@ rule nonparinference:
         "src/data/gw_data"
     script:
         "src/scripts/nonparametric_inference.py"
+rule nonparinference_fitOm0:
+    output:
+        "src/data/mcmc_nonparametric_fitOm0.nc4"
+    cache:
+        True
+    input:
+        "src/data/gw_data"
+    script:
+        "src/scripts/nonparametric_inference_fitOm0.py"
 
 rule nonparpm:
     output:
