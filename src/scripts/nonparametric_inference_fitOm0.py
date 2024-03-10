@@ -11,6 +11,8 @@ import numpyro
 # data
 import numpy as np
 
+NSAMPS=50
+
 jax.config.update("jax_enable_x64", True)
 # random number generators
 jax_rng = jax.random.PRNGKey(425)

@@ -52,6 +52,7 @@ def Hz(id, ax=None,save=False,inset=True):
         iax.set_xlabel("$H(z=%1.1f)$\n[km/s/Mpc]"%zbest,fontsize=10)
         iax.set_xticks([100,125,150])
         # iax.set_ylabel('posterior density',fontsize=8)
+        
         # arrow from the inset to zbest
         # midpoint_x = 1.75/2 + 0.5
         # offset_y= 50
