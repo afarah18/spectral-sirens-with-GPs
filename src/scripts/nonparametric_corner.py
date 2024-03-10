@@ -74,7 +74,7 @@ def H0_Om_corner(id):
         samples['Om0']
     except KeyError:
         pass
-    fig = plt.figure(layout='constrained',figsize=(7.5,4*.75),facecolor='none')
+    fig = plt.figure(figsize=(7.5,4*.75),facecolor='none')
     subfigs = fig.subfigures(1,2,wspace=0.07,width_ratios=[1.2, 1])
     for sf in subfigs:
         sf.set_facecolor('none')

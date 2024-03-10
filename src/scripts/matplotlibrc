@@ -3,6 +3,7 @@ backend: agg
 # usetex: True
 font.family: serif
 font.size: 12 
+figure.constrained_layout.use: True
 axes.labelsize:12
 xtick.labelsize:10 
 ytick.labelsize:10 
