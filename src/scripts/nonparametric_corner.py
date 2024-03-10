@@ -38,6 +38,8 @@ def Hz(id, ax=None,save=False,inset=True):
             a = np.argmin(H_z.std(axis=0))
             zbest=TEST_Z[a]
             H_of_zbest = H_z[:,a]
+            with open(paths.output / "mostsensitivez.txt", "w") as f:
+                print(f"{zbest:.1f}", file=f)
 
             # calculate the truth there
             H_of_zbest_true = calc_Hz(zbest,H0_FID,OM0_FID)            
@@ -94,8 +96,8 @@ def H0_Om_corner(id):
     # label axes
     axsLeft[1,0].set_xlabel("$H_0$ [km/s/Mpc]")
     axsLeft[1,0].set_ylabel("$\Omega_m$")
-    axsLeft[1,0].plot([],[],**{'marker':'+','color':'k','ms':10,'mew':2,'lw':0},label='injected value')
-    axsLeft[1,0].legend(framealpha=0,handletextpad=0.1)
+    # axsLeft[1,0].plot([],[],**{'marker':'+','color':'k','ms':10,'mew':2,'lw':0},label='injected value')
+    # axsLeft[1,0].legend(framealpha=0,handletextpad=0.1)
     
     axsRight=subfigs[1].subplots(1,1)
     Hz(id,ax=axsRight,save=False)
