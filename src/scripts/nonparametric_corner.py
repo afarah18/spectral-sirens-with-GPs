@@ -44,7 +44,9 @@ def Hz(id, ax=None,save=False,inset=True):
 
             # make the inset
             iax = ax.inset_axes(bounds=[0.5,450,1.75,250],transform=ax.transData)
-            iax.set_xlabel("$H(z=%1.1f)$ [km/s/Mpc]"%zbest)
+            iax.set_xlabel("$H(z=%1.1f)$\n[km/s/Mpc]"%zbest,fontsize=10)
+            iax.set_xticks([100,125,150])
+            # iax.set_ylabel('posterior density',fontsize=8)
             # arrow from the inset to zbest
             # midpoint_x = 1.75/2 + 0.5
             # offset_y= 50
@@ -57,7 +59,6 @@ def Hz(id, ax=None,save=False,inset=True):
             kde=gaussian_kde(H_of_zbest)
             iax.plot(prior,kde(prior))
             iax.axvline(H_of_zbest_true,color='k',label="True value")
-            iax.set_ylabel('posterior density')
             iax.tick_params(left=False,labelleft=False)
 
         if save:
@@ -82,20 +83,23 @@ def H0_Om_corner(id):
     az.plot_pair(id,var_names=['H0','Om0'],marginals=True,kind='kde', ax=axsLeft,
                  kde_kwargs={'plot_kwargs':{'color':'b'},'contourf_kwargs':{'cmap':'Blues'}},
                  reference_values={'Om0':OM0_FID,'H0':H0_FID},
-                 reference_values_kwargs={'marker':'+','color':'k','ms':20,'mew':5})
+                 reference_values_kwargs={'marker':'+','color':'k','ms':10,'mew':2})
     # un-rotate Om0 plot
     axsLeft[1,1].cla()
+    axsLeft[0,0].tick_params(bottom=False,labelbottom=False)
     az.plot_dist(samples['Om0'][0],ax=axsLeft[1,1])
     axsLeft[1,1].set_xlabel("$\Omega_m$")
+    axsLeft[1,1].set_xticks([0,0.5,1])
+    axsLeft[1,0].set_xticks([50,75,100])
     # label axes
     axsLeft[1,0].set_xlabel("$H_0$ [km/s/Mpc]")
     axsLeft[1,0].set_ylabel("$\Omega_m$")
-    axsLeft[1,0].plot([],[],**{'marker':'+','color':'k','ms':15,'mew':3,'lw':0},label='injected value')
-    axsLeft[1,0].legend(framealpha=0)
+    axsLeft[1,0].plot([],[],**{'marker':'+','color':'k','ms':10,'mew':2,'lw':0},label='injected value')
+    axsLeft[1,0].legend(framealpha=0,handletextpad=0.1)
     
     axsRight=subfigs[1].subplots(1,1)
     Hz(id,ax=axsRight,save=False)
     fig.savefig(paths.figures / "O5_GP_corner.pdf")
 
-id = az.InferenceData.from_netcdf(paths.data / "logm_gwmc_O5_errs_fit_Om0_samples_interpolant.nc4")
+id = az.InferenceData.from_netcdf(paths.data / "mcmc_nonparametric_fit_Om0.nc4")
 H0_Om_corner(id)

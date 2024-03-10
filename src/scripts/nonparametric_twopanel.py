@@ -49,12 +49,12 @@ def two_panel(path, hyperparam='H0'):
     axes[1].plot(prior,kde(prior))
     axes[1].set_xlabel(hyperparam)
     if hyperparam == 'H0':
-        axes[1].axvline(H0_FID,color='k',ls='--',label="True value")
+        axes[1].axvline(H0_FID,color='k',label="True value")
         axes[1].set_xlabel('$H_0$ [km/s/Mpc]')
-        axes[1].legend(framealpha=0)
+        # axes[1].legend(framealpha=0, loc="upper right")
     axes[1].set_ylabel('posterior density')
     plt.tight_layout()
     fig.savefig(paths.figures / "O5_GP_pm.pdf")
     plt.clf()
 
-two_panel(paths.data / "logm_gwmc_O5_errs_oldPEprior_516_samples_interpolant.nc4")
+two_panel(paths.data / "mcmc_nonparametric.nc4")
