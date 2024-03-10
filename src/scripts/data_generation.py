@@ -89,11 +89,32 @@ if  __name__ == "__main__":
     np.save(paths.data / "gw_data/log_pinj_det.npy",log_pinj_det)
     
     ## find events and generate mock PE
-    m1z_PE, _, dL_PE, log_PE_prior = gen_snr_scaled_PE(np_rng,m1s_true,m1s_true,dL_true/1000,osnr_interp,
-                                                       reference_distance,N_SAMPLES_PER_EVENT,H0_FID,OM0_FID,
-                                                       return_og=False)
+    m1z_PE, m2z_PE, dL_PE, log_PE_prior = gen_snr_scaled_PE(np_rng,m1s_true,m1s_true,dL_true/1000,osnr_interp,
+                                                            reference_distance,N_SAMPLES_PER_EVENT,H0_FID,OM0_FID,
+                                                            # errors taken from Jose's "gwutils.py" for O5
+                                                            mc_sigma=3.0e-2,eta_sigma=5.0e-3,theta_sigma=5.0e-2, 
+                                                            return_og=False)
 
     dL_PE *= 1000 # unit matching
+
+    # cut out samples below SNR interpolation range. 
+    # It is very unlikely that any samples are down there, but we do this just in case.
+    # this does not change the prior shape, only the normalization
+    n_samps = np.inf
+    for i in range(len(m1z_PE)): # for each event
+        m1z_PE[i], m2z_PE[i], dL_PE[i], log_PE_prior[i] = m1z_PE[i,m2z_PE[i]>0.05], \
+            m2z_PE[i,m2z_PE[i]>0.05], dL_PE[i,m2z_PE[i]>0.05], log_PE_prior[i,m2z_PE[i]>0.05]
+        if len(m1z_PE[i]) < n_samps:
+            n_samps = len(m1z_PE[i])
+    print(n_samps)
+    print(np.mean(np.diff(np.sort(np.log(m1z_PE).mean(axis=1)))))
+    # make all events have the same # of samples
+    if n_samps < N_SAMPLES_PER_EVENT:
+        for i in range(len(m1z_PE)):
+            m1z_PE[i], m2z_PE[i], dL_PE[i], log_PE_prior[i] = m1z_PE[i,:n_samps], \
+                m2z_PE[i,:n_samps], dL_PE[i,:n_samps], log_PE_prior[i,:n_samps]
+        N_SAMPLES_PER_EVENT = n_samps
+    
     np.save(paths.data / "gw_data/m1z_PE.npy",m1z_PE)
     np.save(paths.data / "gw_data/dL_PE.npy",dL_PE)
     np.save(paths.data / "gw_data/log_PE_prior.npy",log_PE_prior)
