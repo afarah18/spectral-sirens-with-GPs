@@ -1,8 +1,5 @@
 # custom
-import jgwcosmo # for inference
-import jgwpop
 import paths
-Clight = jgwcosmo.Clight
 from priors import hyper_prior, get_ell_frechet_params, get_sigma_gamma_params
 
 # inference

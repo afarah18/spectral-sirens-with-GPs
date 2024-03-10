@@ -1,7 +1,7 @@
 # custom
 import paths
 from nonparametric_inference import NSAMPS, remove_low_Neff
-from priors import get_ell_frechet_params, get_sigma_gamma_params, hyperprior
+from priors import get_ell_frechet_params, get_sigma_gamma_params, hyper_prior
 
 # inference
 import jax
@@ -34,7 +34,7 @@ if  __name__ == "__main__":
 
     # Inference
     nuts_settings = dict(target_accept_prob=0.9, max_tree_depth=10,dense_mass=False)
-    nuts_kernel = numpyro.infer.NUTS(hyperprior,**nuts_settings)
+    nuts_kernel = numpyro.infer.NUTS(hyper_prior,**nuts_settings)
     kwargs = dict(m1det=m1z_PE,dL=dL_PE, m1det_inj=m1zinj_det,dL_inj=dLinj_det,
                     log_pinj=log_pinj_det, log_PE_prior=log_PE_prior,
                     remove_low_Neff=remove_low_Neff,fit_Om0=True)
