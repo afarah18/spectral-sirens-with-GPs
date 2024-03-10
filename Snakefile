@@ -17,7 +17,7 @@ rule numevs:
 rule h0fid:
     output:
         "src/tex/output/H0_FID.txt"
-input:
+    input:
         "src/data/optimal_snr_aplus_design_O5.h5"
     script:
         "src/scripts/data_generation.py"
