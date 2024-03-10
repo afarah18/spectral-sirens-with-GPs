@@ -11,16 +11,16 @@ rule numevs:
     output:
         "src/tex/output/num_found_events.txt"
     input:
-        "src/data/optimal_snr_aplus_design_O5.h5"
+        "src/data/gw_data"
     script:
-        "src/scripts/data_generation.py"
+        "src/scripts/data_numbers.py"
 rule h0fid:
     output:
         "src/tex/output/H0_FID.txt"
-input:
-        "src/data/optimal_snr_aplus_design_O5.h5"
+    input:
+        "src/data/gw_data"
     script:
-        "src/scripts/data_generation.py"
+        "src/scripts/data_numbers.py"
 
 rule nonparinference:
     output:

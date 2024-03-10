@@ -33,8 +33,8 @@ datasets:
 dependencies:
   src/scripts/data_generation.py:
     - src/data/optimal_snr_aplus_design_O5.h5
-  # src/scripts/data_numbers.py:
-  #   - src/data/gw_data/
+  src/scripts/data_numbers.py:
+    - src/data/gw_data/
   src/scripts/nonparametric_inference.py:
     - src/data/gw_data/
   src/scripts/parametric_inference.py:

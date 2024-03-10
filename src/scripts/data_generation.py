@@ -106,6 +106,8 @@ if  __name__ == "__main__":
             m2z_PE[i,m2z_PE[i]>0.05], dL_PE[i,m2z_PE[i]>0.05], log_PE_prior[i,m2z_PE[i]>0.05]
         if len(m1z_PE[i]) < n_samps:
             n_samps = len(m1z_PE[i])
+    print(n_samps)
+    print(np.mean(np.diff(np.sort(np.log(m1z_PE).mean(axis=1)))))
     # make all events have the same # of samples
     if n_samps < N_SAMPLES_PER_EVENT:
         for i in range(len(m1z_PE)):
@@ -116,7 +118,3 @@ if  __name__ == "__main__":
     np.save(paths.data / "gw_data/m1z_PE.npy",m1z_PE)
     np.save(paths.data / "gw_data/dL_PE.npy",dL_PE)
     np.save(paths.data / "gw_data/log_PE_prior.npy",log_PE_prior)
-    with open(paths.output / "num_found_events.txt", "w") as f:
-        print(len(dL_PE), file=f)
-    with open(paths.output / "H0_FID.txt", "w") as f:
-        print(H0_FID, file=f)
