@@ -30,7 +30,7 @@ SNR_THRESH=8.
 NUM_INJ=N_SOURCES*50
 
 # random number generators
-np_rng = np.random.default_rng(4242)
+np_rng = np.random.default_rng(516)
 
 def true_vals_PLP(rng, n_sources=N_SOURCES):
     m1s_true = inverse_transform_sample(gwpop.powerlaw_peak,[1,400],rng,N=n_sources,
