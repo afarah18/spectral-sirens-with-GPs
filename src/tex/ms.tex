@@ -243,7 +243,7 @@ Additionally, next-generation detectors will be sensitive to sources up to redsh
 This means that future observations of \acp{GW} will be more sensitive $H(z>1)$ than to \Ho, and can therefore constrain several additional cosmological parameters.
 We demonstrate this by repeating the same analysis while also fitting for the local matter density, \Omm.
 The result is shown in Figure~\ref{fig:O5_corner}.
-We find \ac{O5} observations to be most sensitive to \result{$H(z=\variable{output/mostsensitivez.txt})$}, which results in similarly informative constraints on \Omm{} as on \Ho.
+We find \ac{O5} observations to be most sensitive to \result{$H(z=X)$}, which results in similarly informative constraints on \Omm{} as on \Ho.
 \begin{itemize}
     \item There is a strong degeneracy in these two cosmological parameters, caused by the sensitivity at z=1
     \item explain why - balance between slope and intercept.
@@ -296,7 +296,7 @@ However, the true population of compact objects in the Universe is unknown, so i
 With current detectors, these systematic effects are dwarfed by statistical uncertainties.
 However, next-generation detectors will herald in enough \ac{GW} observations to substantially decrease statistical uncertainty in these measurements: \citet{pierra_study_2023} show that incorrect assumptions about the shape of the mass distribution can lead to \result{$\sim3\sigma$} systematic biases in \Ho when catalogs contain 2,000 events.
 Thus, the additional statistical uncertainty introduced by non-parametric approaches may be preferable to the systematic errors associated with choosing a parametric model.
-    \item additionally, in \ac{O5} we will be most sensitive to $z=\variable{output/mostsensitivez.txt}$. This is larger than we expect to see EM counterparts to, and larger than we expect galaxy surveys to be complete to (is this true?) so upgrades to current facilities will allow spectral sirens to probe H(z) to relatively unexplored redshifts. This is not unique to our nonparametric method, but to spectral sirens in general.
+    \item additionally, in \ac{O5} we will be most sensitive to \result{$z=X$}. This is larger than we expect to see EM counterparts to, and larger than we expect galaxy surveys to be complete to (is this true?) so upgrades to current facilities will allow spectral sirens to probe H(z) to relatively unexplored redshifts. This is not unique to our nonparametric method, but to spectral sirens in general.
     \item future/in prep. work will do the same thing but for a mass distribution that is allowed to evolve with redshift, similarly to the parametric analysis done in~\cite{ezquiaga_spectral_2022}, but with the evolution with redshift allowed to be arbitrary so long as it does not mimic cosmology. Because of ~\citet{ezquiaga_spectral_2022}, we think we could get a useful measurement if we include evolving peak shapes/positions in the mass distribution, provided there are multiple features present (which we know there are) and that they do not evolve in the same exact way as cosmology would - i.e. all features do not monotonically move to higher source frame mass with increasing redshift, all at the same rate. That scenario would be astrophysically unlikely, especially since the processes changing the features are all distinct from one another.
     \item GPs are good bc they can do correlations/generalize to multiple dimensions naturally. Our choice of kernel allows us to do this, but its not possible with the autoregressive kernel.
     \item in XG we will get most bang for our buck with spectral sirens
@@ -333,8 +333,7 @@ We neglect spins entirely, as they do not carry cosmological information.
 \jme{[For \ac{O5} BNSs will be subdominant. I would focus on \acp{BBH} for simplicity]}
 \comment{[Ok, so we should say that although a putuative lower mass gap would give and additional feature, it is not expected to be constrained well in O5, so we focus on the \ac{BBH} spectrum for now. In XG, though, it will be important to consider the full spectrum \citep{ezquiaga_spectral_2022}.]}
 
-After passing the simulated events through projected detector selection effects, the resulting catalog has \variable{output/num_found_events.txt}events, %including \result{X} binary neutron star systems, \result{Y} NSBH systems, and \result{Z} \ac{BBH} systems, 
-consistent with the numbers projected for \ac{O5} by \citet{kiendrebogo_observing_2023}.
+After passing the simulated events through projected detector selection effects, the resulting catalog has \variable{output/num_found_events.txt}events, including \result{X} binary neutron star systems, \result{Y} NSBH systems, and \result{Z} \ac{BBH} systems, consistent with the numbers projected for \ac{O5} by \citet{kiendrebogo_observing_2023}.
 We use the software package \texttt{GWMockCat} \citep{farah_things_2023} to simulate posterior samples for these events with measurement uncertainties typical of those expected from \ac{O5} detectors.
 \texttt{GWMockCat} also simulates a set of software injections, which we use to estimate selection effects in the inference.
 To determine the detectability of both injections and simulated events in O5, we use the projected \ac{O5} LIGO power spectral density \citep{dccpage} to calculate observed signal-to-noise ratios $\rho_{\text{obs}}$, and we consider events and injections with $\rho_{\text{obs}}>8$ to be detectable. 
