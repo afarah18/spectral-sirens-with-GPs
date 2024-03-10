@@ -3,12 +3,13 @@ import numpy as np
 import arviz as az
 from scipy.stats import gaussian_kde
 
-from data_generation import H0_FID, OM0_FID
-from nonparametric_inference_fitOm0 import TEST_Z, NSAMPS
+from data_generation import H0_FID, OM0_FID, ZMIN, ZMAX
+from nonparametric_inference_fitOm0 import NSAMPS
 from gwcosmo import E_of_z
 
 import paths
 plt.style.use(paths.scripts / "matplotlibrc")
+TEST_Z = np.linspace(ZMIN,ZMAX,num=100)
 
 def calc_Hz(z,H0,Om0):
     E = E_of_z(z=z,Om0=Om0)
