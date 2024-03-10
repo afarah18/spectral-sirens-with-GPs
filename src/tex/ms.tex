@@ -58,7 +58,7 @@ However, the use of an incorrect mass model inevitably leads to biases in the co
 Furthermore, it is commonly presumed that the exact shape of the mass distribution must be known \emph{a priori} to obtain unbiased measurements of cosmological parameters with the spectral siren methodology.
 We demonstrate that unbiased inference of cosmological parameters is possible without any assumptions for the mass distribution's morphology.
 We do this by constructing a flexible, Gaussian-process based model for \ac{GW} source population to analyze simulated \ac{GW} data consistent with expectations for the next \acl{LVK} observing run.
-We find that both the source mass model and cosmological parameters are correctly reconstructed, and predict a \variable{output/nonparh0percent.txt}\% measurement.
+We find that both the source mass model and cosmological parameters are correctly reconstructed, and predict a $\variable{output/nonparh0percent.txt}\%$ measurement of \Ho{} and a \result{X\%} measurement of $H(z=\variable{output/mostsensitivez.txt})$.
 This astrophysics-agnostic spectral siren technique will be key to deliver precise and unbiased cosmological constraints with future observations in the presence of possible redshift evolution of the mass spectrum.  
 \end{abstract}
 
@@ -135,7 +135,7 @@ We infer the posterior in Equation~\ref{eq:inhomog-poisson} using the no-u-turn 
 We only consider masses and redshifts, neglecting spins as they do not contain cosmological information.
 Thus, $\theta = \{m_1,m_2,z\}$.
 We assume a uniform-in-comoving volume redshift distribution, as in Equation~\ref{eq:underlying redshift dist}.
-We assume $m_1=m_2$ and model the distribution of primary masses using a Gaussian process (described in Section~\ref{sec:model}).
+We assume $m_1=m_2$ and model the distribution of primary masses using a \acl{Gaussian process} (described in Section~\ref{sec:model}).
 
 The spectral siren method of measuring cosmological parameters relies on the assumption that all compact binaries follow the same mass distribution at all redshifts\footnote{This assumption does not strictly have to hold, as \citet{ezquiaga_spectral_2022} show that the source frame masses can follow different distributions at different redshifts, so long as this redshift evolution of the mass distribution does not exactly mimic cosmology (i.e. all features cannot exhibit a monotonic rightward shift with redshift). However, for the redshift range considered in this work, we assume the mass distribution does not evolve at all with redshift.}.
 The likelihood in Equation~\ref{eq:inhomog-poisson} is therefore maximized when the relationship between redshift and luminosity distance makes all source frame masses follow the same distribution.
@@ -162,7 +162,7 @@ With the GP approach, the hyper-parameters describing the mass distribution are 
 We therefore have $N_{\text{evs}}M + N_{\text{inj}}$ mass hyper-parameters, where $N_{\text{ev}}$ is the number of events, $M$ is the number of posterior samples per event, and $N_{\text{inj}}$ is the number of injections used to calculate the selection function $\xi$.
 We label these $\{\mathcal{R}_{ij},\mathcal{R}_k\}$, and our full set of hyper-parameters is $\Lambda=\{H_0, \Omega_M, \mathcal{R}_{ij},\mathcal{R}_k\}$. 
 In this way, our GP-based mass distribution is similar to the autoregressive population models used in ~\citet{callister_parameter-free_2023}.
-Indeed, an autoregressive model is a Gaussian process with a particular choice of kernel.
+Indeed, an autoregressive model is a \ac{GP} with a particular choice of kernel.
 
 A kernel is a function that defines the covariance between input points in the GP (in our case, two source frame mass values). 
 It defines the notion of similarity between adjacent points and thereby encodes our assumptions about the smoothness of the source frame mass distribution \citep{rasmussen_gaussian_2006}.
@@ -198,52 +198,60 @@ Algorithmically, each hyper-likelihood evaluation contains the following steps:
 \subsection{Option 1: include parametric models}
 In this Section, we first show that fitting an incorrect functional form to the mass distribution of \acp{CBC} biases the inference of cosmological parameters when using the spectral siren methodology.
 We then demonstrate that our flexible model alleviates this bias without the need to know the mass distribution's morphology \emph{a priori}.
-To illustrate this, we generate a catalog of \variable{output/num_found_events.txt}GW events from an underlying mass distribution described by the \plp{} model, with hyperparameters consistent with those found in \citet{o3b_pop}.
-This simulated catalog is designed to be representative of the  \ac{GW}  transient catalog after \ac{O5}.
+To illustrate this, we generate a catalog of $\variable{output/num_found_events.txt}$ \ac{GW} events from an underlying mass distribution described by the \plp{} model, with hyperparameters consistent with those found in \citet{o3b_pop}.
+This simulated catalog is designed to be representative of the \ac{GW}  transient catalog after \ac{O5}.
 The details of the data simulation are described in Appendix~\ref{ap:data generation}.
 We then use this catalog to infer \Ho{} using three different models for the source-frame mass distribution:
 \begin{enumerate}
-    \item the \plp{} model, which includes the true mass distribution within its hyperprior
+    \item the \plp{} model, which includes the true mass distribution within its hyperprior,
     \item a broken power law, which does not include the true mass distribution within its hyperprior, and 
-    \item the flexible, Gaussian process-based model described in Section~\ref{sec:model}, which can closely approximate the morphology of the true mass distribution, along with several other morphologies.
+    \item the flexible, \ac{GP}-based model described in Section~\ref{sec:model}, which is able to closely approximate the morphology of the true mass distribution, along with many other morphologies.
 \end{enumerate}
 The results of each of these fits are shown in Figure~\ref{fig:O5_GP}. 
 The left panel shows the inferred source frame mass distribution for each of the considered models, and the right panel shows the corresponding posteriors on \Ho{}.
 
-With \variable{output/num_found_events.txt}events, we find that using a parametric model of the same form as the true simulated distribution (\plp) recovers the injected value of \Ho{} within \result{X-$\sigma$}.
+We find that using a parametric model of the same form as the true simulated distribution (\plp) recovers the injected value of \Ho{} within \result{X-$\sigma$}.
 However, when using a model that cannot accurately represent the true shape of the mass distribution, we recover a biased estimate of \Ho: the true value is offset from the mean of the posterior by \result{X}-$\sigma$.
-This bias is not due to the need to know the morphology of the mass distribution \emph{a priori}, as the Gaussian process-based model recovers the correct value of \Ho{} despite making minimal assumptions about the mass distribution.
-The Gaussian process-based model does, however, obtain larger uncertainties on the inferred value of \Ho, as it has many more free parameters. 
-In reality, it is impossible to know the true functional form of the mass distribution, so the additional statistical uncertainty introduced by non-parametric approaches may be desirable over the systematic errors associated with choosing a parametric model.
+This bias is not due to the need to know the morphology of the mass distribution \emph{a priori}, as the \ac{GP}-based model recovers the correct value of \Ho{} despite making minimal assumptions about the mass distribution.
+The \ac{GP}-based model does, however, obtain larger uncertainties on the inferred value of \Ho, as it has many more free parameters. 
+In reality, it is impossible to know the true functional form of the mass distribution, so the additional statistical uncertainty introduced by non-parametric approaches may be desirable over the systematic errors introduced by choosing a parametric model.
 
-We have repeated this analysis with \result{50} separate simulated catalogs, and found that the broken power law model causes us to infer a \result{higher/lower} value of \Ho{} at greater than \result{X}-$\sigma$, \result{Y}\% of the time, whereas the Gaussian process-based model reaches that level of bias only \result{Z}\% of the time, and the \plp{} model reaches the same level of bias \result{A}\% of the time.
+The mass distribution inferred with the \ac{GP}-based model closely resembles the true, simulated distribution.%, and the injected value of \Ho{} ($\variable{output/H0_FID.txt}\Hunits$) is consistent with its inferred posterior ($\variable{output/nonparh0CI.txt}\Hunits$).
+At very high and very low masses, there is both a lack of data and little detector sensitivity.
+The mass distribution is therefore uninformed in this region and the \ac{GP} reverts to its prior distribution, which resembles random scatter around the mean differential merger rate.
+Similar effects can be seen in other non-parametric methods \citep{edelman_cover_2023, callister_parameter-free_2023}.
+On the other hand, the lack of data just below the minimum \ac{BH} mass and just above the maximum \ac{BH} mass, combined with the fact that \ac{GW} detectors are sensitive to objects in that mass range causes the \ac{GP} to learn a relatively low merger rate at the edges of the mass distribution.
+Indeed, these features are very informative to the \Ho{} constraint \citep{the_ligo_scientific_collaboration_constraints_2021}.
+The combination of these two effects results in what appears as an uptick in the merger rate at very low and very high masses, but these features are uninformative and do not affect inference on cosmological parameters.
+Additionally, the posterior on \Ho{} is distinct from its prior distribution (uniform in the range $[30\Hunits,60\Hunits]$, indicating that the data is informative despite the flexibility of the population model.
+
+We have repeated this analysis with \result{50} separate simulated catalogs, and found that the broken power law model produces an \result{overestimate} of \Ho{} at greater than \result{X}-$\sigma$, \result{Y}\% of the time, whereas the \ac{GP}-based model reaches that level of bias only \result{Z}\% of the time, and the \plp{} model reaches the same level of bias \result{A}\% of the time.
 This indicates that prior knowledge of the shape of the mass distribution is not required to perform a spectral siren measurement, so long as strong assumptions about the shape of the mass distribution are not made.
 
-\jme{[I think it would be relevant to compare the forecast of the non-parametric and the right parametric model. Do we loose constrianing power by being flexible (probably)? how much?]} \comment{[I have now included this in the discussion.]}
-
 \subsection{Option 2: GP only}
-We fit the non-parametric population model described in Section~\ref{sec:model} to a simulated \ac{GW} catalog of \variable{output/num_found_events.txt}GW events from an underlying mass distribution described by the \plp{} model, with hyperparameters consistent with those found in \citet{o3b_pop}.
-This simulated catalog is designed to be representative of the  \ac{GW}  transient catalog after \ac{O5}.
+We fit the non-parametric population model described in Section~\ref{sec:model} to a simulated \ac{GW} catalog of $\variable{output/num_found_events.txt}$ \ac{GW} events from an underlying mass distribution described by the \plp{} model, with hyperparameters consistent with those found in \citet{o3b_pop}.
+This simulated catalog is designed to be representative of the \ac{GW}  transient catalog after \ac{O5}.
 The details of the data simulation are described in Appendix~\ref{ap:data generation}.
 
 The resulting inferred mass distribution is shown in Figure~\ref{fig:O5_GP}, along with the corresponding posterior on \Ho.
-The inferred mass distribution closely resembles the true, simulated distribution, and the injected value of \Ho (\variable{output/H0_FID.txt} km/s/Mpc) is consistent with its inferred posterior (\variable{output/nonparh0CI.txt} \,km/s/Mpc).
+The inferred mass distribution closely resembles the true, simulated distribution, and the injected value of \Ho{} ($\variable{output/H0_FID.txt}\Hunits$) is consistent with its inferred posterior ($\variable{output/nonparh0CI.txt}\Hunits$).
 At very high and very low masses, there is both a lack of data and little detector sensitivity.
-The mass distribution is therefore uninformed in this region and the GP reverts to its prior, which resembles random scatter around a central value.
+The mass distribution is therefore uninformed in this region and the \ac{GP} reverts to its prior distribution, which resembles random scatter around the mean differential merger rate.
 Similar effects can be seen in other non-parametric methods \citep{edelman_cover_2023, callister_parameter-free_2023}.
-On the other hand, the lack of data just below the minimum BH mass and just above the maximum BH mass, combined with the fact that \ac{GW} detectors are sensitive to objects in that mass range causes the GP to learn a relatively low merger rate at the edges of the mass distribution.
+On the other hand, the lack of data just below the minimum \ac{BH} mass and just above the maximum \ac{BH} mass, combined with the fact that \ac{GW} detectors are sensitive to objects in that mass range causes the GP to learn a relatively low merger rate at the edges of the mass distribution.
 Indeed, these features are very informative to the \Ho{} constraint \citep{the_ligo_scientific_collaboration_constraints_2021}.
 The combination of these two effects results in what appears as an uptick in the merger rate at very low and very high masses, but these features are uninformative and do not affect inference on cosmological parameters.
-Additionally, the posterior on \Ho{} is distinct from its prior distribution, indicating that the data is informative despite the flexibility of the population model.
+Additionally, the posterior on \Ho{} is distinct from its prior distribution (uniform in the range $[30\Hunits,60\Hunits]$, indicating that the data is informative despite the flexibility of the population model.
 
 \subsection{Projections for Future Measurements}
-This result implies that we can expect to measure \Ho{} to \variable{output/nonparh0percent.txt}\% by the end of \ac{O5} using the method presented in this work.
+The fit shown in Figure~\ref{fig:O5_GP} implies that we can expect to measure \Ho{} to \variable{output/nonparh0percent.txt}\% by the end of \ac{O5} using the \ac{GP}-based spectral siren method.
 However, by the time of \ac{O5}, the \ac{GW} detector network is projected to detect \acp{BBH} up to redshift $\sim 3$, with most sources lying near redshift $\sim 1.2$ \citep{chen_distance_2021}.
 Additionally, next-generation detectors will be sensitive to sources up to redshift $\sim 40$.
-This means that future observations of \acp{GW} will be more sensitive $H(z>1)$ than to \Ho, and can therefore constrain several additional cosmological parameters.
+This means that future \acp{GW} observations will be more sensitive $H(z\gtrsim1)$ than to \Ho, and can therefore constrain several additional cosmological parameters.
 We demonstrate this by repeating the same analysis while also fitting for the local matter density, \Omm.
 The result is shown in Figure~\ref{fig:O5_corner}.
-We find \ac{O5} observations to be most sensitive to \result{$H(z=\variable{output/mostsensitivez.txt})$}, which results in similarly informative constraints on \Omm{} as on \Ho.
+We find \ac{O5} observations to be most sensitive to \result{$H(z=\variable{output/mostsensitivez.txt})$}, which results in similarly informative constraints on \Omm{} and \Ho.
+The left panel of Figure~\ref{fig:O5_corner} demonstrates a strong degeneracy between the measurement of \Omm{} and \Ho, which can be explained by the 
 \begin{itemize}
     \item There is a strong degeneracy in these two cosmological parameters, caused by the sensitivity at z=1
     \item explain why - balance between slope and intercept.
@@ -260,8 +268,12 @@ This illustrates the unique ability of \acp{GW} to probe the high-redshift unive
 \begin{figure}
     \centering
     \includegraphics[width=\textwidth]{figures/O5_GP_pm.pdf}
-    \caption{Two-panel figure of mass distribution and \Ho{} posterior. 
-    Include prior on \Ho{} as alpha=0.5 line.}
+    \caption{Spectral siren measurement of \ac{O5}-like catalog with the ``correct'' parametric model (\plp, green), an ``incorrect'' parametric model (broken power law, orange) and the non-parametric model presented in this work (\acl{Gaussian process}, blue).
+    The left panel shows the recovered source frame primary mass distribution for each model, and the simultaneously-inferred posteriors on \Ho{} are shown in the right panel.
+    The mass distribution and \Ho{} value used to generate the data are shown by a solid black line in each panel. 
+    The ``incorrect'' parametric model fails to recover the true mass distribution and therefore produces a biased estimate of \Ho{}, whereas both the ``correct'' and non-parametric models recover  the mass distribution and \Ho{}.
+    As the true mass distribution is unknown, using a non-parametric model mitigates the systematic uncertainty from mismodeling the \ac{CBC} population, though it does introduce additional statistical uncertainty.
+    }
     \label{fig:O5_GP}
     \script{nonparametric_twopanel.py}
 \end{figure}
@@ -269,7 +281,9 @@ This illustrates the unique ability of \acp{GW} to probe the high-redshift unive
 \begin{figure}
     \centering
     \includegraphics[width=\textwidth]{figures/O5_GP_corner.pdf}
-    \caption{Two-panel figure of (A) \Omm{} and \Ho{} corner plot and (B)$H(z)$ for O5. We can include a posterior of $H(z=z_{\text{best measured}})$ as an inset to the $H(z)$ plot. Explain the inset and comment on $z_{\text{best measured}}$}
+    \caption{
+    
+    Two-panel figure of (A) \Omm{} and \Ho{} corner plot and (B)$H(z)$ for O5. We can include a posterior of $H(z=z_{\text{best measured}})$ as an inset to the $H(z)$ plot. Explain the inset and comment on $z_{\text{best measured}}$}
     \label{fig:O5_corner}
     \script{nonparametric_corner.py}
 \end{figure}
@@ -351,7 +365,7 @@ Old tex that we may end up needing.
          & 
     \end{tabular}
     \caption{Performance of various mass distribution models used for measuring the Hubble constant, \Ho.
-    We consider the correct parametric model, an incorrect parametric model, and the non-parametric, Gaussian process-based model presented in this work.
+    We consider the correct parametric model, an incorrect parametric model, and the non-parametric, \ac{GP}-based model presented in this work.
     Bias is defined as the number of standard deviations between the true injected value of \Ho and the recovered posterior mean. 
     The parametric models yield more precise constraints on \Ho{}, as shown by smaller standard deviations ($\sigma_{H_0}$), but the incorrect parametric model is less accurate than the non-parametric model.
     In reality, it is impossible to know the true functional form of the mass distribution, so the additional statistical uncertainty introduced by non-parametric approaches may be desirable over the systematic errors associated with choosing a parametric model.
