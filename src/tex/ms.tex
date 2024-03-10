@@ -159,7 +159,7 @@ Practically, the only difference in the inference of the population when using a
 In other words, when using parametric models, $\frac{\diff N}{\diff t_{\det} \diff \theta_i} (\theta_i;\Lambda)$ in Equation~\ref{eq:inhomog-poisson} is calculated by evaluating a specific functional form described by a small set of hyper-parameters. 
 With the GP approach, the hyper-parameters describing the mass distribution are the rate at each event-level posterior sample's source frame mass, and the rate at each found injection's source frame mass.
 % The source frame mass is different for each possible value of \Ho{} and \Omm{}, so the hyper-parameters are defined in different locations for each draw from the hyper-posterior.
-We therefore have $N_{\text{evs}}M + N_{\text{inj}}$ mass hyper-parameters, where $N_{\text{ev}}$ is the number of events, $M$ is the number of PE samples per event, and $N_{\text{inj}}$ is the number of injections used to calculate the selection function $\xi$.
+We therefore have $N_{\text{evs}}M + N_{\text{inj}}$ mass hyper-parameters, where $N_{\text{ev}}$ is the number of events, $M$ is the number of posterior samples per event, and $N_{\text{inj}}$ is the number of injections used to calculate the selection function $\xi$.
 We label these $\{\mathcal{R}_{ij},\mathcal{R}_k\}$, and our full set of hyper-parameters is $\Lambda=\{H_0, \Omega_M, \mathcal{R}_{ij},\mathcal{R}_k\}$. 
 In this way, our GP-based mass distribution is similar to the autoregressive population models used in ~\citet{callister_parameter-free_2023}.
 Indeed, an autoregressive model is a Gaussian process with a particular choice of kernel.
