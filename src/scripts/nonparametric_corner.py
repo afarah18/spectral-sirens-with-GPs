@@ -29,11 +29,11 @@ def Hz(id, ax=None,save=False,inset=True):
     for i in range(NSAMPS):
         H_z[i] = calc_Hz(TEST_Z,H0[i],Om0[i])
         ax.plot(TEST_Z,H_z[i],lw=0.2, c="blue",alpha=0.1)
-    ax.plot(TEST_Z, calc_Hz(TEST_Z,H0_FID,OM0_FID),c='k', lw=2,label="injected value")
+    ax.plot(TEST_Z, calc_Hz(TEST_Z,H0_FID,OM0_FID),c='k', lw=2,label="True value")
     ax.set_xlabel("$z$")
     ax.set_ylabel("$H(z)$ [km/s/Mpc]")
-    ax.set_xlim(0,5)
-    ax.set_ylim(0,750)
+    ax.set_xlim(0,3)
+    ax.set_ylim(0,500)
     ax.legend(framealpha=0,loc='lower right')
     
     if inset:
@@ -52,7 +52,7 @@ def Hz(id, ax=None,save=False,inset=True):
         iax.set_xlabel("$H(z=%1.1f)$\n[km/s/Mpc]"%zbest,fontsize=10)
         iax.set_xticks([100,125,150])
         # iax.set_ylabel('posterior density',fontsize=8)
-        
+
         # arrow from the inset to zbest
         # midpoint_x = 1.75/2 + 0.5
         # offset_y= 50

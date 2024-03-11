@@ -1,6 +1,6 @@
 # custom
 import paths
-from nonparametric_inference import NSAMPS, remove_low_Neff
+from nonparametric_inference import remove_low_Neff
 from priors import get_ell_frechet_params, get_sigma_gamma_params, hyper_prior
 
 # inference
@@ -11,7 +11,7 @@ import numpyro
 # data
 import numpy as np
 
-NSAMPS=50
+NSAMPS = 50
 
 jax.config.update("jax_enable_x64", True)
 # random number generators
