@@ -1,13 +1,12 @@
 dependencies:
   - conda-forge::numpy=1.19.2
   - conda-forge::pip=21.0.1
-  - conda-forge::python=3.9
+  - conda-forge::python=3.9.18
   - pip:
       - matplotlib==3.4.3
       - arviz==0.12.1
-      - git+https://git.ligo.org/amanda.farah/mock-PE.git@main
       - jax==0.3.14
-      - jaxlib==0.3.14
+      - jaxlib==0.4.14
       - numpyro==0.10.0  
       - tinygp==0.2.3
       - scipy==1.8.1
