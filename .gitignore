@@ -10,6 +10,9 @@ arxiv.tar.gz
 # Figure output
 src/tex/figures/*
 
+# slurm output
+src/outfiles
+
 # Miscellaneous
 __pycache__
 *.synctex.gz
