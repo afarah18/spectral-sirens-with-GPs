@@ -113,6 +113,7 @@ def get_sigma_gamma_params(U,alpha=0.05):
 
 # HYPER PRIOR / POPULATION MODEL
 def hyper_prior(m1det,dL,m1det_inj,dL_inj,log_pinj,log_PE_prior=0.,remove_low_Neff=False,fit_Om0=False):
+    """ Non-parametric population inference """
     mean = numpyro.sample("mean",dist.Normal(0,3))
     sigma = numpyro.deterministic("sigma",2.)
     rho = numpyro.deterministic("rho",3.)
@@ -173,6 +174,13 @@ def hyper_prior(m1det,dL,m1det_inj,dL_inj,log_pinj,log_PE_prior=0.,remove_low_Ne
 
     if remove_low_Neff:
         numpyro.factor("Neff_inj_penalty",jnp.log(1./(1.+(Neff/(4.*len(single_event_logL)))**(-30.))))
+
+def PLP(m1det,dL,m1det_inj,dL_inj,log_pinj,log_PE_prior=0.,remove_low_Neff=False,fit_Om0=False):
+    """Correct parametric population inference"""
+    pass
+def BPL(m1det,dL,m1det_inj,dL_inj,log_pinj,log_PE_prior=0.,remove_low_Neff=False,fit_Om0=False):
+    """Incorrect parametric population inference"""
+    pass
 
 if  __name__ == "__main__":
     # some tests
