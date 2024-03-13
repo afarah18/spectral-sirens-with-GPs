@@ -58,7 +58,7 @@ However, the use of an incorrect mass model inevitably leads to biases in the co
 Furthermore, it is commonly presumed that the exact shape of the mass distribution must be known \emph{a priori} to obtain unbiased measurements of cosmological parameters with the spectral siren methodology.
 We demonstrate that prior knowledge of the \ac{GW} source mass distribution is not necessary in order to accurately infer cosmological parameters with spectral sirens.
 We do this by constructing a flexible, Gaussian process-based model for the \ac{GW} source population to analyze simulated \ac{GW} data consistent with expectations for the next \acl{LVK} observing run.
-We find that both the source mass model and cosmological parameters are correctly reconstructed, and predict a $\variable{output/nonparh0percent.txt}\%$ measurement of \Ho{} and a $\variable{output/Hzpercent.txt}\%$  measurement of $H(z=\variable{output/mostsensitivez.txt})$ ($1\sigma$ uncertainties).
+We find that both the source mass model and cosmological parameters are correctly reconstructed, and predict a $\variable{output/nonparh0percent.txt}\%$ measurement of \Ho{} and a $\variable{output/Hz_percent.txt}\%$  measurement of $H(z=\variable{output/mostsensitivez.txt})$ ($1\sigma$ uncertainties).
 This astrophysics-agnostic spectral siren technique will be key to deliver precise and unbiased cosmological constraints with future observations and in the presence of redshift evolution of the mass spectrum.  
 \end{abstract}
 
@@ -224,7 +224,7 @@ We then demonstrate that our flexible model alleviates this bias without the nee
 To illustrate this, we generate a catalog of $\variable{output/num_found_events.txt}$ \ac{GW} events from an underlying mass distribution described by the \plp{} model, with hyperparameters consistent with those found in \citet{o3b_pop}.
 This simulated catalog is designed to be representative of the \ac{GW}  transient catalog after \ac{O5}.
 The details of the data simulation are described in Appendix~\ref{ap:data generation}.
-We then use this catalog to infer \jme{the Universe }\Ho{} using three different models for the source-frame mass distribution:
+We then use this catalog to infer \Ho{} using three different models for the source-frame mass distribution:
 \begin{enumerate}
     \item the \plp{} model, which includes the true mass distribution within its hyperprior,
     \item a broken power law, which does not include the true mass distribution within its hyperprior, and 
@@ -235,8 +235,8 @@ The left panel shows the inferred source frame mass distribution for each of the
 
 We find that using a parametric model of the same form as the true simulated distribution (\plp) recovers the injected value of \Ho{} within \result{X$\sigma$}.
 However, when using a model that cannot accurately represent the true shape of the mass distribution, we recover a biased estimate of \Ho: the true value is offset from the mean of the posterior by \result{X}$\sigma$.
-We have repeated this analysis with \result{50} separate simulated catalogs of $\sim500$ events, and found that the broken power law model produces an \result{overestimate} of \Ho{} at greater than $1\sigma \variable{BPL_bias.txt}\%$ of the time of the time, whereas %the \ac{GP}-based model reaches that level of bias only \result{Z}\% of the time, and 
-the \plp{} model reaches the same level of bias $\variable{PLP_bias.txt}\%$ of the time.
+We have repeated this analysis with \result{50} separate simulated catalogs of $\sim500$ events, and found that the broken power law model produces an \result{overestimate} of \Ho{} at greater than $1\sigma \variable{output/BPL_bias_percent.txt}\%$ of the time of the time, whereas %the \ac{GP}-based model reaches that level of bias only \result{Z}\% of the time, and 
+the \plp{} model reaches the same level of bias $\variable{output/PLP_bias_percent.txt}\%$ of the time.
 
 This bias is not due to the need to know the morphology of the mass distribution \emph{a priori}, as the \ac{GP}-based model recovers the correct value of \Ho{} despite making minimal assumptions about the mass distribution.
 The \ac{GP}-based model does, however, obtain larger uncertainties on the inferred value of \Ho, as it has many more free parameters. 
