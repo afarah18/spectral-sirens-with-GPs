@@ -50,17 +50,16 @@
 
 % Abstract
 \begin{abstract}
-\Acp{GW} from merging compact objects are the only transient astrophysical sources that encode direct information about their luminosity distances. 
-Paired with their redshifts, a Hubble diagram can be constructed to probe the standard cosmological model.  
-Although individual signals do not have any reference scale from which a redshift can be inferred, an ensemble of events can provide such a scale via their distribution of source masses. 
-This ``spectral siren'' method thus constrains the Universe's expansion rate from \ac{GW} observations alone, without the need for accompanying electromagnetic observations. 
+\Acp{GW} from merging compact objects are the only transient sources that encode direct information about their luminosity distances. 
+Paired with their redshifts, a Hubble diagram can be constructed to probe the Universe's expansion.  
+``Spectral sirens'' use features in the mass distribution of \ac{GW} sources to extract this redshift information without the need for accompanying electromagnetic observations.
 So far, this technique has only been applied with simple parametric representations of the mass distribution. 
-However, the use of an incorrect mass model inevitably leads to biases in the cosmological inference, an acute problem given our current lack of understanding of the true astrophysical model.
+However, the use of an incorrect mass model inevitably leads to biases in the cosmological inference, an acute problem given our current lack of understanding of the true source population.
 Furthermore, it is commonly presumed that the exact shape of the mass distribution must be known \emph{a priori} to obtain unbiased measurements of cosmological parameters with the spectral siren methodology.
-We demonstrate that unbiased inference of cosmological parameters is possible without any assumptions for the mass distribution's morphology.
-We do this by constructing a flexible, Gaussian process-based model for \ac{GW} source population to analyze simulated \ac{GW} data consistent with expectations for the next \acl{LVK} observing run.
-We find that both the source mass model and cosmological parameters are correctly reconstructed, and predict a $\variable{output/nonparh0percent.txt}\%$ measurement of \Ho{} and a $\variable{output/nonparhzpercent.txt}\%$  measurement of $H(z=\variable{output/mostsensitivez.txt})$ ($1-\sigma$).
-This astrophysics-agnostic spectral siren technique will be key to deliver precise and unbiased cosmological constraints with future observations in the presence of possible redshift evolution of the mass spectrum.  
+We demonstrate that prior knowledge of the \ac{GW} source mass distribution is not necessary in order to accurately infer cosmological parameters with spectral sirens.
+We do this by constructing a flexible, Gaussian process-based model for the \ac{GW} source population to analyze simulated \ac{GW} data consistent with expectations for the next \acl{LVK} observing run.
+We find that both the source mass model and cosmological parameters are correctly reconstructed, and predict a $\variable{output/nonparh0percent.txt}\%$ measurement of \Ho{} and a $\variable{output/Hzpercent.txt}\%$  measurement of $H(z=\variable{output/mostsensitivez.txt})$ ($1\sigma$ uncertainties).
+This astrophysics-agnostic spectral siren technique will be key to deliver precise and unbiased cosmological constraints with future observations and in the presence of redshift evolution of the mass spectrum.  
 \end{abstract}
 
 \section{}
@@ -123,7 +122,7 @@ The code used to generate all simulated data, perform the population inference, 
 \label{sec:ss}
 
 To simultaneously infer cosmological parameters and the population of GW sources, we employ a hierarchical Bayesian analysis.
-This allows us to ``undo'' the selection effects of \ac{GW} detectors to obtain a true, or astrophysical, population.
+This allows us to ``undo'' the selection effects of \ac{GW} detectors to obtain a true, or astrophysical, population \jme{and constrain the cosmic expansion history}.
 
 Given \ac{GW} data $\{d\}$ that contains $N_{\text{evs}}$ detected \ac{GW} signals, each with parameters $\theta_i$, the posterior probability of the \ac{GW} sources being drawn from an underlying population and background cosmology described by hyper-parameters $\Lambda$ is \citep{loredo, taylor, mandel}
 \begin{equation}
@@ -131,7 +130,7 @@ Given \ac{GW} data $\{d\}$ that contains $N_{\text{evs}}$ detected \ac{GW} signa
     \label{eq:inhomog-poisson}
 \end{equation}
 Here, $\Lambda$ is the set of population parameters, or hyper-parameters, and $p(\Lambda)$ is the prior on $\Lambda$.
-$\frac{\diff N}{\diff t_{\det} \diff \theta} (\theta;\Lambda)$ is the detector frame merger rate density conditioned on hyper-parameters $\Lambda$, this quantity is also referred to as the population model.
+$\frac{\diff N}{\diff t_{\det} \diff \theta} (\theta;\Lambda)$ is the detector frame merger rate density conditioned on hyper-parameters $\Lambda$, this quantity is also referred to as the population model. 
 Following \citet{callister_parameter-free_2023}, we use a semicolon to explicitly indicate that this is a function of $\Lambda$, not a density over $\Lambda$.
 $N_{\text{exp}}(\Lambda)$ is the expected number of detections given $\Lambda$ and the \ac{GW} detector sensitivity, and is calculated using a Monte Carlo sum over $N_{\text{inj}}$ found signals injected into the data stream \citep[see][for a detailed explanation of this process]{essick}.
 
@@ -144,30 +143,43 @@ Practically, this is done by a Monte Carlo average over each event's posterior s
 Finally, $p(\Lambda)$ is the prior on the population and parameters on the background cosmology, which we discuss in further detail below.
 We infer the posterior in Equation~\ref{eq:inhomog-poisson} using the no-u-turn sampler for Hamiltonian Monte Carlo within \texttt{numpyro} \citep{hoffman_no-u-turn_2011, numpyro}. 
 
-We only consider masses and redshifts, neglecting spins as they do not contain cosmological information.
-Thus, $\theta = \{m_1,m_2,z\}$.
-We assume a uniform-in-comoving volume redshift distribution, as in Equation~\ref{eq:underlying redshift dist}.
-We assume $m_1=m_2$ and model the distribution of primary masses using a \acl{GP} (described in Section~\ref{sec:model}).
+\jme{For our population model we focus on the} %We only consider 
+masses and redshifts, neglecting spins as they do not contain cosmological information.
+Thus, $\theta = \{m_1,m_2,z\}$. 
+\jme{The population can be modeled with different levels of complexity and flexibility. 
+As described in detail in Section~\ref{sec:model}, we model the distribution of primary masses in an agnostic way, using a \acl{GP}. 
+We also compare this non-parametric reconstruction with different parametric models.  
+For simplicity we assume that the population has equal masses, $m_1=m_2$, and that its redshift distribution is uniform-in-comoving volume, as in Equation~\ref{eq:underlying redshift dist}. }
+%We assume a uniform-in-comoving volume redshift distribution, as in Equation~\ref{eq:underlying redshift dist}.
+%We assume $m_1=m_2$ and model the distribution of primary masses using a \acl{GP} (described in Section~\ref{sec:model}).
 
 The spectral siren method of measuring cosmological parameters relies on the assumption that all compact binaries follow the same mass distribution at all redshifts\footnote{This assumption does not strictly have to hold, as \citet{ezquiaga_spectral_2022} show that the source frame masses can follow different distributions at different redshifts, so long as this redshift evolution of the mass distribution does not exactly mimic cosmology (i.e. all features cannot exhibit a monotonic rightward shift with redshift). However, for the redshift range considered in this work, we assume the mass distribution does not evolve at all with redshift.}.
 The likelihood in Equation~\ref{eq:inhomog-poisson} is therefore maximized when the relationship between redshift and luminosity distance makes all source frame masses follow the same distribution.
 This is the basis of the spectral siren method of measuring cosmological parameters; we can simultaneously infer the relationship between redshift and luminosity distance with the parameters of the source frame mass distribution.
-The full set of hyper-parameters therefore includes the cosmological parameters that dictate the $D_L$-$z$ relation: \Ho, \Omm, $\Omega_\Lambda, \Omega_r,$ and $w$.
-In this work, we fix $\Omega_\Lambda=1-\Omega_M, \Omega_r=0$ and $w=1$ and use uniform priors on \Ho{} and \Omm{}.
+The full set of hyper-parameters therefore includes the cosmological parameters that dictate the $D_L$-$z$ relation 
+\jme{such as the local expansion rate \Ho, the present fractional energy density of dark matter \Omm, dark energy $\Omega_Lambda$ and radiation $\Omega_r$, or the equation of state of dark energy $w$.} %: \Ho, \Omm, $\Omega_\Lambda, \Omega_r,$ and $w$.
+In this work, we fix $\Omega_\Lambda=1-\Omega_M, \Omega_r=0$ and \jme{$w=-1$} and use uniform priors on \Ho{} and \Omm{}. 
+\jme{This corresponds to a flat $\Lambda$CDM cosmology.}
 
-Algorithmically, we evaluate the likelihood in Equation~\ref{eq:inhomog-poisson} by drawing \Ho{} and \Omm{} from their prior distributions (contained in $p(\Lambda)$), using them to define a relationship between luminosity distance and redshift, then transforming detector frame masses to source frame masses according to $m_{\det} (1+z(D_L)) = m_{\source}$, evaluating the source-frame mass distribution at these transformed values ($\frac{\diff N}{\diff t_{\det} \diff \theta_i} (\theta_i;\Lambda)$ for events and $N_{\text{exp}}(\Lambda)$ for injections), and then taking the product of these terms to evaluate the expression in Equation~\ref{eq:inhomog-poisson}.
+Algorithmically, we evaluate the likelihood in Equation~\ref{eq:inhomog-poisson} by drawing \Ho{} and \Omm{} from their prior distributions (contained in $p(\Lambda)$), using them to define a relationship between luminosity distance and redshift, then transforming detector frame masses to source frame masses according to \jme{$m_{\det} /(1+z(D_L)) = m_{\source}$}, evaluating the source-frame mass distribution at these transformed values ($\frac{\diff N}{\diff t_{\det} \diff \theta_i} (\theta_i;\Lambda)$ for events and $N_{\text{exp}}(\Lambda)$ for injections), and then taking the product of these terms to evaluate the expression in Equation~\ref{eq:inhomog-poisson}.
 The full process is outlined in Section~\ref{sec:model}.
 
 \section{Methods II: Gaussian process-based mass distribution}
 \label{sec:model}
-\Acfp{GP} are random processes for which any linear combination of outcomes are Gaussian distributed \citep{rasmussen_gaussian_2006}.
+
+\jme{Our goal is to model the population of \ac{GW} in an agnostic way. 
+We choose to do it with a \Acfp{GP}. 
+\ac{GP}} 
+%\Acfp{GP} 
+are random processes for which any linear combination of outcomes are Gaussian distributed \citep{rasmussen_gaussian_2006}.
 Their smoothness properties make them widely useful in \ac{GW} data analysis and beyond for regression problems, such as modeling time-domain waveforms \citep{doctor_statistical_2017, huerta_eccentric_2018} and the neutron star equation of state \citep{landry_nonparametric_2019}, density estimation problems, such as estimating posterior densities of single-event parameters from parameter estimation samples ~\citep{demilio_density_2021}, and as a prior on histogram bin heights for population inference \citep{mandel_model-independent_2017, li_flexible_2021, ray_non-parametric_2023}.
-Our use case is slightly different.
+
+%added a break here
+Our use case is slightly different \jme{to previous analyses}.
 We will utilize a \ac{GP} as a prior on the functions that describe the primary mass distribution of \acp{CBC}.
 It will therefore replace $p(\Lambda)$ in Equation~\ref{eq:inhomog-poisson}, except in the case of cosmological parameters, which all have uniform priors.
 This choice adds very little prior information about the shape of the mass distribution, besides enforcing that it must be smooth.
-Practically, the only difference in the inference of the population when using a GP versus other modeling choices is that $\frac{\diff N}{\diff t_{\det} \diff \theta_i} (\theta_i;\Lambda)$ in Equation~\ref{eq:inhomog-poisson} is determined directly by a realization of the \ac{GP}, rather than by a handful of hyper-parameters $\Lambda$ and evaluated on an analytical function.
-
+Practically, the only difference in the inference of the population when using a GP versus other modeling choices is that $\frac{\diff N}{\diff t_{\det} \diff \theta_i} (\theta_i;\Lambda)$ in Equation~\ref{eq:inhomog-poisson} is determined directly by a realization of the \ac{GP}, rather than by a handful of hyper-parameters $\Lambda$ and evaluated on an analytical function. %joined paragraphs here
 In other words, when using parametric models, $\frac{\diff N}{\diff t_{\det} \diff \theta_i} (\theta_i;\Lambda)$ in Equation~\ref{eq:inhomog-poisson} is calculated by evaluating a specific functional form described by a small set of hyper-parameters. 
 With the GP approach, the hyper-parameters describing the mass distribution are the rate at each event-level posterior sample's source frame mass, and the rate at each found injection's source frame mass.
 % The source frame mass is different for each possible value of \Ho{} and \Omm{}, so the hyper-parameters are defined in different locations for each draw from the hyper-posterior.
@@ -207,7 +219,6 @@ Algorithmically, each hyper-likelihood \comment{is that a word?} evaluation cont
 
 \section{Results}
 \label{sec:results}
-
 In this Section, we first show that fitting an incorrect functional form to the mass distribution of \acp{CBC} biases the inference of cosmological parameters when using the spectral siren methodology.
 We then demonstrate that our flexible model alleviates this bias without the need to know the mass distribution's morphology \emph{a priori}.
 To illustrate this, we generate a catalog of $\variable{output/num_found_events.txt}$ \ac{GW} events from an underlying mass distribution described by the \plp{} model, with hyperparameters consistent with those found in \citet{o3b_pop}.
@@ -222,13 +233,16 @@ We then use this catalog to infer \Ho{} using three different models for the sou
 The results of each of these fits are shown in Figure~\ref{fig:O5_GP}. 
 The left panel shows the inferred source frame mass distribution for each of the considered models, and the right panel shows the corresponding posteriors on \Ho{}.
 
-We find that using a parametric model of the same form as the true simulated distribution (\plp) recovers the injected value of \Ho{} within \result{X-$\sigma$}.
-However, when using a model that cannot accurately represent the true shape of the mass distribution, we recover a biased estimate of \Ho: the true value is offset from the mean of the posterior by \result{X}-$\sigma$.
+We find that using a parametric model of the same form as the true simulated distribution (\plp) recovers the injected value of \Ho{} within \result{X$\sigma$}.
+However, when using a model that cannot accurately represent the true shape of the mass distribution, we recover a biased estimate of \Ho: the true value is offset from the mean of the posterior by \result{X}$\sigma$.
+We have repeated this analysis with \result{50} separate simulated catalogs of $\sim500$ events, and found that the broken power law model produces an \result{overestimate} of \Ho{} at greater than $1\sigma \variable{BPL_bias.txt}\%$ of the time of the time, whereas %the \ac{GP}-based model reaches that level of bias only \result{Z}\% of the time, and 
+the \plp{} model reaches the same level of bias $\variable{PLP_bias.txt}\%$ of the time.
+
 This bias is not due to the need to know the morphology of the mass distribution \emph{a priori}, as the \ac{GP}-based model recovers the correct value of \Ho{} despite making minimal assumptions about the mass distribution.
 The \ac{GP}-based model does, however, obtain larger uncertainties on the inferred value of \Ho, as it has many more free parameters. 
 In reality, it is impossible to know the true functional form of the mass distribution, so the additional statistical uncertainty introduced by non-parametric approaches may be desirable over the systematic errors introduced by choosing a parametric model.
 
-The mass distribution inferred with the \ac{GP}-based model closely resembles the true, simulated distribution.%, and the injected value of \Ho{} ($\variable{output/H0_FID.txt}\Hunits$) is consistent with its inferred posterior ($\variable{output/nonparh0CI.txt}\Hunits$).
+Additionally, the mass distribution inferred with the \ac{GP}-based model closely resembles the true, simulated distribution.
 At very high and very low masses, there is both a lack of data and little detector sensitivity.
 The mass distribution is therefore uninformed in this region and the \ac{GP} reverts to its prior distribution, which resembles random scatter around the mean differential merger rate.
 Similar effects can be seen in other non-parametric methods \citep{edelman_cover_2023, callister_parameter-free_2023}.
@@ -237,8 +251,7 @@ Indeed, these features are very informative to the \Ho{} constraint \citep{the_l
 The combination of these two effects results in what appears as an uptick in the merger rate at very low and very high masses, but these features are uninformative and do not affect inference on cosmological parameters.
 Additionally, the posterior on \Ho{} is distinct from its prior distribution (uniform in the range $[30\Hunits,60\Hunits]$, indicating that the data is informative despite the flexibility of the population model.
 
-We have repeated this analysis with \result{50} separate simulated catalogs, and found that the broken power law model produces an \result{overestimate} of \Ho{} at greater than \result{X}-$\sigma$, \result{Y}\% of the time, whereas the \ac{GP}-based model reaches that level of bias only \result{Z}\% of the time, and the \plp{} model reaches the same level of bias \result{A}\% of the time.
-This indicates that prior knowledge of the shape of the mass distribution is not required to perform a spectral siren measurement, so long as strong assumptions about the shape of the mass distribution are not made.
+Collectively, these results indicate that prior knowledge of the shape of the mass distribution is not required to perform a spectral siren measurement, so long as strong assumptions about the shape of the mass distribution are not made.
 
 \begin{figure*}
     \centering

@@ -52,6 +52,8 @@ dependencies:
 
   src/tex/ms.tex:
       - src/tex/output/
+      - src/tex/BPL_bias.txt
+      - src/tex/PLP_bias.txt
     # - src/tex/stylesheet.tex
 
 # Name of the `.tex` manuscript and corresponding `.pdf` article
