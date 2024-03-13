@@ -39,13 +39,17 @@ dependencies:
     - src/data/gw_data/
   src/scripts/parametric_inference.py:
     - src/data/gw_data/
+    src/scripts/bias_study.py:
+    - src/data/gw_data/
   src/scripts/nonparametric_twopanel.py:
     - src/data/mcmc_nonparametric.nc4
+    - src/data/mcmc_parametric_PLP.nc4
+    - src/data/mcmc_parametric_BPL.nc4
   src/scripts/nonparametric_corner.py:
     - src/data/mcmc_nonparametric_fitOm0.nc4
   src/scripts/nonparametric_numbers.py:
     - src/data/mcmc_nonparametric.nc4
-  
+
   src/tex/ms.tex:
       - src/tex/output/
     # - src/tex/stylesheet.tex

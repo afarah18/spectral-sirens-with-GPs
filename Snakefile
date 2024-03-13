@@ -22,6 +22,24 @@ rule h0fid:
     script:
         "src/scripts/data_numbers.py"
 
+rule parinference:
+    output:
+        "src/data/mcmc_parametric*.nc4"
+    cache:
+        True
+    input:
+        "src/data/gw_data"
+    script:
+        "src/scripts/parametric_inference.py"
+rule parbias:
+    output:
+        "src/tex/output/PLP_bias_percent.txt"
+    cache:
+        True
+    input:
+        "src/data/gw_data"
+    script:
+        "src/scripts/bias_study.py"
 rule nonparinference:
     output:
         "src/data/mcmc_nonparametric.nc4"

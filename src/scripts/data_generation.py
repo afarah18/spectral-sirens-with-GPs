@@ -62,6 +62,8 @@ def make_injections(rng, alpha, mmax_inj, mmin_inj, zmax_inj=ZMAX,num_inj=NUM_IN
 
     return m1zinj, dLinj, log_pinj
 
+osnr_interp, reference_distance = interpolate_optimal_snr_grid(
+    fname=paths.data / "optimal_snr_aplus_design_O5.h5")
 
 if  __name__ == "__main__":
     # generate data and save 
@@ -75,8 +77,6 @@ if  __name__ == "__main__":
     m1zinj, dLinj, log_pinj = make_injections(np_rng,alpha=2.,mmax_inj=350., mmin_inj=1.5)
     
     # select injections and data based off of an SNR threshold
-    osnr_interp, reference_distance = interpolate_optimal_snr_grid(
-        fname=paths.data / "optimal_snr_aplus_design_O5.h5")
     ## find injections
     thetas_inj = draw_thetas(len(dLinj),rng=np_rng)
     snr_true_inj = osnr_interp(m1zinj, m1zinj, grid=False)/dLinj * thetas_inj * 1000.
@@ -92,7 +92,7 @@ if  __name__ == "__main__":
     m1z_PE, m2z_PE, dL_PE, log_PE_prior = gen_snr_scaled_PE(np_rng,m1s_true,m1s_true,dL_true/1000,osnr_interp,
                                                             reference_distance,N_SAMPLES_PER_EVENT,H0_FID,OM0_FID,
                                                             # errors taken from Jose's "gwutils.py" for O5
-                                                            mc_sigma=3.0e-2,eta_sigma=5.0e-3,theta_sigma=5.0e-2, 
+                                                            mc_sigma=3.0e-2,eta_sigma=5.0e-3,theta_sigma=5.0e-2, snr_thresh=SNR_THRESH,
                                                             return_og=False)
 
     dL_PE *= 1000 # unit matching
