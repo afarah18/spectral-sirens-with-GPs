@@ -51,10 +51,10 @@ dependencies:
     - src/data/mcmc_nonparametric.nc4
 
   src/tex/ms.tex:
-      - src/tex/output/
-      - src/tex/BPL_bias.txt
-      - src/tex/PLP_bias.txt
-    # - src/tex/stylesheet.tex
+    - src/tex/output/
+    - src/tex/BPL_bias.txt
+    - src/tex/PLP_bias.txt
+  # - src/tex/stylesheet.tex
 
 # Name of the `.tex` manuscript and corresponding `.pdf` article
 ms_name: ms
