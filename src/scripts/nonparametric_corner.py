@@ -43,6 +43,8 @@ def Hz(id, ax=None,save=False,inset=True):
         H_of_zbest = H_z[:,a]
         with open(paths.output / "mostsensitivez.txt", "w") as f:
             print(f"{zbest:.1f}", file=f)
+        with open(paths.output / "Hz_percent.txt", "w") as f:
+            print(f"{H_z.std(axis=0)[a]/H_z.mean(axis=0)[a]*100:.1f}", file=f)
 
         # calculate the truth there
         H_of_zbest_true = calc_Hz(zbest,H0_FID,OM0_FID)            
