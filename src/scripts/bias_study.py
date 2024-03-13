@@ -17,6 +17,7 @@ jax.config.update("jax_enable_x64", True)
 # options
 N_CATALOGS=5
 N_SOURCES = N_SOURCES//4 # cut catalogs in half for this study, for computational feasibility
+plot = True
 
 # random number generators
 jax_rng = jax.random.PRNGKey(42)
@@ -27,6 +28,8 @@ m1zinj_det = np.load(paths.data / "gw_data/m1zinj_det.npy")
 dLinj_det = np.load(paths.data / "gw_data/dLinj_det.npy")
 log_pinj_det = np.load(paths.data / "gw_data/log_pinj_det.npy")
 
+if plot:
+    import matplotlib.pyplot as plt
 bias_PLP = np.zeros(N_CATALOGS)
 bias_BPL = np.zeros(N_CATALOGS)
 for i in trange(N_CATALOGS):
@@ -52,7 +55,8 @@ for i in trange(N_CATALOGS):
     id = az.from_numpyro(mcmc)
     id.to_netcdf(paths.data / f"bias/mcmc_parametric_PLP_{int}.nc4")
     bias_PLP[i] = (id.posterior['H0'][0].mean() - H0_FID)/id.posterior['H0'][0].std()
-
+    if plot:
+        plt.hist(id.posterior['H0'][0],density=True, bins=50,histtype='step',color='green',alpha=0.5,lw=0.5)
     # Inference - broken power law
     nuts_settings = dict(target_accept_prob=0.9, max_tree_depth=10,dense_mass=False)
     nuts_kernel = numpyro.infer.NUTS(BPL,**nuts_settings)
@@ -66,6 +70,8 @@ for i in trange(N_CATALOGS):
     id = az.from_numpyro(mcmc)
     id.to_netcdf(paths.data / f"bias/mcmc_parametric_BPL_{int}.nc4")
     bias_BPL[i] = (id.posterior['H0'][0].mean() - H0_FID)/id.posterior['H0'][0].std()
+    if plot:
+        plt.hist(id.posterior['H0'][0],density=True, bins=50,histtype='step',color='orange',alpha=0.5,lw=0.5)
 
 # calcualte summary statistics and save
 percent_bias_PLP = np.sum(bias_PLP>1)/N_CATALOGS * 100
@@ -75,4 +81,7 @@ with open(paths.output / "PLP_bias_percent.txt", "w") as f:
 with open(paths.output / "BPL_bias_percent.txt", "w") as f:
     print(f"{percent_bias_BPL:.1f}", file=f)
 
-# could also make a plot of all the H0 posteriors on top of each other
+if plot:
+    plt.xlabel("H0")
+    plt.axvline(H0_FID,c='k')
+    plt.savefig(paths.output / "bias.pdf")
