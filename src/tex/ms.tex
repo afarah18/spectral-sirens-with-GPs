@@ -224,7 +224,7 @@ We then demonstrate that our flexible model alleviates this bias without the nee
 To illustrate this, we generate a catalog of $\variable{output/num_found_events.txt}$ \ac{GW} events from an underlying mass distribution described by the \plp{} model, with hyperparameters consistent with those found in \citet{o3b_pop}.
 This simulated catalog is designed to be representative of the \ac{GW}  transient catalog after \ac{O5}.
 The details of the data simulation are described in Appendix~\ref{ap:data generation}.
-We then use this catalog to infer \Ho{} using three different models for the source-frame mass distribution:
+We then use this catalog to infer \jme{the cosmic expansion rate, focusing on \Ho{},} using three different models for the source-frame mass distribution:
 \begin{enumerate}
     \item the \plp{} model, which includes the true mass distribution within its hyperprior,
     \item a broken power law, which does not include the true mass distribution within its hyperprior, and 
@@ -249,7 +249,7 @@ Similar effects can be seen in other non-parametric methods \citep{edelman_cover
 On the other hand, the lack of data just below the minimum black hole mass and just above the maximum black hole mass, combined with the fact that \ac{GW} detectors are sensitive to objects in that mass range causes the \ac{GP} to learn a relatively low merger rate at the edges of the mass distribution.
 Indeed, these features are very informative to the \Ho{} constraint \citep{the_ligo_scientific_collaboration_constraints_2021}.
 The combination of these two effects results in what appears as an uptick in the merger rate at very low and very high masses, but these features are uninformative and do not affect inference on cosmological parameters.
-Additionally, the posterior on \Ho{} is distinct from its prior distribution (uniform in the range $[30\Hunits,60\Hunits]$, indicating that the data is informative despite the flexibility of the population model.
+Additionally, the posterior on \Ho{} is distinct from its prior distribution (uniform in the range $[30\Hunits,60\Hunits]$ \jme{[upper bound cannot be correct :)]}, indicating that the data is informative despite the flexibility of the population model.
 
 Collectively, these results indicate that prior knowledge of the shape of the mass distribution is not required to perform a spectral siren measurement, so long as strong assumptions about the shape of the mass distribution are not made.
 
