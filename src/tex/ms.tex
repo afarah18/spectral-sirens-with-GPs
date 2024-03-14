@@ -233,12 +233,12 @@ We then use this catalog to infer \jme{the cosmic expansion rate, focusing on \H
 The results of each of these fits are shown in Figure~\ref{fig:O5_GP}. 
 The left panel shows the inferred source frame mass distribution for each of the considered models, and the right panel shows the corresponding posteriors on \Ho{}.
 
-We find that using a parametric model of the same form as the true simulated distribution (\plp) recovers the injected value of \Ho{} within $\variable{output/PLPh0offset.txt}\sigma$.
-However, when using a model that cannot accurately represent the true shape of the mass distribution, we recover a biased estimate of \Ho: the true value is offset from the mean of the posterior by $\variable{output/BPLh0offset.txt}\sigma$.
+We find that using a parametric model of the same form as the true simulated distribution (\plp) recovers the injected value of \Ho{} within %$\variable{output/PLPh0offset.txt}\sigma$.
+However, when using a model that cannot accurately represent the true shape of the mass distribution, we recover a biased estimate of \Ho: the true value is offset from the mean of the posterior by %$\variable{output/BPLh0offset.txt}\sigma$.
 We have repeated this analysis with \result{50} separate simulated catalogs of $\sim500$ events, and found that the broken power law model produces an overestimate of \Ho{} at greater than $1\sigma$ $\variable{output/BPL_bias_percent.txt}\%$ of the time of the time, whereas %the \ac{GP}-based model reaches that level of bias only \result{Z}\% of the time, and 
 the \plp{} model reaches the same level of bias $\variable{output/PLP_bias_percent.txt}\%$ of the time.
 
-This bias is not due to the need to know the morphology of the mass distribution \emph{a priori}, as the \ac{GP}-based model recovers the correct value of \Ho{} despite making minimal assumptions about the mass distribution: the true value is recovered at the $\variable{output/nonparh0offset.txt}\sigma$ level.
+This bias is not due to the need to know the morphology of the mass distribution \emph{a priori}, as the \ac{GP}-based model recovers the correct value of \Ho{} despite making minimal assumptions about the mass distribution: the true value is recovered at the %$\variable{output/nonparh0offset.txt}\sigma$ level.
 The \ac{GP}-based model does, however, obtain larger uncertainties on the inferred value of \Ho, as it has many more free parameters. 
 In reality, it is impossible to know the true functional form of the mass distribution, so the additional statistical uncertainty introduced by non-parametric approaches may be desirable over the systematic errors introduced by choosing a parametric model.
 
@@ -330,7 +330,7 @@ We do this by accurately measuring cosmological parameters with a highly flexibl
 The success of the flexible model in recovering an informative and accurate posteriors on \Ho{} and \Omm{} demonstrates that there is no need to know the \ac{CBC} mass distribution's morphology in order to constrain cosmological parameters with it.
 This reinforces the notion that the information in the spectral siren measurement comes from the assumption that all \ac{GW} sources come from the same population, a far less stringent statement than the assumption that we understand the exact astrophysical processes which give rise to that population (i.e. the physics governing compact binary formation and evolution).
     
-We have also predicted a $\variable{output/nonparh0percent.txt}\%$ measurement of \Ho{} by the end of \ac{O5} using non-parametric spectral sirens and a $\variable{output/PLPh0percent.txt}\%$ 
+We have also predicted a $\variable{output/nonparh0percent.txt}\%$ measurement of \Ho{} by the end of \ac{O5} using non-parametric spectral sirens and a% $\variable{output/PLPh0percent.txt}\%$ 
 measurement with parametric spectral sirens, demonstrating a \result{negligible/substantial/marginal} increase in precision when using the correct parametric model.
 However, the true population of compact objects in the Universe is unknown.
 It is therefore impossible to know the true functional form of the mass distribution, so systematic uncertainties arising from an incorrect choice for the form of the mass distribution are inevitable.
