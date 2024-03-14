@@ -50,6 +50,8 @@ if  __name__ == "__main__":
     offset = np.abs(id.posterior['H0'][0].mean()-H0_FID)/id.posterior['H0'][0].std()
     with open(paths.output / "PLPh0offset.txt","w") as f:
         print(f"{offset:.1f}",file=f)
+    with open(paths.output / "PLPh0percent.txt","w") as f:
+        print(f"{np.std(id.posterior['H0'][0])/np.mean(id.posterior['H0'][0])*100:.1f}",file=f)
 
     # Inference - broken power law
     nuts_settings = dict(target_accept_prob=0.9, max_tree_depth=10,dense_mass=False)
