@@ -165,8 +165,7 @@ Practically, this is done by a Monte Carlo average over each event's posterior s
 Finally, $p(\Lambda)$ is the prior on the population and parameters on the background cosmology, which we discuss in further detail below.
 We infer the posterior in Equation~\ref{eq:inhomog-poisson} using the no-u-turn sampler for Hamiltonian Monte Carlo within \texttt{numpyro} \citep{hoffman_no-u-turn_2011, bingham_pyro_2019,phan_composable_2019}. 
 
-\jme{For our population model we focus on the} %We only consider 
-masses and redshifts, neglecting spins as they do not contain cosmological information.
+For our population model, we focus on the masses and redshifts, neglecting spins as they do not contain cosmological information.
 For simplicity, we additionally assume that the population has equal masses, $m_1=m_2$.
 Thus, $\theta = \{m_1,z\}$. 
 The population can be modeled with different levels of complexity and flexibility. 
@@ -177,12 +176,11 @@ For all models considered in this work, we assume a uniform-in-comoving volume r
 The spectral siren method of measuring cosmological parameters relies on the assumption that either all compact binaries follow the same mass distribution at all redshifts, or that any redshift evolution of the mass distribution does  not exactly mimic cosmology (i.e. all features cannot exhibit a monotonic rightward shift with redshift) \citep{ezquiaga_spectral_2022}. For the redshift range considered in this work, we assume the mass distribution has no redshift evolution.
 The likelihood in Equation~\ref{eq:inhomog-poisson} is therefore maximized when the relationship between redshift and luminosity distance makes all source frame masses follow the same distribution.
 This is the basis of the spectral siren method of measuring cosmological parameters; we can simultaneously infer the relationship between redshift and luminosity distance with the parameters of the source frame mass distribution.
-The full set of hyper-parameters therefore includes the cosmological parameters that dictate the $D_L$-$z$ relation 
-\jme{such as the local expansion rate \Ho, the present fractional energy density of dark matter \Omm, dark energy $\Omega_\Lambda$ and radiation $\Omega_r$, or the equation of state of dark energy $w$.} %: \Ho, \Omm, $\Omega_\Lambda, \Omega_r,$ and $w$.
-In this work, we fix $\Omega_\Lambda=1-\Omega_M, \Omega_r=0$ and \jme{$w=-1$} and use uniform priors on \Ho{} and \Omm{}. 
-\jme{This corresponds to a flat $\Lambda$CDM cosmology.}
+The full set of hyper-parameters therefore includes the cosmological parameters that dictate the $D_L$-$z$ relation: the local expansion rate \Ho, the present fractional energy density of dark matter \Omm, dark energy $\Omega_\Lambda$ and radiation $\Omega_r$, and the equation of state of dark energy $w$.
+In this work, we fix $\Omega_\Lambda=1-\Omega_M, \Omega_r=0$ and $w=-1$ and use uniform priors on \Ho{} and \Omm{}. 
+This corresponds to a flat $\Lambda$CDM cosmology.
 
-Algorithmically, we evaluate the likelihood in Equation~\ref{eq:inhomog-poisson} by drawing \Ho{} and \Omm{} from their prior distributions (contained in $p(\Lambda)$), using them to define a relationship between luminosity distance and redshift, then transforming detector frame masses to source frame masses according to \jme{$m_{\det} /(1+z(D_L)) = m_{\source}$}, evaluating the source-frame mass distribution at these transformed values ($\frac{\diff N}{\diff t_{\det} \diff \theta_i} (\theta_i;\Lambda)$ for events and $N_{\text{exp}}(\Lambda)$ for injections), and then taking the product of these terms to evaluate the expression in Equation~\ref{eq:inhomog-poisson}.
+Algorithmically, we evaluate the likelihood in Equation~\ref{eq:inhomog-poisson} by drawing \Ho{} and \Omm{} from their prior distributions (contained in $p(\Lambda)$), using them to define a relationship between luminosity distance and redshift, then transforming detector frame masses to source frame masses according to $m_{\det} /(1+z(D_L,H_0,\Omega_M)) = m_{\source}$, evaluating the source-frame mass distribution at these transformed values ($\frac{\diff N}{\diff t_{\det} \diff \theta_i} (\theta_i;\Lambda)$ for events and $N_{\text{exp}}(\Lambda)$ for injections), and then taking the product of these terms to evaluate the expression in Equation~\ref{eq:inhomog-poisson}.
 The full process is outlined in Section~\ref{sec:model}.
 
 \subsection{\Acl{GP}-based mass distribution}
