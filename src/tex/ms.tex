@@ -220,7 +220,7 @@ First, for each likelihood evaluation, we evaluate a full \ac{GP} on a regular g
 Second, we use the quasi-separability of Mat\'ern kernels to analytically perform the transformation between covariance matrix and \ac{GP} draw.
 This second step is done using the \texttt{QuasisepSolver} module \citep{foreman-mackey_fast_2017} in the \texttt{tinygp} code base \citep{foreman-mackey_tinygp_2021}, and requires data to be sortable (i.e. one-dimensional).
 
-Algorithmically, each likelihood evaluation contains the following steps: \script{priors.py}
+Algorithmically, each likelihood evaluation contains the following steps: \variable{output/priors_placeholder.txt}
 \begin{enumerate}
 \script{nonparametric_inference.py}
     \item Draw cosmological parameters \Ho{} and \Omm{} from uniform prior distributions.
