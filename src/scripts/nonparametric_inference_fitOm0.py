@@ -39,6 +39,7 @@ if  __name__ == "__main__":
     nuts_kernel = numpyro.infer.NUTS(hyper_prior,**nuts_settings)
     kwargs = dict(m1det=m1z_PE,dL=dL_PE, m1det_inj=m1zinj_det,dL_inj=dLinj_det,
                     log_pinj=log_pinj_det, log_PE_prior=log_PE_prior,
+                    PC_params=dict(conc=conc,concentration=concentration,scale=scale,lam_sigma=lam_sigma),
                     remove_low_Neff=remove_low_Neff,fit_Om0=True)
     mcmc = numpyro.infer.MCMC(nuts_kernel,num_warmup=NSAMPS,num_samples=NSAMPS,
                               num_chains=1,progress_bar=True)   
