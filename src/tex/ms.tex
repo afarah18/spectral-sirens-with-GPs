@@ -129,7 +129,7 @@ The code used to generate all simulated data, perform the population inference, 
 
 \begin{figure*}
     \centering
-    \includegraphics[width=\textwidth]{figures/O5_GP_pm.pdf}
+    \includegraphics[width=\textwidth]{figures/O5_pm.pdf}
     \caption{Spectral siren measurement for an \ac{O5}-like catalog with the correct parametric model (\plp, green), a deliberately incorrect parametric model (broken power law, orange) and the non-parametric model presented in this work (\acl{GP}, blue).
     The left panel shows the recovered source frame primary mass distribution for each model, and the simultaneously-inferred posteriors on \Ho{} are shown in the right panel.
     The mass distribution and \Ho{} value used to generate the data are shown by a solid black line in each panel. 
@@ -137,7 +137,7 @@ The code used to generate all simulated data, perform the population inference, 
     As the true mass distribution is unknown for real observations, using a non-parametric model mitigates systematic uncertainty that would otherwise arise from mismodeling the \ac{CBC} population, though it does introduce additional statistical uncertainty.
     }
     \label{fig:O5_GP}
-    \script{nonparametric_twopanel.py}
+    \script{pm_H0_twopanel.py}
 \end{figure*}
 
 \section{Cosmology with an astrophysically-agnostic mass distribution model}
