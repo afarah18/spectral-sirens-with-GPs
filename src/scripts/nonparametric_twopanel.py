@@ -27,9 +27,9 @@ def two_panel(path, path_PLP, path_BPL, hyperparam='H0'):
 
     fig, axes = plt.subplots(ncols=2,figsize=(7.5,4*.75),facecolor='none',gridspec_kw={'width_ratios': [1.2, 1]})
     for i in range(NSAMPS//2):
-        axes[0].plot(TEST_M1S, r[i], lw=0.1, c="blue",alpha=0.05)
-        axes[0].plot(TEST_M1S, r_PLP[i],lw=0.1, c="green",alpha=0.05)
-        axes[0].plot(TEST_M1S, r_BPL[i],lw=0.1, c="orange",alpha=0.05)
+        axes[0].plot(TEST_M1S, r[i], lw=0.1, c="blue",alpha=0.03)
+        axes[0].plot(TEST_M1S, r_PLP[i],lw=0.1, c="green",alpha=0.03)
+        axes[0].plot(TEST_M1S, r_BPL[i],lw=0.1, c="orange",alpha=0.03)
     
     axes[0].plot(TEST_M1S, samples_PLP['rate'].mean(axis=1)*powerlaw_peak(TEST_M1S,alpha=-2.7,f_peak=0.05,mMax=78.0,mMin=10.0,mu_m1=30.0,sig_m1=7.0),
                 c='k')
