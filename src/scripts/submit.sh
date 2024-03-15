@@ -13,4 +13,6 @@ module load cuda/11.5
 echo "loaded cuda"
 module load python/anaconda-2022.05
 echo "loaded anaconda"
-showyourwork build
+source activate jax_gpu
+echo "activated env"
+python /home/afarah/p2/spectral-sirens-with-GPs/src/scripts/nonparametric_inference_fitOm0.py

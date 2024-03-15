@@ -1,6 +1,5 @@
 # Enforce a non-interactive backend
 backend: agg
-# usetex: True
 font.family: serif
 font.size: 12 
 figure.constrained_layout.use: True

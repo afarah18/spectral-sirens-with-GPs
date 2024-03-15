@@ -50,9 +50,10 @@ def Hz(id, ax=None,save=False,inset=True):
         H_of_zbest_true = calc_Hz(zbest,H0_FID,OM0_FID)            
 
         # make the inset
-        iax = ax.inset_axes(bounds=[0.5,450,1.75,250],transform=ax.transData)
-        iax.set_xlabel("$H(z=%1.1f)$\n[km/s/Mpc]"%zbest,fontsize=10)
+        iax = ax.inset_axes(bounds=[0.2,270,1.5,215],transform=ax.transData)
+        iax.set_xlabel("$H(z=%1.1f)$ [km/s/Mpc]"%zbest,fontsize=8)
         iax.set_xticks([100,125,150])
+        iax.set_xticklabels([100,125,150],fontsize=8)
         # iax.set_ylabel('posterior density',fontsize=8)
 
         # arrow from the inset to zbest
