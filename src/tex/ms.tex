@@ -77,7 +77,8 @@ d\section{}
 Like light, \acp{GW} are redshifted as they propagate across the universe, thereby becoming imprinted with the cosmic expansion history.
 Unlike light, however, the form of \ac{GW} signals are known from first principles and their selection effects are extremely well understood.
 This allows for a precise estimate of each \ac{GW} catalogs' completeness and an unbiased measurement of the true \ac{GW} population. 
-Additionally, the fact that \ac{GW} signals provide direct measurements of the distance to their sources makes them ``standard sirens'': powerful probes of cosmological parameters that circumvent the cosmological distance ladder~\citep{schutz_determining_1986,holz_using_2005}. 
+Additionally, the \ac{GW} signals detected by the LIGO \citep{aasi_advanced_2015}, Virgo \citep{acernese_advanced_2014}, and KAGRA \citep{akutsu_overview_2021} detectors provide direct measurements of the distance to their sources.
+This makes them ``standard sirens'': powerful probes of cosmological parameters that circumvent the cosmological distance ladder~\citep{schutz_determining_1986,holz_using_2005}. 
 This is particularly useful in the context of the current ``Hubble tension:'' a disagreement between multiple methods of measuring the local expansion rate of the universe with electromagnetic observations \citep{freedman_measurements_2021}.
 
 A well-known application of standard sirens was the multi-messenger event GW170817 \citep{abbott_multi-messenger_2017}, whose clear association with a host galaxy provided a precise redshift measurement, allowing for a direct measurement of the Hubble constant, \Ho{} \citep{ abbott_gravitational-wave_2017}.
@@ -98,17 +99,13 @@ This would certainly be problematic, as mismodeling of the specific feature woul
 Such systematic bias is illustrated in Figure~\ref{fig:O5_GP}, where we show the result of fitting simulated data with a model that has the true mass distribution contained within its prior and one that does not. 
 The latter does not accurately infer the true value of \Ho{}, whereas the former does.
 
-\comment{below text is WIP}
 This is particularly troubling in light of the fact that there remains much uncertainty over the cause, location, and robustness of currently-identified features in the \ac{GW} source mass distribution.
-While four or more features have been identified in the current data, \citep{viabhav, abbott_population_2023,bruce_aint} only three of these are statistically robust \citep{farah_things_2023}.
-Additionally, the morphology of the mass dist is caused by the interplay of several complex physical processes, such as compact binary evolution, pair instability, globular cluster dynamics, and the metalicity content of massive stars, each of which has large theoretical uncertainties. \citep{many ppl} 
-These large theoretical uncertainties mean that accurate predictions for the shape of the \ac{GW} source mass distribution is not currently possible.
+While several features have been identified in the current data \citep{tiwari_exploring_2022,edelman_aint_2022, abbott_population_2023,edelman_cover_2023}, including three overdensities, two underdensities, a maximum and minimum \ac{BH} mass, only three of these are statistically robust \citep{farah_things_2023}.
+Additionally, the morphology of the mass distribution is a result of the interplay between several complex physical processes pertaining to massive stars, such as binary stellar evolution, pair instability, globular cluster dynamics, and stellar winds, each of which has large theoretical uncertainties \citep[e.g.][]{ zevin_constraining_2017, mapelli_binary_2020,marchant_evolution_2023}. 
+These large theoretical uncertainties mean that accurate predictions for the shape of the \ac{GW} source mass distribution are a considerable challenge.
 If such \emph{a priori} knowledge of the mass distribution's morphology were requisite for a spectral siren method, the effectiveness of such a measurement would be significantly hampered.
-\comment{end WIP}
 
-However, the information in the spectral siren measurement comes solely from the assumption that all \acp{CBC} follow the same mass distribution.\footnote{More precisely, the spectral siren method is also valid if \acp{CBC} have different mass distributions at different redshifts, so long as the evolution of the mass distribution does not exactly mimic cosmology, and the model for the mass distribution allows for evolution \citep{ezquiaga_spectral_2022}. 
-%\jme{[maybe is worth having this comment in the main text?] \comment{True, but it kind of interrupts the flow and I think the current text sets up the question nicely. I discuss it more in the discussion.}} OK!
-}
+However, the information in the spectral siren measurement comes solely from the assumption that all \acp{CBC} follow the same mass distribution.\footnote{More precisely, the spectral siren method is also valid if \acp{CBC} have different mass distributions at different redshifts, so long as the evolution of the mass distribution does not exactly mimic cosmology, and the model for the mass distribution allows for evolution \citep{ezquiaga_spectral_2022}. }
 Therefore the location, shape, and existence of all features in the mass distribution can be inferred simultaneously with $H(z)$. 
 
 In this work, we explicitly demonstrate that no \emph{a priori} knowledge about the shape of the \ac{CBC} mass spectrum is necessary to use the spectral siren methodology. 
@@ -204,12 +201,13 @@ Practically, the only difference in the inference of the population when using a
 In other words, when using parametric models, $\frac{\diff N}{\diff t_{\det} \diff \theta_i} (\theta_i;\Lambda)$ in Equation~\ref{eq:inhomog-poisson} is calculated by evaluating a specific functional form described by a small set of hyper-parameters. 
 With the \ac{GP} approach, the hyper-parameters describing the mass distribution are the rate at each event-level posterior sample's source frame mass, and the rate at each found injection's source frame mass.
 % The source frame mass is different for each possible value of \Ho{} and \Omm{}, so the hyper-parameters are defined in different locations for each draw from the hyper-posterior.
+In this way, our \ac{GP}-based mass distribution is similar to the autoregressive population models used in ~\citet{callister_parameter-free_2023}.
+Indeed, an autoregressive process is a \ac{GP} with a particular choice of kernel (described below).
 We therefore have $N_{\text{evs}}M + N_{\text{inj}}$ mass hyper-parameters, where $N_{\text{ev}}$ is the number of events, $M$ is the number of posterior samples per event, and $N_{\text{inj}}$ is the number of injections used to calculate the selection function $\xi$.
 We label these $\{\mathcal{R}_{ij},\mathcal{R}_k\}$, and our full set of hyper-parameters is $\Lambda=\{H_0, \Omega_M, \mathcal{R}_{ij},\mathcal{R}_k\}$. 
-In this way, our GP-based mass distribution is similar to the autoregressive population models used in ~\citet{callister_parameter-free_2023}.
-Indeed, an autoregressive model is a \ac{GP} with a particular choice of kernel.
+\comment{Put something here about why we chose to do it this way. We were specifically trying to avoid a mass model that has pre-defined features in source frame mass. This is why we didn't do the spline or BGP models, as they have to choose source frame masses at which to put their feautres, and they did this by fitting the distribution to the data with a pre-determined H0. If we wanted to do a spline, we would want to fit for where the spline nodes lie (which I think does happen in the b-spline paper?). Caution that other approaches should be careful about their choice of non-parametric model for this reason.} 
 
-A kernel is a function that defines the covariance between input points in the GP (in our case, two source frame mass values). 
+The smoothness of a given \acp{GP} is determined by its kernel, which is a function that defines the covariance between input points in the \ac{GP} (in our case, two source frame mass values). 
 It defines the notion of similarity between adjacent points and thereby encodes our assumptions about the smoothness of the source frame mass distribution \citep{rasmussen_gaussian_2006}.
 We use a Mat\'ern kernel \citep{handcock_bayesian_1993, stein_interpolation_1999} with $\nu = 5/2$, but have repeated the analysis with $\nu=3/2$ and $\infty$, finding little impact on the results, except that the $\nu=\infty$ case (also called the ``squared exponential'' kernel) produces a slightly more jagged mass distribution.
 Mat\'ern kernels have two parameters besides the mean that determine their properties: a length scale $l$ and variance $s$.
@@ -220,7 +218,7 @@ Explicitly, the priors on $l$ and $s$ are Fr\'echet and Gamma distributions, res
 
 The time to evaluate a \acp{GP} notoriously scales as the cube of the number of data points, making \acp{GP} unwieldy with large data sets such as the ones expected for \ac{O5}.
 We therefore make two approximations to a full \ac{GP} to increase computational efficiency.
-First, for each likelihood evaluation, we evaluate a full \ac{GP} on a regular grid between $0\Msun$ and $250\Msun$ and then interpolate it at each data point.
+First, for each likelihood evaluation, we evaluate a full \ac{GP} on a regular grid between $0.1\Msun$ and $250\Msun$ and then interpolate it at each data point.
 Second, we use the quasi-separability of Mat\'ern kernels to analytically perform the transformation between covariance matrix and \ac{GP} draw.
 This second step is done using the \texttt{QuasisepSolver} module \citep{foreman-mackey_fast_2017} in the \texttt{tinygp} code base \citep{foreman-mackey_tinygp_2021}, and requires data to be sortable (i.e. one-dimensional).
 
@@ -257,8 +255,10 @@ We indicate the true underlying source mass distribution and fiducial \Ho{} valu
 
 We find that using a parametric model of the same form as the true simulated distribution (\plp) recovers the injected value of \Ho{} within $\variable{output/PLPh0offset.txt}\sigma$.
 However, when using a model that cannot accurately represent the true shape of the mass distribution, we recover a biased estimate of \Ho: the true value is offset from the mean of the posterior by $\variable{output/BPLh0offset.txt}\sigma$.
-We have repeated this analysis with \result{50} separate simulated catalogs of $\sim500$ events, and found that the broken power law model produces an overestimate of \Ho{} at greater than $1\sigma$ %$\variable{output/BPL_bias_percent.txt}\%$ of the time of the time, whereas %the \ac{GP}-based model reaches that level of bias only \result{Z}\% of the time, and 
-the \plp{} model reaches the same level of bias %$\variable{output/PLP_bias_percent.txt}\%$ of the time.
+We have repeated this analysis with \result{50} separate simulated catalogs of $\sim500$ events, and found that the broken power law model produces an overestimate of \Ho{} at greater than $1\sigma$ %$\variable{output/BPL_bias_percent.txt}\%$ 
+of the time of the time, whereas %the \ac{GP}-based model reaches that level of bias only \result{Z}\% of the time, and 
+the \plp{} model reaches the same level of bias %$\variable{output/PLP_bias_percent.txt}\%$ 
+of the time.
 
 This bias is not due to the need to know the morphology of the mass distribution \emph{a priori}, as the \ac{GP}-based model recovers the correct value of \Ho{} despite making minimal assumptions about the mass distribution: the true value is recovered at the $\variable{output/nonparh0offset.txt}\sigma$ level.
 The \ac{GP}-based model does, however, obtain larger uncertainties on the inferred value of \Ho, as it has many more free parameters. 
@@ -349,7 +349,7 @@ Work in preparation will extend the method developed here to mass distributions 
 Non-parametric methods will allow for arbitrary redshift evolution, but must constrain that evolution to avoid exactly mimicking the effects of cosmological redshift.
 As demonstrated in \citet{ezquiaga_spectral_2022}, the degeneracy between an evolving mass distribution and the expansion of the universe can be broken provided there are multiple features present in the mass distribution and all features do not identically and monotonically move to higher source frame mass with increasing redshift.
 The first condition (multiple features) is known to be met in current data \citep{abbott_population_2023}, with three robust features \citep{farah_things_2023}: a maximum black hole mass and overdensities at $\sim10\Msun$ and $\sim35\Msun$.
-The latter scenario (features identically and monotonically moving to higher masses with increasing redshift) would be astrophysically unlikely as the the locations of features in the mass distribution are each thought to be governed by different physical processes \citep[e.g.][]{mapelli_binary_2020}.
+The latter scenario (features identically and monotonically moving to higher masses with increasing redshift) would be astrophysically unlikely as the the locations of features in the mass distribution are each thought to be governed by different physical processes \citep{mapelli_binary_2020}.
 Since \aclp{GP} naturally scale to multiple data dimensions, \citep{rasmussen_gaussian_2006}, the method presented here can be straightforwardly generalized to fitting the redshift dependence of the mass distribution. 
 
 Because \ac{GW} observations are the only data input to spectral sirens, they are uniquely positioned to probe the expansion history of the universe over a wide range of cosmological redshift, rather than just the local expansion \Ho.
@@ -363,7 +363,7 @@ When combined with other standard siren methods, the low-redshift expansion will
 While the sensitivity to high redshifts is a feature of the spectral siren method in general, non-parametric methods such as the one presented here will be imperative to avoid systematic biases as next-generation detectors provide additional data. 
 
 \begin{acknowledgments}
-    The authors thank Reed Essick, Utkarsh Mali, Ben Farr, Maya Fishbach,  for helpful conversations. 
+    The authors thank Reed Essick, Utkarsh Mali, Ben Farr, Maya Fishbach, Colm Talbot,  for helpful conversations. 
     %Amanda
     A.M.F. is supported by the National Science Foundation Graduate Research Fellowship Program under Grant No. DGE-1746045.
     %Tom
