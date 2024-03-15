@@ -81,3 +81,9 @@ rule mostsensitivez:
         "src/data/mcmc_nonparametric_fitOm0.nc4"
     script:
         "src/scripts/nonparametric_corner.py"
+
+rule algo:
+    output:
+        "src/tex/output/priors_placeholder.txt"
+    script:
+        "src/scripts/priors.py"

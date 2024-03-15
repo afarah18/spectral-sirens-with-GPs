@@ -19,12 +19,16 @@ from jax.scipy.special import gammaln
 from data_generation import NUM_INJ, OM0_FID, ZMAX, ZMIN, N_SAMPLES_PER_EVENT, TRUEVALS
 import jgwcosmo
 import jgwpop
+import paths
 
 ## CONSTANTS
 TEST_M1S = jnp.linspace(0.1,250.,num=500)
 
 H0_PRIOR_MIN=30.
 H0_PRIOR_MAX=120.
+# make a dummy variable so that the PDF links to this module
+with open(paths.output / "priors_placeholder.txt","w") as f:
+        print(" ",file=f)
 
 ## LENGTH SCALE PRIOR
 ## Applying: https://dansblog.netlify.app/posts/2022-09-07-priors5/priors5.html#rescuing-the-pc-prior-on-ell-or-what-i-recommend-you-do
