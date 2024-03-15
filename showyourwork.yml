@@ -49,8 +49,7 @@ dependencies:
     - src/data/mcmc_nonparametric_fitOm0.nc4
 
   src/tex/ms.tex:
-    - src/tex/output/
-    - src/tex/figures/
+    - src/tex/figures/O5_corner_GP.pdf
   # - src/tex/stylesheet.tex
 
 # Name of the `.tex` manuscript and corresponding `.pdf` article
