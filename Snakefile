@@ -74,20 +74,6 @@ rule nonparcorner:
     script:
         "src/scripts/nonparametric_corner.py"
 
-rule nonparh0CI:
-    output:
-        "src/tex/output/nonparh0CI.txt"
-    input:
-        "src/data/mcmc_nonparametric.nc4" 
-    script:
-        "src/scripts/nonparametric_numbers.py"
-rule nonparh0percent:
-    output:
-        "src/tex/output/nonparh0percent.txt"
-    input:
-        "src/data/mcmc_nonparametric.nc4" 
-    script:
-        "src/scripts/nonparametric_numbers.py"
 rule mostsensitivez:
     output:
         "src/tex/output/mostsensitivez.txt"

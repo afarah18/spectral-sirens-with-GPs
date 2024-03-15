@@ -47,8 +47,6 @@ dependencies:
     - src/data/mcmc_parametric_BPL.nc4
   src/scripts/nonparametric_corner.py:
     - src/data/mcmc_nonparametric_fitOm0.nc4
-  src/scripts/nonparametric_numbers.py:
-    - src/data/mcmc_nonparametric.nc4
 
   src/tex/ms.tex:
     - src/tex/output/
@@ -64,7 +62,7 @@ optimize_caching: false
 # Overleaf sync settings
 overleaf:
   # Overleaf project ID (blank = disabled)
-  id: 63fe92421f02c027b185fef6
+  id: #63fe92421f02c027b185fef6
   # Perform sync on GitHub Actions?
   gh_actions_sync: true
   # List of files to push to Overleaf
