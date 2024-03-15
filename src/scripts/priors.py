@@ -21,7 +21,7 @@ import jgwcosmo
 import jgwpop
 
 ## CONSTANTS
-TEST_M1S = jnp.linspace(0,250.,num=500)
+TEST_M1S = jnp.linspace(0.1,250.,num=500)
 
 H0_PRIOR_MIN=30.
 H0_PRIOR_MAX=120.
@@ -115,8 +115,8 @@ def get_sigma_gamma_params(U,alpha=0.05):
 def hyper_prior(m1det,dL,m1det_inj,dL_inj,log_pinj,log_PE_prior=0.,PC_params=dict(),remove_low_Neff=False,fit_Om0=False):
     """ Non-parametric population inference """
     mean = numpyro.sample("mean",dist.Normal(0,3))
-    # sigma = numpyro.deterministic("sigma",2.5)
-    sigma = numpyro.sample("sigma",dist.Gamma(concentration=PC_params["conc"], rate=PC_params["lam_sigma"]))
+    sigma = numpyro.deterministic("sigma",2.5)
+    # sigma = numpyro.sample("sigma",dist.Gamma(concentration=PC_params["conc"], rate=PC_params["lam_sigma"]))
     # rho = numpyro.deterministic("rho",0.5)
     rho = numpyro.sample("rho",Frechet(concentration=PC_params["concentration"],scale=PC_params["scale"]))
 
@@ -126,46 +126,59 @@ def hyper_prior(m1det,dL,m1det_inj,dL_inj,log_pinj,log_PE_prior=0.,PC_params=dic
     else:
         Om0=OM0_FID
 
+    # redshift dist
+    alpha_z = 1.0
+    zp = 2.4 
+    beta_z = 3.4 
+
     # construct GP in the source frame
+    logtestm1s = jnp.log(TEST_M1S)
     kernel = sigma**2 * kernels.quasisep.Matern52(rho) # can change kernel type
-    gp = GaussianProcess(kernel,TEST_M1S,mean=mean,diag=0.001,
+    gp = GaussianProcess(kernel,logtestm1s,mean=mean,diag=0.001,
                          solver=QuasisepSolver,assume_sorted=True)
     log_rate_test = numpyro.sample("log_rate_test",gp.numpyro_dist())
 
     # convert event data to source frame
     z = jgwcosmo.z_at_dl_approx(dL,H0,Om0,zmin=ZMIN,zmax=ZMAX+8.)
-    m1source = m1det / (1 + z)
-    log_jac = - jnp.log1p(z) - jnp.log(jnp.abs(jgwcosmo.dDLdz_approx(z,H0,Om0))) 
-
+    logm1source = jnp.log(m1det) - jnp.log1p(z)
+    
     # convert injections to source frame 
     z_injs = jgwcosmo.z_at_dl_approx(dL_inj,H0,Om0,zmin=ZMIN,zmax=ZMAX+8.)
-    m1_injs = m1det_inj / (1 + z_injs)
+    logm1_injs = jnp.log(m1det_inj) - jnp.log1p(z_injs)
 
     # evaluate z dist on data
+    logcosmo_data = jgwpop.log_unif_comoving_rate(z,H0,Om0)
+    logRzs_data = jgwpop.log_shouts_murmurs(z,zp,alpha_z,beta_z)
     # make z dist taper to zero outside of injection bounds
-    z_taper = - jnp.log(1.+(z/z_injs.min())**(-15.))
-    p_z = jgwpop.unif_comoving_rate(z,H0,Om0)
+    z_taper_data = - jnp.log(1.+(z/z_injs.min())**(-30.)) #- jnp.log(1.+(z_injs.max()/z)**(-30.))
+    log_Jacobian_dL_z_data = - jnp.log(jgwcosmo.dDLdz_approx(z,H0,Om0))
+    log_pz_data = logcosmo_data + logRzs_data + z_taper_data + log_Jacobian_dL_z_data
 
-    # interpolate GP
-    log_rate = numpyro.deterministic("log_rate", jnp.interp(m1source,
-                    TEST_M1S,log_rate_test, left=-jnp.inf, right=-jnp.inf)
-                    )
-    # total population is interpolated GP times redshift distribution 
-    # times jacobians for the transformation
-    # this is the only line that is different for the hierarchical problem
-    single_event_logL = jax.scipy.special.logsumexp(log_rate + jnp.log(p_z) + z_taper
-                                                    + log_jac - log_PE_prior,
+    # evaluate z dist on injections
+    logcosmo_injs = jgwpop.log_unif_comoving_rate(z_injs,H0,Om0)
+    logRzs_injs = jgwpop.log_shouts_murmurs(z_injs,zp,alpha_z,beta_z)
+    # make z dist taper to zero outside of injection bounds
+    z_taper_injs =  - jnp.log(1.+(z_injs/z_injs.min())**(-30.)) #- jnp.log(1.+(z_injs.max()/z_injs)**(-30.))
+    log_Jacobian_dL_z_injs = - jnp.log(jgwcosmo.dDLdz_approx(z_injs,H0,Om0))
+    log_pz_injs = logcosmo_injs + logRzs_injs + z_taper_injs + log_Jacobian_dL_z_injs
+
+    # evaluate mass dist on data
+    log_rate_m1s_data = jnp.interp(logm1source,logtestm1s,log_rate_test-logtestm1s,left=-jnp.inf,right=-jnp.inf)
+    log_Jacobian_m1z_m1s_data = - jnp.log1p(z)
+    log_rate_m1_data = log_rate_m1s_data + log_Jacobian_m1z_m1s_data 
+
+    # evaluate mass dist on injections
+    log_rate_m1s_injs = jnp.interp(logm1_injs,logtestm1s,log_rate_test-logtestm1s,left=-jnp.inf,right=-jnp.inf)
+    log_Jacobian_m1z_m1s_injs = - jnp.log1p(z_injs)
+    log_rate_m1_injs = log_rate_m1s_injs + log_Jacobian_m1z_m1s_injs 
+
+    # event part of likelihood
+    single_event_logL = jax.scipy.special.logsumexp(log_rate_m1_data + log_pz_data - log_PE_prior,
         axis=1) - jnp.log(N_SAMPLES_PER_EVENT)
     numpyro.factor("logp",jnp.sum(single_event_logL))
-    
-    # evaluate the population for injections 
-    log_rate_injs = jnp.interp(m1_injs, TEST_M1S, log_rate_test, 
-                               left=-jnp.inf, right=-jnp.inf)
-    log_jac_injs = 2*jnp.log1p(z_injs) + jnp.log(jnp.abs(jgwcosmo.dDLdz_approx(z_injs,H0,Om0))) # try negative
-    p_z_injs = jgwcosmo.diff_comoving_volume_approx(z_injs,H0,Om0)
-    z_taper_injs =  - jnp.log(1.+(z_injs/z_injs.min())**(-15.))
-    # MC integral for the expected number of events
-    log_weights = log_rate_injs + jnp.log(p_z_injs) + z_taper_injs - (log_pinj + log_jac_injs)
+
+    # injection part of likelihood
+    log_weights = log_rate_m1_injs + log_pz_injs - log_pinj
     Nexp = jnp.sum(jnp.exp(log_weights))/NUM_INJ
     numpyro.factor("Nexp",-1*Nexp)
     numpyro.deterministic("nexp",Nexp)
