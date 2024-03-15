@@ -61,7 +61,7 @@ def two_panel(path, path_PLP, path_BPL, hyperparam='H0'):
     axes[1].set_ylabel('posterior density')
     fig.legend(ncol=4,framealpha=0,fontsize=9,loc="upper center")
     plt.tight_layout()
-    fig.savefig(paths.figures / "O5_GP_pm.pdf")
+    fig.savefig(paths.figures / "O5_pm.pdf")
     plt.clf()
 
 two_panel(paths.data / "mcmc_nonparametric.nc4", 

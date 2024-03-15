@@ -61,11 +61,11 @@ rule nonparinference_fitOm0:
 
 rule nonparpm:
     output:
-        "src/tex/figures/O5_GP_pm.pdf"
+        "src/tex/figures/O5_pm.pdf"
     input:
         "src/data/mcmc_nonparametric.nc4"
     script:
-        "src/scripts/nonparametric_twopanel.py"
+        "src/scripts/pm_H0_twopanel.py"
 rule nonparcorner:
     output:
         "src/tex/figures/O5_GP_corner.pdf"
