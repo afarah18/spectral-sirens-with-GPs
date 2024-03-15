@@ -15,8 +15,8 @@ from priors import PLP, BPL
 jax.config.update("jax_enable_x64", True)
 
 # options
-N_CATALOGS=5
-N_SOURCES = N_SOURCES//4 # cut catalogs in half for this study, for computational feasibility
+N_CATALOGS=50
+N_SOURCES = N_SOURCES//2 # cut catalogs in half for this study, for computational feasibility
 plot = True
 
 # random number generators
