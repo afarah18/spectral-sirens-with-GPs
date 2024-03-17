@@ -187,7 +187,13 @@ The full process is outlined in Section~\ref{sec:model}.
 \label{sec:model}
 
 Our goal is to model the population of \ac{GW} in an astrophysically-agnostic way. 
-We choose to do it with \Acfp{GP}, a common tool for non-parametric inference. 
+There exist several non-parametric methods developed for this purpose \citep{tiwari_vamana_2021,edelman_aint_2022,sadiq_flexible_2022,edelman_cover_2023,mandel_extracting_2019,ray_non-parametric_2023}.
+While well-suited to infer the \ac{GW} source population with a fixed cosmology, several of these methods employ fixed features in source frame mass, such as bin edges \citep{mandel_extracting_2019,ray_non-parametric_2023} or spline nodes \citep{edelman_aint_2022}.
+Since these locations were chosen with a fixed cosmology, they risk causing the inference to prefer the cosmological parameters used when choosing the feature locations. 
+Indeed, \citet{mastrogiovanni_importance_2021} show how using fixed features can significantly bias cosmological inference within the spectral siren methodology.
+We therefore opt for a model of the source frame mass distribution that foregoes the need to define such features.
+
+For this purpose, we construct a model with a \acf{GP}, a common tool for non-parametric inference. 
 \Acp{GP} are random processes for which any linear combination of outcomes are Gaussian distributed \citep{rasmussen_gaussian_2006}.
 Their smoothness properties make them widely useful in \ac{GW} data analysis and beyond for regression problems, such as modeling time-domain waveforms \citep{doctor_statistical_2017, huerta_eccentric_2018} and the neutron star equation of state \citep{landry_nonparametric_2019}, density estimation problems, such as estimating posterior densities of single-event parameters from parameter estimation samples ~\citep{demilio_density_2021}, and as a prior on histogram bin heights for population inference \citep{mandel_model-independent_2017, li_flexible_2021, ray_non-parametric_2023}.
 
@@ -195,7 +201,7 @@ Our use case is slightly different from previous analyses:
 we utilize a \ac{GP} as a prior on the functions that describe the primary mass distribution of \acp{CBC}.
 It will therefore replace $p(\Lambda)$ in Equation~\ref{eq:inhomog-poisson}, except in the case of cosmological parameters, which all have uniform priors.
 This choice adds very little prior information about the shape of the mass distribution, besides enforcing that it must be smooth.
-Practically, the only difference in the inference of the population when using a GP versus other modeling choices is that $\frac{\diff N}{\diff t_{\det} \diff \theta_i} (\theta_i;\Lambda)$ in Equation~\ref{eq:inhomog-poisson} is determined directly by a realization of the \ac{GP}, rather than by a handful of hyper-parameters $\Lambda$ and evaluated on an analytical function. %joined paragraphs here. OK sounds good!
+Practically, the only difference in the inference of the population when using a GP versus other modeling choices is that $\frac{\diff N}{\diff t_{\det} \diff \theta_i} (\theta_i;\Lambda)$ in Equation~\ref{eq:inhomog-poisson} is determined directly by a realization of the \ac{GP}, rather than by a handful of hyper-parameters $\Lambda$ and evaluated on an analytical function.
 In other words, when using parametric models, $\frac{\diff N}{\diff t_{\det} \diff \theta_i} (\theta_i;\Lambda)$ in Equation~\ref{eq:inhomog-poisson} is calculated by evaluating a specific functional form described by a small set of hyper-parameters. 
 With the \ac{GP} approach, the hyper-parameters describing the mass distribution are the rate at each event-level posterior sample's source frame mass, and the rate at each found injection's source frame mass.
 % The source frame mass is different for each possible value of \Ho{} and \Omm{}, so the hyper-parameters are defined in different locations for each draw from the hyper-posterior.
@@ -203,7 +209,9 @@ In this way, our \ac{GP}-based mass distribution is similar to the autoregressiv
 Indeed, an autoregressive process is a \ac{GP} with a particular choice of kernel (described below).
 We therefore have $N_{\text{evs}}M + N_{\text{inj}}$ mass hyper-parameters, where $N_{\text{ev}}$ is the number of events, $M$ is the number of posterior samples per event, and $N_{\text{inj}}$ is the number of injections used to calculate the selection function $\xi$.
 We label these $\{\mathcal{R}_{ij},\mathcal{R}_k\}$, and our full set of hyper-parameters is $\Lambda=\{H_0, \Omega_M, \mathcal{R}_{ij},\mathcal{R}_k\}$. 
-\comment{Put something here about why we chose to do it this way. We were specifically trying to avoid a mass model that has pre-defined features in source frame mass. This is why we didn't do the spline or BGP models, as they have to choose source frame masses at which to put their feautres, and they did this by fitting the distribution to the data with a pre-determined H0. If we wanted to do a spline, we would want to fit for where the spline nodes lie (which I think does happen in the b-spline paper?). Caution that other approaches should be careful about their choice of non-parametric model for this reason.} 
+As the hyper-parameters differ at each data point, we have successfully fulfilled our goal to construct a model without pre-defined features in source frame mass.
+We note that other non-parametric methods may be adapted to avoid such pre-defined features, such as fitting for the locations of their features simultaneously the rest of the inference \citep[e.g.][]{tiwari_vamana_2021} or by using an appropriate smoothing \citep[e.g.][]{edelman_cover_2023}. 
+Such adaptations are necessary to avoid circular inference.
 
 The smoothness of a given \acp{GP} is determined by its kernel, which is a function that defines the covariance between input points in the \ac{GP} (in our case, two source frame mass values). 
 It defines the notion of similarity between adjacent points and thereby encodes our assumptions about the smoothness of the source frame mass distribution \citep{rasmussen_gaussian_2006}.
