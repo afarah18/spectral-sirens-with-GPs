@@ -8,6 +8,7 @@ from mock_posteriors import gen_snr_scaled_PE
 import os
 import numpy as np
 from GWMockCat.vt_utils import draw_thetas, interpolate_optimal_snr_grid 
+print("test")
 
 # Constants
 H0_FID = 67.66

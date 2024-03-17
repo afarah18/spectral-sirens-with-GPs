@@ -49,7 +49,7 @@ dependencies:
     - src/data/mcmc_nonparametric_fitOm0.nc4
 
   src/tex/ms.tex:
-    - src/tex/output/
+    - src/tex/output/PLP_bias_percent.txt
     - src/tex/figures/
   # - src/tex/stylesheet.tex
 

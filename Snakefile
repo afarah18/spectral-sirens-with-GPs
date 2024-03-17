@@ -37,7 +37,7 @@ rule parbias:
     cache:
         True
     input:
-        "src/data/gw_data"
+        "src/data/gw_data/"
     script:
         "src/scripts/bias_study.py"
 rule nonparinference:
