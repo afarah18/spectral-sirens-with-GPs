@@ -43,6 +43,8 @@ rule parbias:
 rule nonparinference:
     output:
         "src/data/mcmc_nonparametric.nc4"
+        "src/tex/output/nonparh0percent.txt"
+        "src/tex/output/nonparh0CI.txt"
     cache:
         True
     input:
