@@ -11,7 +11,7 @@ import numpyro
 # data
 import numpy as np
 
-NSAMPS = 1000
+NSAMPS = 20
 
 jax.config.update("jax_enable_x64", True)
 # random number generators
