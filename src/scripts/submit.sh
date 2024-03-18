@@ -1,7 +1,7 @@
 #!/bin/bash
-#SBATCH --job-name=paper_fitOm0_fitrho_gwmc
-#SBATCH --output=/home/afarah/p2/spectral-sirens-with-GPs/src/outfiles/paper_fitOm0_fitrho_gwmc.out
-#SBATCH --error=/home/afarah/p2/spectral-sirens-with-GPs/src/outfiles/paper_fitOm0_fitrho_gwmc.err
+#SBATCH --job-name=paper_fitOm0_gwmc
+#SBATCH --output=/home/afarah/p2/spectral-sirens-with-GPs/src/outfiles/paper_fitOm0_gwmc.out
+#SBATCH --error=/home/afarah/p2/spectral-sirens-with-GPs/src/outfiles/paper_fitOm0_gwmc.err
 #SBATCH --account=kicp
 #SBATCH --time=48:00:00
 #SBATCH --partition=kicp-gpu
