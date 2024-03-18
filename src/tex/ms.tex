@@ -1,5 +1,5 @@
 % Define document class
-\documentclass[]{aastex631}
+\documentclass[preprint2,linenumbers]{aastex631}
 \usepackage{showyourwork}
 \usepackage{macros}
 \usepackage{amsmath}
@@ -62,7 +62,7 @@ We find that both the source mass model and cosmological parameters are correctl
 This astrophysics-agnostic spectral siren technique will be key to deliver precise and unbiased cosmological constraints with future observations and in the presence of redshift evolution of the mass spectrum.  
 \end{abstract}
 
-d\section{}
+\section{}
 \textcolor{red}{Showyourwork Guidelines:}
 \begin{itemize}
     \item Always edit \texttt{ms.tex} in Overleaf
@@ -74,12 +74,25 @@ d\section{}
 
 \section{Introduction}
 \label{sec:intro}
+\begin{figure*}
+    \centering
+    \includegraphics[width=\textwidth]{figures/O5_pm.pdf}
+    \caption{Spectral siren measurement for an \ac{O5}-like catalog with the correct parametric model (\plp, green), a deliberately incorrect parametric model (broken power law, orange) and the non-parametric model presented in this work (\acl{GP}, blue).
+    The left panel shows the recovered source frame primary mass distribution for each model, and the simultaneously-inferred posteriors on \Ho{} are shown in the right panel.
+    The mass distribution and \Ho{} value used to generate the data are shown by a solid black line in each panel. 
+    The deliberately incorrect parametric model fails to recover the true mass distribution and therefore produces a biased estimate of \Ho{}, whereas both the correct and non-parametric models recover  the mass distribution and \Ho{}.
+    As the true mass distribution is unknown for real observations, using a non-parametric model mitigates systematic uncertainty that would otherwise arise from mismodeling the \ac{CBC} population, though it does introduce additional statistical uncertainty.
+    }
+    \label{fig:O5_GP}
+    \script{pm_H0_twopanel.py}
+\end{figure*}
+
 Like light, \acp{GW} are redshifted as they propagate across the universe, thereby becoming imprinted with the cosmic expansion history.
 Unlike light, however, the form of \ac{GW} signals are known from first principles and their selection effects are extremely well understood.
 This allows for a precise estimate of each \ac{GW} catalogs' completeness and an unbiased measurement of the true \ac{GW} population. 
 Additionally, the \ac{GW} signals detected by the LIGO \citep{aasi_advanced_2015}, Virgo \citep{acernese_advanced_2014}, and KAGRA \citep{akutsu_overview_2021} detectors provide direct measurements of the distance to their sources.
 This makes them ``standard sirens'': powerful probes of cosmological parameters that circumvent the cosmological distance ladder~\citep{schutz_determining_1986,holz_using_2005}. 
-This is particularly useful in the context of the current ``Hubble tension:'' a disagreement between multiple methods of measuring the local expansion rate of the universe with electromagnetic observations \citep{freedman_measurements_2021}.
+This is particularly useful in the context of the current ``Hubble tension'': a disagreement between multiple methods of measuring the local expansion rate of the universe with electromagnetic observations \citep{freedman_measurements_2021}.
 
 A well-known application of standard sirens was the multi-messenger event GW170817 \citep{abbott_multi-messenger_2017}, whose clear association with a host galaxy provided a precise redshift measurement, allowing for a direct measurement of the Hubble constant, \Ho{} \citep{ abbott_gravitational-wave_2017}.
 External redshift information can also come from galaxy catalogs, which provide redshift distributions for each \ac{GW} signal, allowing for a probabilistic measurement of \Ho{} when multiple \ac{GW} detections are combined \citep[e.g.][]{del_pozzo_inference_2012, chen_two_2018, fishbach_standard_2019, gray_cosmological_2020, gwtc3_cosmo, gair_hitchhikers_2023}.
@@ -123,19 +136,6 @@ We present the results of using parametric and non-parametric mass distributions
 In Section~\ref{sec:discussion} we discuss the implications of our results and outline future work.
 
 The code used to generate all simulated data, perform the population inference, and create all figures in this paper is made publicly available at \GitHubURL{} under an MIT license, and was enabled by the \showyourwork package \citep{Luger2021}.
-
-\begin{figure*}
-    \centering
-    \includegraphics[width=\textwidth]{figures/O5_pm.pdf}
-    \caption{Spectral siren measurement for an \ac{O5}-like catalog with the correct parametric model (\plp, green), a deliberately incorrect parametric model (broken power law, orange) and the non-parametric model presented in this work (\acl{GP}, blue).
-    The left panel shows the recovered source frame primary mass distribution for each model, and the simultaneously-inferred posteriors on \Ho{} are shown in the right panel.
-    The mass distribution and \Ho{} value used to generate the data are shown by a solid black line in each panel. 
-    The deliberately incorrect parametric model fails to recover the true mass distribution and therefore produces a biased estimate of \Ho{}, whereas both the correct and non-parametric models recover  the mass distribution and \Ho{}.
-    As the true mass distribution is unknown for real observations, using a non-parametric model mitigates systematic uncertainty that would otherwise arise from mismodeling the \ac{CBC} population, though it does introduce additional statistical uncertainty.
-    }
-    \label{fig:O5_GP}
-    \script{pm_H0_twopanel.py}
-\end{figure*}
 
 \section{Cosmology with an astrophysically-agnostic mass distribution model}
 \label{sec:methods}
