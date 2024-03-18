@@ -50,6 +50,7 @@ dependencies:
 
   src/tex/ms.tex:
     - src/tex/figures/O5_GP_corner.pdf
+    - src/tex/output/
   # - src/tex/stylesheet.tex
 
 # Name of the `.tex` manuscript and corresponding `.pdf` article
