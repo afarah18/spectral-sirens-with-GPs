@@ -62,10 +62,10 @@ if  __name__ == "__main__":
     mcmc = numpyro.infer.MCMC(nuts_kernel,num_warmup=NSAMPS,num_samples=NSAMPS,
                               num_chains=1,progress_bar=True)   
     mcmc.run(jax_rng,**kwargs)
-    offset = np.abs(id.posterior['H0'][0].mean()-H0_FID)/id.posterior['H0'][0].std()
-    with open(paths.output / "BPLh0offset.txt","w") as f:
-        print(f"{offset:.1f}",file=f)
 
     # save results
     id = az.from_numpyro(mcmc)
     id.to_netcdf(paths.data / "mcmc_parametric_BPL.nc4")
+    offset = np.abs(id.posterior['H0'][0].mean()-H0_FID)/id.posterior['H0'][0].std()
+    with open(paths.output / "BPLh0offset.txt","w") as f:
+        print(f"{offset:.1f}",file=f)
