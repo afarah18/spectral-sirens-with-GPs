@@ -28,21 +28,19 @@ def two_panel(path, path_PLP, path_BPL, hyperparam='H0'):
 
     fig, axes = plt.subplots(ncols=2,figsize=(7.5,4*.75),facecolor='none',gridspec_kw={'width_ratios': [1.2, 1]})
     for i in range(NSAMPS//2):
-        axes[0].plot(TEST_M1S, r[i]/np.trapz(y=r[i],x=TEST_M1S), lw=0.1, c="blue",alpha=0.03)
+        axes[0].plot(TEST_M1S, r[i]/TEST_M1S, lw=0.1, c="blue",alpha=0.03)
         # TODO: get rid of indexing and plot parametric with TEST_M1S when new parametric runs are done with proper TEST_M1S
-        # TODO: get rid of normalization when new parametric and nonparametric runs are done
-        axes[0].plot(m1s_plotting_parametric, r_PLP[i]/np.trapz(y=r_PLP[i][1:],x=TEST_M1S[1:]),lw=0.1, c="green",alpha=0.03)
-        axes[0].plot(m1s_plotting_parametric, r_BPL[i]/np.trapz(y=r_BPL[i][1:],x=TEST_M1S[1:]),lw=0.1, c="orange",alpha=0.03)
+        axes[0].plot(m1s_plotting_parametric, r_PLP[i],lw=0.1, c="green",alpha=0.03)
+        axes[0].plot(m1s_plotting_parametric, r_BPL[i],lw=0.1, c="orange",alpha=0.03)
     
-    axes[0].plot(TEST_M1S, powerlaw_peak(TEST_M1S,alpha=TRUEVALS['alpha'],f_peak=TRUEVALS['f_peak'],mMax=TRUEVALS['mmax'],
-                                         mMin=TRUEVALS['mmin'],mu_m1=TRUEVALS['mu_m1'],sig_m1=TRUEVALS['sig_m1']
-                                         )/np.trapz(y= powerlaw_peak(TEST_M1S,alpha=TRUEVALS['alpha'],f_peak=TRUEVALS['f_peak'],mMax=TRUEVALS['mmax'],
-                                         mMin=TRUEVALS['mmin'],mu_m1=TRUEVALS['mu_m1'],sig_m1=TRUEVALS['sig_m1']),x=TEST_M1S),
-                c='k')
+    axes[0].plot(TEST_M1S, samples_PLP['rate'].mean(dim='draw').values*\
+                 powerlaw_peak(TEST_M1S,f_peak=TRUEVALS['f_peak'],
+                               alpha=TRUEVALS['alpha'],mMax=TRUEVALS['mmax'],mMin=TRUEVALS['mmin'],
+                               mu_m1=TRUEVALS['mu_m1'],sig_m1=TRUEVALS['sig_m1']),
+                 c='k')
     axes[0].set_yscale('log')
     axes[0].set_xscale('log')
-    # axes[0].set_ylim(5e-4,10) # TODO: uncomment this and comment out below when we get rid of normalization
-    axes[0].set_ylim(5e-6,.1)
+    axes[0].set_ylim(5e-4,5)
     axes[0].set_xlim(5.,100)
     axes[0].set_xlabel("$m_1 \,$[M$_{\odot}$]")
     axes[0].set_ylabel(r"$\frac{d N}{d m_1}\,$[M$_{\odot}^{-1}$Gpc$^{-3}$yr$^{-1}$]")
@@ -62,7 +60,7 @@ def two_panel(path, path_PLP, path_BPL, hyperparam='H0'):
     except np.linalg.LinAlgError:
         prior = H0_FID
         kde = lambda x: 1.
-    axes[1].plot(prior,kde(prior),c='blue',label='Gaussian process fit')
+    axes[1].plot(prior,kde(prior),c='blue',label='Gaussian process')
     axes[1].plot(prior,kde_PLP(prior),c='green',label=r'\textsc{Power Law + Peak}')
     axes[1].plot(prior,kde_BPL(prior),c='orange',label='Broken power law')
     axes[1].set_ylabel('posterior density')
