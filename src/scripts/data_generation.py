@@ -27,7 +27,7 @@ N_SAMPLES_PER_EVENT = 100
 SIGMA_M = 0.5
 SIGMA_DL = 1000
 SNR_THRESH=8.
-NUM_INJ=N_SOURCES*50
+NUM_INJ=N_SOURCES*50*30
 
 # random number generators
 np_rng = np.random.default_rng(516)
