@@ -4,7 +4,6 @@ import arviz as az
 from scipy.stats import gaussian_kde
 
 from data_generation import H0_FID, OM0_FID, ZMIN, ZMAX
-from nonparametric_inference_fitOm0 import NSAMPS
 from gwcosmo import E_of_z
 
 import paths
@@ -20,13 +19,14 @@ def Hz(id, ax=None,save=False,inset=True):
     try:
         Om0=samples['Om0'][0].values
         H0=samples['H0'][0].values
+        nsamps = len(H0)
     except KeyError:
         pass
         
     if ax is None:
         fig, ax = plt.subplots(figsize=(8,8))
-    H_z = np.zeros((NSAMPS,len(TEST_Z)))
-    for i in range(NSAMPS):
+    H_z = np.zeros((nsamps,len(TEST_Z)))
+    for i in range(nsamps):
         H_z[i] = calc_Hz(TEST_Z,H0[i],Om0[i])
         ax.plot(TEST_Z,H_z[i],lw=0.2, c="blue",alpha=0.1)
     ax.plot(TEST_Z, calc_Hz(TEST_Z,H0_FID,OM0_FID),c='k', lw=2,label="True value")
