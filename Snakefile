@@ -24,7 +24,7 @@ rule h0fid:
 
 rule parinference:
     output:
-        "src/data/mcmc_parametric*.nc4"
+        "src/data/mcmc_parametric_PLP.nc4"
     cache:
         True
     input:
