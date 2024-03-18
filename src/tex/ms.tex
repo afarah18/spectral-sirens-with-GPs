@@ -275,8 +275,8 @@ At very high and very low masses, there is both a lack of data and little detect
 The mass distribution is therefore uninformed in this region and the \ac{GP} reverts to its prior distribution, which resembles random scatter around the mean differential merger rate.
 Similar effects can be seen in other non-parametric methods \citep{edelman_cover_2023, callister_parameter-free_2023}.
 On the other hand, the lack of data just below the minimum black hole mass and just above the maximum black hole mass, combined with the fact that \ac{GW} detectors are sensitive to objects in that mass range causes the \ac{GP} to learn a relatively low merger rate at the edges of the mass distribution.
-Indeed, these features are very informative to the \Ho{} constraint, especially at high masses for current detectors \citep{gwtc3_cosmo}.
-The combination of these two effects results in what appears as an uptick in the merger rate at very low and very high masses, but these features are uninformative and do not affect inference on cosmological parameters.
+% Indeed, the upper edge of the mass distribution is very informative to the \Ho{} constraint with current detections \citep{gwtc3_cosmo}.
+The combination of these two effects results in what appears as an uptick in the merger rate at very low and very high masses, but this reversion to the prior is uninformative to the \Ho{} constraint and does not affect inference on cosmological parameters.
 Additionally, the posterior on \Ho{} is distinct from its prior distribution (uniform in the range $[30\Hunits,120\Hunits]$, indicating that the data is informative despite the flexibility of the population model.
 
 Collectively, these results indicate that prior knowledge of the shape of the mass distribution is not required to perform a spectral siren measurement, so long as strong assumptions about the shape of the mass distribution are not made.
@@ -284,9 +284,9 @@ Collectively, these results indicate that prior knowledge of the shape of the ma
 \subsection{Projections for Future Measurements}
 The fit shown in Figure~\ref{fig:O5_GP} implies that we can expect to measure \Ho{} to $\variable{output/nonparh0percent.txt}\%$ ($1-\sigma$ uncertainties) after one year of \ac{O5} using the \ac{GP}-based spectral siren method.
 However, by the time of \ac{O5}, the \ac{GW} detector network is projected to detect \acp{BBH} up to redshift $\sim 3$, with most sources lying near redshift $\sim 1.2$ \citep{chen_distance_2021}.
-Additionally, next-generation detectors will be sensitive to sources up to redshift $\sim 40$.
+Additionally, next-generation detectors will be sensitive to sources up to redshift $\sim 100$.
 This means that future \acp{GW} observations will be more sensitive $H(z\gtrsim1)$ than to \Ho, and can therefore constrain several additional cosmological parameters \citep{Chen:2024gdn}.
-We demonstrate this by repeating the same \ac{GP} spectral siren analysis of the previous section while also fitting for the local matter density, \Omm, but we emphasize that it would also have been possible to constrain other cosmological parameters governing $H(z)$.
+We demonstrate this by repeating the same \ac{GP}-based spectral siren analysis of the previous subsection while also fitting for the local matter density, \Omm, but we emphasize that it would also have been possible to constrain other cosmological parameters governing $H(z)$.
 The result is shown in Figure~\ref{fig:O5_corner}.
 
 We find \ac{O5} observations to be most sensitive to $H(z=\variable{output/mostsensitivez.txt})$, which results in similarly informative constraints on \Omm{} and \Ho.
@@ -413,7 +413,7 @@ $\mathcal{S}$ is a smoothing function at low and high masses, and $\mathcal{N}_{
 $\bar{\Lambda}_z = \{z_p,\alpha_z,\beta_z\}$ are the parameters governing the redshift distribution's peak redshift, low-$z$ power law slope, and high-$z$ power law slope.
 When generating the simulated events, we have fixed $\alpha=-2.7,m_{\max}=78\Msun,m_{\min}=10\Msun, \mu=30\Msun,\sigma=7.0\Msun, f_{\text{peak}}=0.05,   z_p=2.4,\alpha_z=1.,\beta_z=3.4$.
 These choices correspond to the maximum \emph{a posteriori} values obtained by an analysis of GWTC-3 data using the \plp{} model \citep{abbott_population_2023}.
-We do not fit for secondary masses or spins, as they do not carry additional cosmological information.
+We do not fit for spins, as they do not carry additional cosmological information, and additionally neglect secondary masses.
 We use cosmological parameters \Ho$=\variable{output/H0_FID.txt}\Hunits$, \Omm$=0.3$, $\Omega_\Lambda=1-$\Omm, consistent with those found by \citet{planck_collaboration_planck_2016}.
 We emphasize, however, that the choice of cosmological parameters for data generation is arbitrary and does not impact the results, since we are concerned only with the ability of our method to recover the injected values.
 Throughout the data generation and inference, we use the approximations presented in \citet{adachi_analytical_2012} to efficiently convert between $d_L$ and $z$ for a given set of cosmological parameters \Omm{} and \Ho.
