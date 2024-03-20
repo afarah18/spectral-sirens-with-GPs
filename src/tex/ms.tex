@@ -261,9 +261,8 @@ We indicate the true underlying source mass distribution and fiducial \Ho{} valu
 
 We find that using a parametric model of the same form as the true simulated distribution (\plp) recovers the injected value of \Ho{} within $\variable{output/PLPh0offset.txt}\sigma$.
 However, when using a model that cannot accurately represent the true shape of the mass distribution, we recover a biased estimate of \Ho: the true value is offset from the mean of the posterior by $\variable{output/BPLh0offset.txt}\sigma$.
-We have repeated this analysis with 50 separate simulated catalogs of $\sim500$ events, and found that the broken power law model produces an overestimate of \Ho{} at greater than $1\sigma$ $\variable{output/BPL_bias_percent.txt}\%$ 
-of the time of the time, whereas the \ac{GP}-based model reaches that level of bias only \result{Z}\% of the time, and 
-the \plp{} model reaches the same level of bias $\variable{output/PLP_bias_percent.txt}\%$ 
+We have repeated this analysis with 50 separate simulated catalogs of $\sim500$ events, and found that the broken power law model produces an overestimate of \Ho{} at greater than $1\sigma$ $\variable{output/BPL_bias_percent.txt}\%$ of the time of the time, %whereas the \ac{GP}-based model reaches that level of bias only \result{Z}\% of the time, 
+and the \plp{} model reaches the same level of bias $\variable{output/PLP_bias_percent.txt}\%$ 
 of the time.
 
 This bias is not due to the need to know the morphology of the mass distribution \emph{a priori}, as the \ac{GP}-based model recovers the correct value of \Ho{} despite making minimal assumptions about the mass distribution: the true value is recovered at the $\variable{output/nonparh0offset.txt}\sigma$ level.
