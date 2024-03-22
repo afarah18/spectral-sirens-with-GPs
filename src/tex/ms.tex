@@ -8,7 +8,7 @@
 \acsetup{patch/longtable=false}
 
 
-\DeclareAcronym{LVK}{short=LVK, long=LIGO Virgo KAGRA}
+\DeclareAcronym{LVK}{short=LVK, long=LIGO-Virgo-KAGRA}
 \DeclareAcronym{O5}{short=O5, long=the fifth LIGO Virgo KAGRA observing run}
 
 \DeclareAcronym{GW}{short=GW, long=gravitational wave}
@@ -51,13 +51,14 @@
 % Abstract
 \begin{abstract}
 \Acp{GW} from merging compact objects are the only transient sources that encode direct information about their luminosity distances. 
-Paired with their redshifts, a Hubble diagram can be constructed to probe the Universe's expansion.  
-``Spectral sirens'' use features in the mass distribution of \ac{GW} sources to extract this redshift information without the need for accompanying electromagnetic observations.
-So far, this technique has only been applied with simple parametric representations of the mass distribution. 
-However, the use of an incorrect mass model inevitably leads to biases in the cosmological inference, an acute problem given our current lack of understanding of the true source population.
-Furthermore, it is commonly presumed that the exact shape of the mass distribution must be known \emph{a priori} to obtain unbiased measurements of cosmological parameters with the spectral siren methodology.
+Once paired with their redshifts, a Hubble diagram can be constructed to directly probe the Universe's expansion.
+This can be done in the absence of any electromagnetic information: features in the mass distribution of \ac{GW} can provide self-calibrating redshift measurements without the need for an accompanying electromagnetic transient or catalog of potential host galaxies.
+\sout{So far, this technique has only been applied with simple parametric representations of the mass distribution. 
+However, the use of an incorrect mass model inevitably leads to biases in the cosmological inference, an acute problem given our current lack of understanding of the true source population.}
+It is commonly presumed, however, that the exact shape of the mass distribution must be known \emph{a priori} to obtain unbiased measurements of cosmological parameters in this fashion.
 We demonstrate that prior knowledge of the \ac{GW} source mass distribution is not necessary in order to accurately infer cosmological parameters with spectral sirens.
-We do this by constructing a flexible, Gaussian process-based model for the \ac{GW} source population to analyze simulated \ac{GW} data consistent with expectations for the next \acl{LVK} observing run.
+By adopting a flexible, Gaussian-process model for the mass distribution of compact binaries, we find that we can accurately and agnostically learn this mass distribution while simultaneously measuring parameters governing cosmological expansion.
+We demonstrate this analyses using a simulated catalog of $10^3$ gravitational-wave events consistent with expectations for the next \acl{LVK} observing run.
 We find that both the source mass model and cosmological parameters are correctly reconstructed, and predict a $\variable{output/nonparh0percent.txt}\%$ measurement of \Ho{} and a $\variable{output/Hz_percent.txt}\%$  measurement of $H(z=\variable{output/mostsensitivez.txt})$ ($1\sigma$ uncertainties).
 This astrophysics-agnostic spectral siren technique will be key to deliver precise and unbiased cosmological constraints with future observations and in the presence of redshift evolution of the mass spectrum.  
 \end{abstract}
@@ -89,25 +90,31 @@ This astrophysics-agnostic spectral siren technique will be key to deliver preci
 
 Like light, \acp{GW} are redshifted as they propagate across the universe, thereby becoming imprinted with the cosmic expansion history.
 Unlike light, however, the form of \ac{GW} signals are known from first principles and their selection effects are extremely well understood.
-This allows for a precise estimate of each \ac{GW} catalogs' completeness and an unbiased measurement of the true \ac{GW} population. 
-Additionally, the \ac{GW} signals detected by the LIGO \citep{aasi_advanced_2015}, Virgo \citep{acernese_advanced_2014}, and KAGRA \citep{akutsu_overview_2021} detectors provide direct measurements of the distance to their sources.
-This makes them ``standard sirens'': powerful probes of cosmological parameters that circumvent the cosmological distance ladder~\citep{schutz_determining_1986,holz_using_2005}. 
+This allows for a precise estimate of each \ac{GW} catalogs' completeness and an unbiased measurement of the true \ac{GW} source population~\citep{2023PhRvX..13d1039A,abbott_population_2023,2023PhRvD.108d3011E}. 
+Additionally, the \ac{GW} signals observed by the LIGO, Virgo, and KAGRA detectors~\citep{aasi_advanced_2015,acernese_advanced_2014,akutsu_overview_2021}  provide direct measurements of the distance to their sources.
+This makes them ``standard sirens'': direct probes of cosmological parameters that circumvent the need for a cosmological distance ladder~\citep{schutz_determining_1986,holz_using_2005}. 
 This is particularly useful in the context of the current ``Hubble tension'': a disagreement between multiple methods of measuring the local expansion rate of the universe with electromagnetic observations \citep{freedman_measurements_2021}.
 
-A well-known application of standard sirens was the multi-messenger event GW170817 \citep{abbott_multi-messenger_2017}, whose clear association with a host galaxy provided a precise redshift measurement, allowing for a direct measurement of the Hubble constant, \Ho{} \citep{ abbott_gravitational-wave_2017}.
-External redshift information can also come from galaxy catalogs, which provide redshift distributions for each \ac{GW} signal, allowing for a probabilistic measurement of \Ho{} when multiple \ac{GW} detections are combined \citep[e.g.][]{del_pozzo_inference_2012, chen_two_2018, fishbach_standard_2019, gray_cosmological_2020, gwtc3_cosmo, gair_hitchhikers_2023}.
+Cosmological measurements with gravitational waves traditionally require independent electromagnetic measurement of source redshifts.
+A well-known demonstration was the multi-messenger event GW170817 \citep{abbott_multi-messenger_2017,coulter_swope_2017,valenti_discovery_2017,2017ApJ...848L..27T}, whose clear association with a host galaxy provided a precise redshift measurement and allowed for a direct measurement of the Hubble constant, \Ho{} \citep{abbott_gravitational-wave_2017}.
+External redshift information can also come from galaxy catalogs, which provide redshift distributions for each \ac{GW} signal and allow for a probabilistic measurement of \Ho{} when multiple \ac{GW} detections are combined \citep[e.g.][]{del_pozzo_inference_2012, chen_two_2018, fishbach_standard_2019, gray_cosmological_2020, gwtc3_cosmo, gair_hitchhikers_2023}.
 
-However, external information about \ac{GW} source redshifts need not be available in order to use them as standard sirens.
+However, external electromagnetic information about \ac{GW} source redshifts need not be available in order to use them as standard sirens.
 \ac{GW} signals provide direct measurements of each source's luminosity distance, $d_L$, and redshifted, or detector frame, masses, $m_{\det}= m_{\source}(1+z)$ \citep[e.g.][]{chen_mass-redshift_2019}.
-Therefore, if the source frame mass is known, each event provides a direct mapping between luminosity distance and redshift, allowing for a measurement of the rate of expansion of the universe at the time the \ac{GW} signal was emitted, $H(z)$.
-In practice, unless tidal information is available \citep{messenger_measuring_2012}, the source frame mass is unknown.
-However, it is possible to know the location of features in the source frame mass distribution.
-The whole mass distribution therefore acts similarly to an electromagnetic spectrum, where the location of spectral features provides a redshift measurement.
-The method of using the mass distribution of \ac{GW} sources to measure cosmological parameters has therefore been coined ``spectral sirens'' \citep{ezquiaga_spectral_2022}.
-Spectral sirens were first demonstrated to be a feasible method to measure the Hubble constant by \cite{chernoff_gravitational_1993,Taylor:2011fs} using the binary neutron star mass distribution, and extended to the \ac{BBH} mass distribution by \cite{farr_future_2019}. 
-Spectral siren analyses have since been implemented by the LIGO--Virgo--KAGRA Collaborations using the latest \ac{GW} catalog \cite{gwtc3_cosmo}.
+Therefore, if the source frame mass is known, each event provides a direct mapping between luminosity distance and redshift, allowing for a measurement of the expansion of the universe at the time the \ac{GW} signal was emitted, $H(z)$.
 
-Perhaps because of the analogy to electromagnetic spectra in which the location of the source frame spectral features is well-known, or because of the examples given in \cite{farr_future_2019} and \cite{chernoff_gravitational_1993}, it is commonly presumed that the exact shape of the mass distribution must be known \emph{a priori} to do this measurement, from theoretical expectations of e.g. the location of a pulsational-pair instability pileup, upper mass gap, or maximum neutron star mass. 
+In practice, the source-frame masses of individual events are not known~\citep[unless tidal information is available][]{messenger_measuring_2012}.
+It is, however, possible to regard the \textit{population} of compact binaries at large and use known features in their source-frame mass distribution to obtain self-calibrated redshift estimates.
+The full mass distribution therefore acts analogously to an electromagnetic spectrum, in which the apparent locations of spectral features provide a redshift measurement.
+The method of using the mass distribution of \ac{GW} sources to measure cosmological parameters has therefore been coined ``spectral sirens'' \citep{ezquiaga_spectral_2022}.
+
+Spectral sirens were first demonstrated to be a feasible method to measure the Hubble constant by \cite{chernoff_gravitational_1993} and \cite{Taylor:2011fs} using the binary neutron star mass distribution, and extended to the \ac{BBH} mass distribution by \cite{farr_future_2019}. 
+Spectral siren analyses have since been implemented by the LIGO--Virgo--KAGRA Collaborations using the latest \ac{GW} catalog \citep{gwtc3_cosmo}.
+
+Perhaps because of the analogy to electromagnetic spectra, in which the locations of source-frame spectral features are often known from first principles, it is commonly presumed that the exact shape of the mass distribution must be known \emph{a priori} to perform a spectral siren redshift measurement.
+Indeed, first principles models for the mass distribution of merging compact binaries are not available: significant theoretical uncertainties exist on the shapes, locations, and very existences of predicted features like a ``pile-up'' due to pulsational-pair instability, a pair-instability-driven upper mass gap, or the maximum neutron star mass.
+To this end, spectral siren cosmology\footnote{And also statistical cosmological measurements leveraging galaxy catalogs.} relies on \textit{simultaneously} measuring a source-frame mass spectrum alongside cosmological parameters.
+
 This would certainly be problematic, as mismodeling of the specific feature would hinder the accuracy of the method and introduce biases in the cosmological inference \citep{Mukherjee:2021rtw,mastrogiovanni_importance_2021,pierra_study_2023}.
 Such systematic bias is illustrated in Figure~\ref{fig:O5_GP}, where we show the result of fitting simulated data with a model that has the true mass distribution contained within its prior and one that does not. 
 The latter does not accurately infer the true value of \Ho{}, whereas the former does.
@@ -361,11 +368,13 @@ Because \ac{GW} observations are the only data input to spectral sirens, they ar
 We have shown this by simultaneously measuring \Omm{} and \Ho{}, but the method can be trivially extended to constrain other cosmological parameters that govern $H(z)$, such as the dark energy equation of state parameter, $w$. 
 We find that spectral sirens will be most sensitive to $z=\variable{output/mostsensitivez.txt}$ during \acf{O5}.
 This redshift is larger than the expected redshifts of detectable electromagnetic counterparts of binary neutron star mergers ~\citep{kiendrebeogo_updated_2023}, which can only be detected relatively locally.
+\comment{Projected DESI errors are $\sim3\%$ at $z=1$, which are comparable with our estimated error of $\variable{output/Hz_percent.txt}\%$, but those won't be realized until 202X.}
 This means that upgrades to current \ac{GW} detectors will allow the spectral siren method to probe $H(z)$ at otherwise unexplored distances by \acp{GW}. 
 Proposed next generation \ac{GW} detectors such as Cosmic Explorer and Einstein Telescope will be sensitive to \acp{CBC} across cosmic time (up to $z\sim100$).
 At that time, cosmological surveys such as those enabled by the Nancy Grace Roman Space Telescope and the Vera Rubin Observatory are expected to be able to precisely measure $H(z)$ to $z\sim3$ \citep{spergel_wide-field_2015}, making the spectral siren method uniquely positioned to measure the expansion of the universe at high redshift.
 When combined with other standard siren methods, the low-redshift expansion will also be well-constrained \citep{Chen:2024gdn}.
 While the sensitivity to high redshifts is a feature of the spectral siren method in general, non-parametric methods such as the one presented here will be imperative to avoid systematic biases as next-generation detectors provide additional data. 
+ 
 
 \begin{acknowledgments}
     The authors thank Reed Essick, Utkarsh Mali, Ben Farr, Maya Fishbach, Colm Talbot,  for helpful conversations. 
