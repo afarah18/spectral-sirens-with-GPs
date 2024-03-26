@@ -207,13 +207,13 @@ def PLP(m1det,dL,m1det_inj,dL_inj,log_pinj,log_PE_prior=0.,remove_low_Neff=False
     mmin = numpyro.sample("mmin",dist.Uniform(1.0,20.0))
     mmax = numpyro.sample("mmax",dist.Uniform(30.0,100.0))
     alpha = numpyro.sample("alpha",dist.Normal(0,5))
-    mu_m1 = numpyro.sample("mu_m1",dist.Uniform(20,60))
-    sig_m1 = numpyro.sample("sig_m1",dist.Uniform(1,10))
+    mu_m1 = numpyro.sample("mu_m1",dist.Uniform(20,60))# TRUEVALS['mu_m1']
+    sig_m1 = numpyro.sample("sig_m1",dist.Uniform(1,10))# TRUEVALS['sig_m1']
     f_peak = TRUEVALS['f_peak'] #numpyro.sample("f_peak",dist.Uniform(0,1))
     #Fixed
-    alpha_z = numpyro.sample("alpha_z",dist.Uniform(0,2))#TRUEVALS['alpha_z']#
-    zp = numpyro.sample("zp",dist.Uniform(0,5)) #TRUEVALS['zp']#
-    beta = numpyro.sample("beta_z",dist.Uniform(0,5)) #numpyro.deterministic('beta',TRUEVALS['beta_z'])# 
+    alpha_z = TRUEVALS['alpha_z']#numpyro.sample("alpha_z",dist.Uniform(0,2))
+    zp = TRUEVALS['zp']#numpyro.sample("zp",dist.Uniform(0,5)) #
+    beta = TRUEVALS['beta_z'] #numpyro.sample("beta_z",dist.Uniform(0,5)) #numpyro.deterministic('beta',TRUEVALS['beta_z'])# 
 
     # convert event data to source frame
     z = jgwcosmo.z_at_dl_approx(dL,H0,Om0,zmin=ZMIN,zmax=ZMAX+8.)
