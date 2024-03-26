@@ -29,6 +29,8 @@ SIGMA_DL = 1000
 SNR_THRESH=8.
 NUM_INJ=N_SOURCES*50*30
 
+perf_meas = False
+
 # random number generators
 np_rng = np.random.default_rng(516)
 
@@ -89,13 +91,20 @@ if  __name__ == "__main__":
     np.save(paths.data / "gw_data/log_pinj_det.npy",log_pinj_det)
     
     ## find events and generate mock PE
-    m1z_PE, m2z_PE, dL_PE, log_PE_prior = gen_snr_scaled_PE(np_rng,m1s_true,m1s_true,dL_true/1000,osnr_interp,
+    m1z_PE, m2z_PE, dL_PE, log_PE_prior, det_dict = gen_snr_scaled_PE(np_rng,m1s_true,m1s_true,dL_true/1000,osnr_interp,
                                                             reference_distance,N_SAMPLES_PER_EVENT,H0_FID,OM0_FID,
                                                             # errors taken from Jose's "gwutils.py" for O5
                                                             mc_sigma=3.0e-2,eta_sigma=5.0e-3,theta_sigma=5.0e-2, snr_thresh=SNR_THRESH,
-                                                            return_og=False)
+                                                            return_og=True)
 
     dL_PE *= 1000 # unit matching
+    if perf_meas:
+        # overwrite PE samples with the true values for each event, adding a dimension so that 
+        # later array operations still work
+        m1z_PE = np.expand_dims(det_dict['m1'] * (1 + det_dict['z']),1)
+        m2z_PE = np.expand_dims(det_dict['m2'] * (1 + det_dict['z']),1)
+        dL_PE = np.expand_dims(det_dict['lum_dist'], 1)
+        log_PE_prior = 0
 
     # cut out samples below SNR interpolation range. 
     # It is very unlikely that any samples are down there, but we do this just in case.
