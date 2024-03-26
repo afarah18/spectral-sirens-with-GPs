@@ -279,7 +279,7 @@ To illustrate this, we use three different models for the source-frame mass dist
 The three models are as follows:
 \begin{enumerate}
     \item the \plp{} model, which includes the true mass distribution within its hyper-prior,
-    \item a broken power law\footnote{This is not the same as the \textsc{Broken Power Law} model presented in \citet{abbott_population_2021}, as we do not employ a high-mass truncation.}, which does not include the true mass distribution within its hyper-prior, and 
+    \item a broken power law\footnote{This differs from the \textsc{Broken Power Law} model presented in \citet{abbott_population_2021}, as we do not employ a high-mass truncation.}, which does not include the true mass distribution within its hyper-prior, and 
     \item the flexible, \ac{GP}-based model described in Section~\ref{sec:model}, which is able to closely approximate the morphology of the true mass distribution, along with many other morphologies.
 \end{enumerate}
 For all models considered in this work, we assume the redshift distribution described in Equation~\ref{eq:underlying redshift dist}.
@@ -290,7 +290,7 @@ We indicate the true underlying source mass distribution and \Ho{} value with so
 We find that using a parametric model of the same form as the true simulated distribution (\plp) recovers the injected value of \Ho{} within $\variable{output/PLPh0offset.txt}\sigma$.
 However, when using a model that cannot accurately represent the true shape of the mass distribution, we recover a biased estimate of \Ho: the true value is offset from the mean of the posterior by $\variable{output/BPLh0offset.txt}\sigma$.
 We have repeated this analysis with 50 separate simulated catalogs of $\sim500$ events, and found that the broken power law model produces an overestimate of \Ho{} at greater than $1\sigma$ $\variable{output/BPL_bias_percent.txt}\%$ of the time of the time, %whereas the \ac{GP}-based model reaches that level of bias only \result{Z}\% of the time, 
-and the \plp{} model reaches the same level of bias $\variable{output/PLP_bias_percent.txt}\%$ 
+and the \plp{} model reaches the same level of bias only $\variable{output/PLP_bias_percent.txt}\%$ 
 of the time.
 
 This bias is not due to the need to know the morphology of the mass distribution \emph{a priori}, as the \ac{GP}-based model recovers the correct value of \Ho{} despite making minimal assumptions about the mass distribution: the true value is recovered at the $\variable{output/nonparh0offset.txt}\sigma$ level.
@@ -377,6 +377,7 @@ As this tension can only be explained by non-standard physics or yet-unknown sys
     
 We have also predicted a $\variable{output/nonparh0percent.txt}\%$ measurement of \Ho{} after one year of observing with the \ac{LVK} network's design sensitivity using non-parametric spectral sirens and a $\variable{output/PLPh0percent.txt}\%$ 
 measurement with parametric spectral sirens, demonstrating an increase in precision when using the correct parametric model.
+\comment{These numbers are placeholders for now and will be updated in the next version.}
 However, the true population of merging compact binaries in the Universe is unknown because neither the mechanism from which compact binaries were formed, nor the physical processes within that mechanism has been conclusively determined.
 It is therefore impossible to know the true functional form of the mass distribution, so systematic uncertainties arising from an incorrect choice for the form of the mass distribution are inevitable.
 With current observations, these systematic effects are dwarfed by statistical uncertainties.
