@@ -67,15 +67,13 @@ overleaf:
   gh_actions_sync: true
   # List of files to push to Overleaf
   push:
-    #- src/tex/figures
-    #- src/tex/output
+    - src/tex/figures
+    - src/tex/output
   # List of files to pull from Overleaf
   pull:
     - src/tex/ms.tex
     - src/tex/bib.bib
     - src/tex/macros.sty
-    - src/tex/output
-    - src/tex/figures
 
 # Always require all input files to be present on disk for workflow to pass?
 require_inputs: true
