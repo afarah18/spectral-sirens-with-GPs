@@ -74,6 +74,8 @@ overleaf:
     - src/tex/ms.tex
     - src/tex/bib.bib
     - src/tex/macros.sty
+    - src/tex/output
+    - src/tex/figures
 
 # Always require all input files to be present on disk for workflow to pass?
 require_inputs: true
