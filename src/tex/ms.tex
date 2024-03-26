@@ -74,7 +74,7 @@ This astrophysically-agnostic spectral siren technique will be essential to arri
 \begin{figure*}
     \centering
     \includegraphics[width=\textwidth]{figures/O5_pm.pdf}
-    \caption{Spectral siren measurement for an \ac{O5}-like catalog with the correct parametric model (\plp, green), a deliberately incorrect parametric model (broken power law, orange) and the non-parametric model presented in this work (\acl{GP}, blue).
+    \caption{Spectral siren measurement for a simulated catalog with the correct parametric model (\plp, green), a deliberately incorrect parametric model (broken power law, orange) and the non-parametric model presented in this work (\acl{GP}, blue).
     The left panel shows the recovered source frame primary mass distribution for each model, and the simultaneously-inferred posteriors on \Ho{} are shown in the right panel.
     The mass distribution and \Ho{} value used to generate the data are shown by a solid black line in each panel. 
     The deliberately incorrect parametric model fails to recover the true mass distribution and therefore produces a biased estimate of \Ho{}, whereas both the correct and non-parametric models recover  the mass distribution and \Ho{}.
@@ -278,7 +278,7 @@ We then demonstrate that our flexible model alleviates this bias without the nee
 To illustrate this, we use three different models for the source-frame mass distribution to infer the cosmic expansion rate from the simulated catalog described in Section~\ref{sec:data generation} and Appendix~\ref{ap:data generation}.
 The three models are as follows:
 \begin{enumerate}
-    \item the \plp{} model, which includes the true mass distribution within its hyper-prior,
+    \item \plp{}, which includes the true mass distribution within its hyper-prior,
     \item a broken power law\footnote{This differs from the \textsc{Broken Power Law} model presented in \citet{abbott_population_2021}, as we do not employ a high-mass truncation.}, which does not include the true mass distribution within its hyper-prior, and 
     \item the flexible, \ac{GP}-based model described in Section~\ref{sec:model}, which is able to closely approximate the morphology of the true mass distribution, along with many other morphologies.
 \end{enumerate}
@@ -377,7 +377,7 @@ As this tension can only be explained by non-standard physics or yet-unknown sys
     
 We have also predicted a $\variable{output/nonparh0percent.txt}\%$ measurement of \Ho{} after one year of observing with the \ac{LVK} network's design sensitivity using non-parametric spectral sirens and a $\variable{output/PLPh0percent.txt}\%$ 
 measurement with parametric spectral sirens, demonstrating an increase in precision when using the correct parametric model.
-\comment{These numbers are placeholders for now and will be updated in the next version.}
+\comment{[These numbers are placeholders for now and will be updated in the next version.]}
 However, the true population of merging compact binaries in the Universe is unknown because neither the mechanism from which compact binaries were formed, nor the physical processes within that mechanism has been conclusively determined.
 It is therefore impossible to know the true functional form of the mass distribution, so systematic uncertainties arising from an incorrect choice for the form of the mass distribution are inevitable.
 With current observations, these systematic effects are dwarfed by statistical uncertainties.
