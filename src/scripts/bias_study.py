@@ -16,7 +16,7 @@ jax.config.update("jax_enable_x64", True)
 
 # options
 N_CATALOGS=50
-N_SOURCES = N_SOURCES//2 # cut catalogs in half for this study, for computational feasibility
+N_SOURCES = N_SOURCES#//2 # cut catalogs in half for this study, for computational feasibility
 plot = True
 
 # random number generators
@@ -77,9 +77,11 @@ for i in trange(N_CATALOGS):
 percent_bias_PLP = np.sum(bias_PLP>1)/N_CATALOGS * 100
 percent_bias_BPL = np.sum(bias_BPL>1)/N_CATALOGS * 100
 with open(paths.output / "PLP_bias_percent.txt", "w") as f:
-    print(f"{percent_bias_PLP:.1f}", file=f)
+    print(f"{percent_bias_PLP:.0f}", file=f)
 with open(paths.output / "BPL_bias_percent.txt", "w") as f:
-    print(f"{percent_bias_BPL:.1f}", file=f)
+    print(f"{percent_bias_BPL:.0f}", file=f)
+np.savetxt(paths.data / "bias/bias_PLP.txt",bias_PLP)
+np.savetxt(paths.data / "bias/bias_BPL.txt",bias_BPL)
 
 if plot:
     plt.xlabel("H0")
