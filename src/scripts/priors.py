@@ -279,7 +279,7 @@ def BPL(m1det,dL,m1det_inj,dL_inj,log_pinj,log_PE_prior=0.,remove_low_Neff=False
 
     # mass dist
     mmin = numpyro.sample("mmin",dist.Uniform(1.0,20.0))
-    mmax = numpyro.sample("mmax",dist.Uniform(30.0,100.0))
+    mmax = numpyro.sample("mmax",dist.Uniform(30.0,100.0)) # 225
     alpha1 = numpyro.sample("alpha1",dist.Normal(0,5))
     alpha2 = numpyro.sample("alpha2",dist.Normal(0,5))
     b_m1 = numpyro.sample("b_m1",dist.Uniform(20,100))
