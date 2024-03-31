@@ -259,7 +259,7 @@ Kernels themselves have parameters that determine their properties.
 In our use case, these are one level further removed from hyper-parameters, so we adopt the terminology used in \citet{callister_parameter-free_2023} and call them ``hyper-hyper-parameters.''
 We fit these hyper-hyper-parameters along with the hyper-parameters $\Lambda$ to minimize prior assumptions about the form of the mass distribution.
 
-\begin{figure}
+\begin{figure*}
     \centering
     \includegraphics{figures/GP_example.pdf}
     \caption{Draws from the \acf{GP} used to model the mass distribution.
@@ -267,7 +267,7 @@ We fit these hyper-hyper-parameters along with the hyper-parameters $\Lambda$ to
     The posterior draws in the right panel are a subset of those used to create the 90\% credible intervals in Figure~\ref{fig:O5_GP}.}
     \label{fig:GP example}
     \script{GP_example_plot.py}
-\end{figure}
+\end{figure*}
 
 \section{Results}
 \label{sec:results}
