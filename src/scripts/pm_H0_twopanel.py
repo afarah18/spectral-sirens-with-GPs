@@ -83,5 +83,5 @@ def two_panel(path, path_PLP, path_BPL, hyperparam='H0'):
     plt.clf()
 
 two_panel(paths.data / "mcmc_nonparametric.nc4", 
-          paths.data / "mcmc_parametric_PLP_fitz.nc4",
-          paths.data / "mcmc_parametric_BPL_fitz.nc4")
+          paths.data / "bias/mcmc_parametric_PLP_16.nc4",
+          paths.data / "bias/mcmc_parametric_BPL_16.nc4")
