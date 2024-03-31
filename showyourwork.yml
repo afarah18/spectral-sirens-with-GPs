@@ -67,9 +67,8 @@ overleaf:
   gh_actions_sync: true
   # List of files to push to Overleaf
   push:
-    #- src/tex/figures
-    #- src/tex/output
-    - src/tex/figures/GP_example.pdf
+    - src/tex/figures
+    - src/tex/output
   # List of files to pull from Overleaf
   pull:
     - src/tex/ms.tex
