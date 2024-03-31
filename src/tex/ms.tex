@@ -60,7 +60,7 @@ When paired with a redshift measurement, this enables standard-siren cosmology: 
 This can be done in the absence of electromagnetic measurements, as features in the mass distribution of \ac{GW} sources provide self-calibrating redshift measurements without the need for a definite (bright siren) or probabilistic (dark siren) host galaxy association. 
 This ``spectral siren'' technique has thus far only been applied with simple parametric representations of the mass distribution. 
 However, the use of an inaccurate representation leads to biases in the cosmological inference, an acute problem given the current uncertainties in true source population.
-Furthermore, it is commonly presumed that the exact shape of the mass distribution must be known \emph{a priori}\/ to obtain unbiased measurements of cosmological parameters in this fashion.
+Furthermore, it is commonly presumed that the form of the mass distribution must be known \emph{a priori}\/ to obtain unbiased measurements of cosmological parameters in this fashion.
 Here, we demonstrate that spectral sirens can accurately infer cosmological parameters without such prior assumptions.
 We apply a flexible, non-parametric model for the mass distribution of compact binaries to a simulated catalog of 1,000 \ac{GW} signals, consistent with expectations for the next \acl{LVK} observing run.
 We find that, despite our model's flexibility, both the source mass model and cosmological parameters are correctly reconstructed.
@@ -89,7 +89,7 @@ Therefore, if the source frame mass is known, each \ac{GW} signal provides a dir
     The left panel shows the recovered source frame primary mass distribution for each model, and the simultaneously-inferred posteriors on \Ho{} are shown in the right panel.
     The mass distribution and \Ho{} value used to generate the data are shown by a solid black line in each panel. 
     The deliberately incorrect parametric model fails to recover the true mass distribution and therefore produces an estimate of \Ho{} that is offset from the true value, whereas both the correct and non-parametric models recover the mass distribution and \Ho{}.
-    As the true mass distribution is unknown for real observations, using a non-parametric model mitigates systematic uncertainty that would otherwise arise from mismodeling the \ac{CBC} population, though it does introduce additional statistical uncertainty.
+    As the true mass distribution is unknown for real observations, using a non-parametric model mitigates systematic uncertainty that would otherwise arise from mismodeling the \ac{CBC} population.
     }
     \label{fig:O5_GP}
     \script{pm_H0_twopanel.py}
@@ -138,9 +138,9 @@ Section~\ref{sec:model} describes the non-parametric mass distribution we develo
 In Section~\ref{sec:results}, we present the results of using parametric and non-parametric mass distributions, as well as projections for future constraints on $H(z)$.
 We discuss the implications of our results and outline future work in Section~\ref{sec:discussion}.
 
-The code used to generate all simulated data, perform the population inference, and create all figures in this paper is made publicly available at \GitHubURL{}, and was enabled by the \showyourwork package \citep{Luger2021}.
+The code used to generate all simulated data, perform the population inference, and create all figures in this paper is made publicly available at \url{https://github.com/afarah18/spectral-sirens-with-GPs}. %\GitHubURL{}, and was enabled by the \showyourwork package \citep{Luger2021}.
 
-\section{Cosmology with an astrophysically-agnostic mass distribution model}
+\section{Cosmology with an astrophysically-agnostic mass model}
 \label{sec:methods}
 
 The spectral siren method of measuring cosmological parameters relies on the assumption that either all compact binaries follow the same mass distribution at all redshifts, or that any redshift evolution of the mass distribution does not perfectly mimic cosmology \citep[i.e. all features do not simultaneously exhibit an {\em identical}\/ monotonic rightward shift with redshift;][]{ezquiaga_spectral_2022}.
@@ -226,54 +226,48 @@ The full set of hyper-parameters therefore includes the cosmological parameters 
 In this work, we fix $\Omega_\Lambda=1-\Omega_M, \Omega_r=0$ and $w=-1$ and use uniform priors on \Ho{} and \Omm{}, corresponding to a flat $\Lambda$CDM cosmology.
 
 Algorithmically, we evaluate the likelihood in Equation~\ref{eq:inhomog-poisson} by drawing \Ho{} and \Omm{} from their prior distributions (contained in $p(\Lambda)$), use them to define a relationship between luminosity distance and redshift, transform detector-frame masses to source-frame masses according to $m_{\det} /(1+z(D_L,H_0,\Omega_M)) = m_{\source}$, evaluate the source-frame mass distribution at these transformed values ($\diff N/\diff t_{\det} \diff \theta_i (\theta_i;\Lambda)$ for events and $N_{\text{exp}}(\Lambda)$ for injections), and then take the product of these terms to evaluate the expression in Equation~\ref{eq:inhomog-poisson}.
-The full process is outlined in the next subsection.
+The full process is outlined in Appendix~\ref{ap:GP}.
 
 %%  Wrap up with discussion of GP priors and simplifying assumptions.
 \subsection{\Acl{GP}-based mass distribution}
 \label{sec:model}
 
-Practically, the difference in the inference of the population when using a \ac{GP} versus other modeling choices is that the population model ($\diff N/\diff t_{\det} \diff \theta_i (\theta_i;\Lambda)$ in Equation~\ref{eq:inhomog-poisson}) is determined directly by a realization of the \ac{GP}, rather than by a handful of hyper-parameters $\Lambda$ and evaluated on an analytical function.
-In other words, when using parametric models, $\diff N/\diff t_{\det} \diff \theta_i (\theta_i;\Lambda)$ is calculated by evaluating a specific functional form described by a small set of hyper-parameters. 
+In this Section, we give an overview of the non-parametric mass model developed for this work.
+Further details on this model, including an introduction to \acp{GP} and a discussion of their properties is given in Appendix~\ref{ap:GP}. 
+
 With the \ac{GP} approach, the hyper-parameters describing the mass distribution are the rate at each event-level posterior sample's source frame mass, and the rate at each found injection's source frame mass.
 The \ac{GP} \emph{is} $p(\Lambda)$, the prior on population parameters (except in the case of cosmological parameters, which all have uniform priors).
+This is demonstrated in Figure~\ref{fig:GP example}, where the left panel shows draws from a \ac{GP}, which are prior draws for the population inference.
+The smooth appearance of individual draws from the population prior, as well as the absence of overdensities at specific source frame mass values in the full prior distribution shown in Figure~\ref{fig:GP example} demonstrate that we have successfully fulfilled our goal to construct a model without predefined features in source-frame mass.
+Combined with the population likelihood in Equation~\ref{eq:inhomog-poisson} the prior illustrated in the left panel of Figure~\ref{fig:GP example} gives the population posterior in the right panel.
 
-% The source frame mass is different for each possible value of \Ho{} and \Omm{}, so the hyper-parameters are defined in different locations for each draw from the hyper-posterior.
-In this way, our \ac{GP}-based mass distribution is similar to the autoregressive population models used in~\citet{callister_parameter-free_2023}.
-Indeed, an autoregressive process is a \ac{GP} with a particular choice of kernel, which we describe below.
-We therefore have $N_{\text{ev}}M + N_{\text{inj}}$ mass hyper-parameters, where $M$ is the number of posterior samples per event and $N_{\text{inj}}$ is the number of injections used to calculate the selection function~\citep[see e.g.][]{vitale_inferring_2020,talbot,essick_estimating_2021}.
-We label these $\{\mathcal{R}_{ij},\mathcal{R}_k\}$, and our full set of hyper-parameters is $\Lambda=\{H_0, \Omega_M, \mathcal{R}_{ij},\mathcal{R}_k\}$. 
-As the hyper-parameters differ at each data point, we have successfully fulfilled our goal to construct a model without predefined features in source-frame mass.
-We note that other non-parametric methods may be adapted to avoid such predefined features, such as fitting for the locations of their features simultaneously with the rest of the inference \citep[e.g.][]{tiwari_vamana_2021} or, in the case of splines, by using a smoothing function that allows for features to occur at arbitrary locations appropriate smoothing \citep[e.g.][]{edelman_cover_2023}. 
+The lack of data just below the minimum black hole mass and just above the maximum black hole mass, combined with the fact that \ac{GW} detectors are sensitive to objects at those masses, causes the \ac{GP} to learn a relatively low merger rate at the edges of the mass distribution. 
+On the other hand, there is both a lack of data and little detector sensitivity at masses above $\sim100\Msun$ and below $\sim5\Msun$.
+The mass distribution is therefore uninformed in this region and the \ac{GP} reverts to its prior distribution, which resembles random scatter around the mean differential merger rate.
+Similar effects can be seen in other non-parametric methods \citep{edelman_cover_2023, callister_parameter-free_2023}.
+% Indeed, the upper edge of the mass distribution is very informative to the \Ho{} constraint with current detections \citep{gwtc3_cosmo}.
+The combination of these two effects results in what appears as an uptick in the merger rate below $\sim5\Msun$ and above $\sim100\Msun$.
+However, this reversion to the prior is uninformative for the \Ho{} constraint and does not affect inference on cosmological parameters.
+Additionally, the posterior on \Ho{} is distinct from its prior distribution (uniform in the range $[30\Hunits,120\Hunits]$, indicating that the data is informative despite the flexibility of the population model.
+
+We note that other non-parametric methods may be adapted to avoid predefined features, such as fitting for the locations of their features simultaneously with the rest of the inference \citep[e.g.][]{tiwari_vamana_2021} or, in the case of splines, by using a smoothing function that allows for features to occur at arbitrary locations appropriate smoothing \citep[e.g.][]{edelman_cover_2023}. 
 % Such adaptations are necessary to avoid circular inference.
 
 The smoothness of a given \ac{GP} is determined by its kernel, which is a function that defines the covariance between input points in the \ac{GP} (in our case, two source frame mass values). 
 It defines the notion of similarity between adjacent points and thereby encodes our assumptions about the smoothness of the source frame mass distribution \citep{rasmussen_gaussian_2006}.
-We use a Mat\'ern kernel \citep{handcock_bayesian_1993, stein_interpolation_1999} with $\nu = 5/2$, but have repeated the analysis with $\nu=3/2$ and $\infty$, finding little impact on the results, except that the $\nu=\infty$ case (also called the squared exponential kernel) produces a slightly more jagged mass distribution.
-In addition to the mean, Mat\'ern kernels have two parameters that determine their properties: a length scale $l$ and a variance $s$.
+Kernels themselves have parameters that determine their properties.
 In our use case, these are one level further removed from hyper-parameters, so we adopt the terminology used in \citet{callister_parameter-free_2023} and call them ``hyper-hyper-parameters.''
 We fit these hyper-hyper-parameters along with the hyper-parameters $\Lambda$ to minimize prior assumptions about the form of the mass distribution.
-We use penalized-complexity priors on the hyper-hyper-parameters to enforce that the model does not create small-scale structure uninformed by data, thereby avoiding over-fitting \citep{simpson_penalising_2017,simpson_garcpas_2022}. 
-Explicitly, the priors on $l$ and $s$ are Fr\'echet and Gamma distributions, respectively, and are defined to have less than 5\% support for correlation lengths smaller than the average spacing between event-level posterior means.
 
-The time to evaluate a \ac{GP} is notorious for scaling as the cube of the number of data points, making \acp{GP} unwieldy with large data sets, such as the $\mathcal{O}(10^9)$ posterior samples and software injections expected for \ac{O5}.
-We therefore make two approximations to a full \ac{GP} to increase computational efficiency.
-First, for each likelihood evaluation, we evaluate a full \ac{GP} on a regular grid between $0.1\Msun$ and $250\Msun$ and then interpolate it at each data point.
-Second, we use the quasi-separability of Mat\'ern kernels to analytically perform the transformation between covariance matrix and \ac{GP} draw.
-This second step is done using the \texttt{QuasisepSolver} module \citep{foreman-mackey_fast_2017} in the \texttt{tinygp} code base \citep{foreman-mackey_tinygp_2021}, and requires data to be sortable (i.e. one-dimensional).
-
-Algorithmically, each posterior evaluation contains the following steps: \variable{output/priors_placeholder.txt}
-\begin{enumerate}
-\script{nonparametric_inference.py}
-    \item Draw cosmological parameters \Ho{} and \Omm{} from uniform prior distributions.
-    \item Convert the luminosity distances and detector-frame masses of each event posterior sample to redshifts and source-frame masses according to the cosmology specified by step 1.
-    \item Draw hyper-hyper-parameters $l$ and $s$ from the penalized-complexity priors described above.
-    \item Draw a single \ac{GP} realization with a kernel defined by $l$ and $s$.
-    This is defined on a regular grid of source-frame masses and evaluated using the \texttt{QuasisepSolver} in \texttt{tinygp}.
-    \item Interpolate the \ac{GP} at each event posterior sample and injection source-frame mass (from step 3).
-    \item Calculate the population likelihood according to Equation~\ref{eq:inhomog-poisson}.
-\end{enumerate}
-% TODO: \jme{[comment: is there a way to summarize this list in a simple diagram?]}
-We perform these steps within \texttt{numpyro} \citep{bingham_pyro_2019,phan_composable_2019}, sampling the posterior using the no-u-turn sampler for Hamiltonian Monte Carlo \citep{hoffman_no-u-turn_2011}. 
+\begin{figure}
+    \centering
+    \includegraphics{figures/GP_example.pdf}
+    \caption{Draws from the \acf{GP} used to model the mass distribution.
+    The left panel shows prior draws from the \ac{GP} and the right panel shows the posterior draws once the population inference is performed on the simulated data.
+    The posterior draws in the right panel are a subset of those used to create the 90\% credible intervals in Figure~\ref{fig:O5_GP}.}
+    \label{fig:GP example}
+    \script{GP_example_plot.py}
+\end{figure}
 
 \section{Results}
 \label{sec:results}
@@ -300,17 +294,9 @@ Additionally, the mass distribution inferred with the \ac{GP}-based model closel
 This indicates that using models that cannot accurately approximate the true mass distribution will lead to a significant systematic bias in the estimation of cosmological parameters.
 
 This bias is not due to the need to know the morphology of the mass distribution \emph{a priori}, as the \ac{GP}-based model recovers the correct value of \Ho{} despite making minimal assumptions about the mass distribution.
-The \ac{GP}-based model does, however, obtain larger uncertainties on the inferred value of \Ho, as it has many more free parameters. 
-In reality, we do not know the true functional form of the mass distribution, so the additional statistical uncertainty introduced by non-parametric approaches may be desirable over the possible systematic errors introduced by choosing a parametric model that likely does not contain the true mass distribution within its hyper-prior.
-
-% The lack of data just below the minimum black hole mass and just above the maximum black hole mass, combined with the fact that \ac{GW} detectors are sensitive to objects at those masses, causes the \ac{GP} to learn a relatively low merger rate at the edges of the mass distribution. 
-% On the other hand, there is both a lack of data and little detector sensitivity at masses above $\sim100\Msun$ and below $\sim5\Msun$.
-% The mass distribution is therefore uninformed in this region and the \ac{GP} reverts to its prior distribution, which resembles random scatter around the mean differential merger rate.
-% Similar effects can be seen in other non-parametric methods \citep{edelman_cover_2023, callister_parameter-free_2023}.
-% % Indeed, the upper edge of the mass distribution is very informative to the \Ho{} constraint with current detections \citep{gwtc3_cosmo}.
-% The combination of these two effects results in what appears as an uptick in the merger rate below $\sim5\Msun$ and above $\sim100\Msun$.
-% However, this reversion to the prior is uninformative for the \Ho{} constraint and does not affect inference on cosmological parameters.
-% Additionally, the posterior on \Ho{} is distinct from its prior distribution (uniform in the range $[30\Hunits,120\Hunits]$, indicating that the data is informative despite the flexibility of the population model.
+% The \ac{GP}-based model does, however, obtain larger uncertainties on the inferred value of \Ho, as it has many more free parameters. 
+In reality, we do not know the true functional form of the mass distribution, %so the additional statistical uncertainty introduced by non-parametric approaches may be desirable over the possible systematic errors introduced by choosing a parametric model that likely does not contain the true mass distribution within its hyper-prior.
+so it may be desirable to use a non-parametric approach to avoid potential systematic errors introduced by choosing a parametric model that likely does not contain the true mass distribution within its hyper-prior.
 
 To obtain a quantitative measure of the systematic bias introduced by mismodeling the mass distribution, we repeat the parametric analyses with 50 separate simulated catalogs of $\sim500$ events each.
 We find that the broken power law model produces an overestimate of \Ho{} at greater than $1\sigma$ $\variable{output/BPL_bias_percent.txt}\%$ of the time, %whereas the \ac{GP}-based model reaches that level of bias only \result{Z}\% of the time, 
@@ -320,8 +306,8 @@ of the time.
 Collectively, these results indicate that prior knowledge of the shape of the mass distribution is not required to perform an unbiased spectral siren measurement, so long as strong assumptions about the shape of the mass distribution are not made.
 
 \subsection{Projections for Future Measurements}
-Figure~\ref{fig:O5_GP} demonstrates an expected $\variable{output/nonparh0percent.txt}\%$ ($1\sigma$ uncertainties) measurement of \Ho{} after one year of \ac{O5} using the \ac{GP}-based spectral siren method.
-However, by the time of \ac{O5}, the \ac{GW} detector network is projected to detect \acp{BBH} up to redshift $\approx 3$, with most sources lying near redshift $\simeq 1.2$ \citep{chen_distance_2021}.
+Figure~\ref{fig:O5_GP} demonstrates an expected $\variable{output/nonparh0percent.txt}\%$ ($1\sigma$ uncertainties) measurement of \Ho{} after one year of \ac{O5} using the \ac{GP}-based spectral siren method, and a $\variable{output/PLPh0percent.txt}\%$ measurement with parametric spectral sirens, demonstrating comparable statistical uncertainties.
+By the time of \ac{O5}, the \ac{GW} detector network is projected to detect \acp{BBH} up to redshift $\approx 3$, with most sources lying near redshift $\simeq 1.2$ \citep{chen_distance_2021}.
 Additionally, next-generation detectors will be sensitive to sources up to redshift $\sim 100$.
 This means that future \ac{GW} observations will be more sensitive to $H(z\gtrsim1)$ than to \Ho, and can therefore constrain several additional cosmological parameters \citep{Chen:2024gdn}.
 We demonstrate this by repeating the same \ac{GP}-based spectral siren analysis while also simultaneously fitting for the local matter density, \Omm.
@@ -385,13 +371,11 @@ This reinforces the notion that the information in the spectral siren measuremen
 Spectral sirens are particularly useful in the context of the current Hubble tension: a disagreement between multiple methods of measuring the local expansion rate of the universe \citep{freedman_measurements_2021}.
 As this tension can only be explained by non-standard physics or yet-unknown systematic uncertainties in either the cosmic distance ladder or cosmic microwave background measurements, direct and independent probes of the local expansion---such as those presented here---may help determine whether the current discrepancy represents a fundamental crack in our standard model of physics and/or cosmology.
     
-We predict a $\variable{output/nonparh0percent.txt}\%$ measurement of \Ho{} with one year of observing at the \ac{LVK} network's design sensitivity using the non-parametric spectral siren approach, and a $\variable{output/PLPh0percent.txt}\%$ measurement with parametric spectral sirens.
-% Discussion on this! why are parametric and nonparametric comparable?? 
-However, the true population of merging compact binaries in the Universe is unknown because neither the mechanism from which compact binaries were formed, nor the physical processes within the mechanism, have been conclusively determined.
-The true functional form of the mass distribution therefore remains elusive, and systematic uncertainties arising from an incorrect choice for the form of the mass distribution are inevitable.
+Neither the mechanism from which compact binaries were formed, nor the physical processes within the mechanism, have been conclusively determined.
+The true functional form of the mass distribution therefore remains elusive, meaning that systematic uncertainties arising from an incorrect choice for the form of the mass distribution are inevitable.
 With current observations, these systematic effects are likely smaller than statistical uncertainties.
 However, next-generation detectors will herald sufficient \ac{GW} observations to substantially decrease statistical uncertainty in these measurements; for example, \citet{pierra_study_2023} show that incorrect assumptions about the shape of the mass distribution can lead to $\sim3\sigma$ systematic biases in \Ho{} with catalogs of 2,000 events, although this bias may be an overestimate as it does not include measurement uncertainty of the \ac{GW} parameters.
-Thus, the additional statistical uncertainty introduced by non-parametric approaches may be preferable to the systematic errors associated with choosing a parametric model.
+Thus, non-parametric approaches may be preferable to avoid the systematic errors associated with choosing a parametric model.
 
 In parallel with this work, \citet{magana_inprep} performed a spectral siren analysis on currently-public \ac{LVK} data using a model that employs histogram bins defined at fixed locations in source-frame mass to flexibly measure the \ac{BBH} mass distribution \citep[originally presented in][]{mandel_model-independent_2017,ray_non-parametric_2023}.
 While both the method presented in this work and that of \citet{magana_inprep} employ \acp{GP}, \citet{magana_inprep} uses \acp{GP} to modulate histogram bin heights, leading to a piecewise constant function in log mass, whereas we define the \ac{GP} at each data point, constructing a smooth function with no predefined features in source-frame mass. 
@@ -406,7 +390,7 @@ Future work will extend the method developed here to mass distributions that are
 
 Because \ac{GW} observations are the only data input to spectral sirens, they are uniquely positioned to probe the expansion history of the universe over a wide range of cosmological redshift, rather than just the local expansion \Ho.
 We have shown this by simultaneously measuring \Omm{} and \Ho{}; the method can be trivially expanded to constrain additional cosmological parameters that govern $H(z)$, such as the dark energy equation of state parameter, $w$. 
-We find that for \acf{O5}, spectral sirens will be most constraining at $z=\variable{output/mostsensitivez.txt}$.
+We find that for \acl{O5}, spectral sirens will be most constraining at $z=\variable{output/mostsensitivez.txt}$.
 This redshift is larger than the expected redshifts of detectable electromagnetic counterparts of binary neutron star mergers~\citep{kiendrebeogo_updated_2023}, implying that upgrades to current \ac{GW} detectors will allow the spectral siren method to probe $H(z)$ at otherwise unexplored distances by \acp{GW}. 
 Proposed next-generation \ac{GW} detectors such as Cosmic Explorer and Einstein Telescope will be sensitive to \acp{CBC} across cosmic time (out to $z\sim100$)~\citep{et_steering_committee_einstein_2020, evans_horizon_2021}.
 Future cosmological surveys, such as those enabled by the Nancy Grace Roman Space Telescope and the Vera Rubin Observatory, are expected to be able to precisely measure $H(z)$ to $z\sim3$ \citep{spergel_wide-field_2015}, making the spectral siren method uniquely positioned to measure the expansion of the universe at high redshift.
@@ -426,6 +410,8 @@ Sensitivity to high redshifts is a feature of the spectral siren method in gener
     D.E.H is supported by NSF grants AST-2006645 and PHY-2110507, as well as by the Kavli Institute for Cosmological Physics through an endowment from the Kavli Foundation and its founder Fred Kavli.
     %Cluster
     The Tycho supercomputer hosted at the SCIENCE HPC center at the University of Copenhagen was used for supporting this work.
+    %LIGO
+    This material is based upon work supported by NSF's LIGO Laboratory which is a major facility fully funded by the National Science Foundation.
 \end{acknowledgments}
 
 \software{\texttt{numpyro} \citep{phan_composable_2019,bingham_pyro_2019}, \texttt{tinygp} \citep{foreman-mackey_tinygp_2021}, \texttt{arviz} \citep{kumar_arviz_2019}, \texttt{jax}, \showyourwork \citep{Luger2021}
@@ -473,14 +459,52 @@ We use the software package \texttt{GWMockCat} \citep{farah_things_2023} to simu
 To determine the detectability of both injections and simulated events in O5, we use the projected \ac{O5} LIGO power spectral density \citep{obsscen_noise_curves,abbott_prospects_2020} for a single detector to calculate observed signal-to-noise ratios $\rho_{\text{obs}}$, and we consider events and injections with a single-detector SNR $\rho_{\text{obs}}>8$ to be detectable. 
 The full procedure for this mock data generation process is described in \citet{fishbach_where_2017, farah_things_2023, essick_ensuring_2024}.
 
-% \section{\Acf{GP}-based mass distribution}
-% \label{ap:GP}
+\section{\Acl{GP}-based mass distribution}
+\label{ap:GP}
+
+In this Section, we discuss the properties of the \ac{GP}-based mass distribution and describe our modeling choices in more detail. % we also show how it is able to recover a wide range of morphologies and is not tuned to the PLP mass distribution.
+
+Practically, the difference in the inference of the population when using a \ac{GP} versus other modeling choices is that the population model ($\diff N/\diff t_{\det} \diff \theta_i (\theta_i;\Lambda)$ in Equation~\ref{eq:inhomog-poisson}) is determined directly by a realization of the \ac{GP}, rather than by a handful of hyper-parameters $\Lambda$ and evaluated on an analytical function.
+In other words, when using parametric models, $\diff N/\diff t_{\det} \diff \theta_i (\theta_i;\Lambda)$ is calculated by evaluating a specific functional form described by a small set of hyper-parameters. 
+With the \ac{GP} approach, the hyper-parameters describing the mass distribution are the rate at each event-level posterior sample's source frame mass, and the rate at each found injection's source frame mass.
+The \ac{GP} \emph{is} $p(\Lambda)$, the prior on population parameters (except in the case of cosmological parameters, which all have uniform priors).
+
+Because the \ac{GP} is defined only at specific data points, we have $N_{\text{ev}}M + N_{\text{inj}}$ mass hyper-parameters, where $M$ is the number of posterior samples per event and $N_{\text{inj}}$ is the number of injections used to calculate the selection function~\citep[see e.g.][]{vitale_inferring_2020,talbot,essick_estimating_2021}.
+In this way, our \ac{GP}-based mass distribution is similar to the autoregressive population models used in~\citet{callister_parameter-free_2023}.
+Indeed, an autoregressive process is a \ac{GP} with a specific choice of kernel.
+
+The kernel is a function that defines the covariance between input points in the \ac{GP} (in our case, two source frame mass values). 
+It defines the notion of similarity between adjacent points and thereby encodes our assumptions about the smoothness of the source frame mass distribution \citep{rasmussen_gaussian_2006}.
+We use a Mat\'ern kernel \citep{handcock_bayesian_1993, stein_interpolation_1999} with $\nu = 5/2$, but have repeated the analysis with $\nu=3/2$ and $\infty$, finding little impact on the results, except that the $\nu=\infty$ case (also called the squared exponential kernel) produces a slightly more jagged mass distribution.
+In addition to the mean, Mat\'ern kernels have two parameters that determine their properties: a length scale $l$ and a variance $s$.
+In our use case, these are one level further removed from hyper-parameters, so we adopt the terminology used in \citet{callister_parameter-free_2023} and call them ``hyper-hyper-parameters.''
+We fit these hyper-hyper-parameters along with the hyper-parameters $\Lambda$ to minimize prior assumptions about the form of the mass distribution.
+We use penalized-complexity priors on the hyper-hyper-parameters to enforce that the model does not create small-scale structure uninformed by data, thereby avoiding over-fitting \citep{simpson_penalising_2017,simpson_garcpas_2022}. 
+Explicitly, the priors on $l$ and $s$ are Fr\'echet and Gamma distributions, respectively, and are defined to have less than 5\% support for correlation lengths smaller than the average spacing between event-level posterior means.
+
+The time to evaluate a \ac{GP} is notorious for scaling as the cube of the number of data points, making \acp{GP} unwieldy with large data sets, such as the $\mathcal{O}(10^9)$ posterior samples and software injections expected for \ac{O5}.
+We therefore make two approximations to a full \ac{GP} to increase computational efficiency.
+First, for each likelihood evaluation, we evaluate a full \ac{GP} on a regular grid between $0.1\Msun$ and $250\Msun$ and then interpolate it at each data point.
+Second, we use the quasi-separability of Mat\'ern kernels to analytically perform the transformation between covariance matrix and \ac{GP} draw.
+This second step is done using the \texttt{QuasisepSolver} module \citep{foreman-mackey_fast_2017} in the \texttt{tinygp} code base \citep{foreman-mackey_tinygp_2021}, and requires data to be sortable (i.e. one-dimensional).
+
+Algorithmically, each posterior evaluation contains the following steps: \variable{output/priors_placeholder.txt}
+\begin{enumerate}
+\script{nonparametric_inference.py}
+    \item Draw cosmological parameters \Ho{} and \Omm{} from uniform prior distributions.
+    \item Convert the luminosity distances and detector-frame masses of each event posterior sample to redshifts and source-frame masses according to the cosmology specified by step 1.
+    \item Draw hyper-hyper-parameters $l$ and $s$ from the penalized-complexity priors described above.
+    \item Draw a single \ac{GP} realization with a kernel defined by $l$ and $s$.
+    This is defined on a regular grid of source-frame masses and evaluated using the \texttt{QuasisepSolver} in \texttt{tinygp}.
+    \item Interpolate the \ac{GP} at each event posterior sample and injection source-frame mass (from step 3).
+    \item Calculate the population likelihood according to Equation~\ref{eq:inhomog-poisson}.
+\end{enumerate}
+% TODO: \jme{[comment: is there a way to summarize this list in a simple diagram?]}
+We perform these steps within \texttt{numpyro} \citep{bingham_pyro_2019,phan_composable_2019}, sampling the posterior using the no-u-turn sampler for Hamiltonian Monte Carlo \citep{hoffman_no-u-turn_2011}. 
+This can be seen explicitly in the source code accompanying this paper, in the \texttt{scripts/priors.py} \variable{output/priors_placeholder.txt}script.
 
 % \begin{itemize}
 %     \item fit of GP to various mass dist morphologies, showing how flexible it is (fixing H0)
-%     \item zoom-in on GP traces 
-%     \item details from section 2.3
-%     \item discussion of reversion to prior at extrema of mass dist (move from section 3)
 % \end{itemize}
 
 % \section{Old}
