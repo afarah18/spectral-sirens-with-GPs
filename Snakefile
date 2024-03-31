@@ -89,3 +89,11 @@ rule algo:
         "src/tex/output/priors_placeholder.txt"
     script:
         "src/scripts/priors.py"
+
+rule GPeg:
+    output:
+        "src/tex/figures/GP_example.pdf"
+    input:
+        "src/data/mcmc_nonparametric.nc4"
+    script:
+        "src/scripts/GP_example_plot.py"
