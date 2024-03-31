@@ -131,9 +131,9 @@ def hyper_prior(m1det,dL,m1det_inj,dL_inj,log_pinj,log_PE_prior=0.,PC_params=dic
         Om0=OM0_FID
 
     # redshift dist
-    alpha_z = 1.0
-    zp = 2.4 
-    beta_z = 3.4 
+    alpha_z = numpyro.sample("alpha_z",dist.Uniform(0,2)) #TRUEVALS['alpha_z']#
+    zp = TRUEVALS['zp']#numpyro.sample("zp",dist.Uniform(0,5)) #
+    beta_z =  TRUEVALS['beta_z'] # numpyro.deterministic('beta',TRUEVALS['beta_z'])# numpyro.sample("beta_z",dist.Uniform(0,5)) #
 
     # construct GP in the source frame
     logtestm1s = jnp.log(TEST_M1S)
@@ -211,9 +211,9 @@ def PLP(m1det,dL,m1det_inj,dL_inj,log_pinj,log_PE_prior=0.,remove_low_Neff=False
     sig_m1 = numpyro.sample("sig_m1",dist.Uniform(1,10))# TRUEVALS['sig_m1']
     f_peak = TRUEVALS['f_peak'] #numpyro.sample("f_peak",dist.Uniform(0,1))
     #Fixed
-    alpha_z = TRUEVALS['alpha_z']#numpyro.sample("alpha_z",dist.Uniform(0,2))
+    alpha_z = numpyro.sample("alpha_z",dist.Uniform(0,2)) #TRUEVALS['alpha_z']#
     zp = TRUEVALS['zp']#numpyro.sample("zp",dist.Uniform(0,5)) #
-    beta = TRUEVALS['beta_z'] #numpyro.sample("beta_z",dist.Uniform(0,5)) #numpyro.deterministic('beta',TRUEVALS['beta_z'])# 
+    beta = TRUEVALS['beta_z'] #numpyro.sample("beta_z",dist.Uniform(0,5)) # numpyro.deterministic('beta',TRUEVALS['beta_z'])# 
 
     # convert event data to source frame
     z = jgwcosmo.z_at_dl_approx(dL,H0,Om0,zmin=ZMIN,zmax=ZMAX+8.)
@@ -286,9 +286,9 @@ def BPL(m1det,dL,m1det_inj,dL_inj,log_pinj,log_PE_prior=0.,remove_low_Neff=False
     
     #Fixed
     # bq = numpyro.sample("bq",dist.Normal(0,5))
-    alpha_z = 1.0#numpyro.sample("alpha_z",dist.Uniform(0,2))#numpyro.deterministic('alpha_z',alpha_z_fid)#numpyro.sample("alpha_z",dist.Normal(0,5))
-    zp = 2.4 #numpyro.deterministic('zp',zp_fid)
-    beta = 3.4 #numpyro.deterministic('beta',beta_fid)
+    alpha_z = numpyro.sample("alpha_z",dist.Uniform(0,2)) #TRUEVALS['alpha_z']#
+    zp = TRUEVALS['zp']#numpyro.sample("zp",dist.Uniform(0,5)) #
+    beta = TRUEVALS['beta_z'] # TRUEVALS['beta_z'] # numpyro.deterministic('beta',TRUEVALS['beta_z'])# 
 
     # convert event data to source frame
     z = jgwcosmo.z_at_dl_approx(dL,H0,Om0,zmin=ZMIN,zmax=ZMAX+8.)

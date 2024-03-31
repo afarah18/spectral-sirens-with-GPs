@@ -15,7 +15,7 @@ jax.config.update("jax_enable_x64", True)
 NSAMPS=1000
 
 # random number generators
-jax_rng = jax.random.PRNGKey(425)
+jax_rng = jax.random.PRNGKey(42)
 
 # options
 remove_low_Neff=False
@@ -48,7 +48,7 @@ if  __name__ == "__main__":
 
     # save results
     id = az.from_numpyro(mcmc)
-    id.to_netcdf(paths.data / "mcmc_nonparametric.nc4")
+    id.to_netcdf(paths.data / "mcmc_nonparametric_fitz.nc4")
 
     # calculate stats
     h0samps = id.posterior['H0'][0]

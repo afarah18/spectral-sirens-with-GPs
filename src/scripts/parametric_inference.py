@@ -8,7 +8,6 @@ from data_generation import H0_FID
 
 # inference
 import jax
-import jax.numpy as jnp
 import numpyro
 import arviz as az
 
@@ -46,7 +45,7 @@ if  __name__ == "__main__":
 
     # save results
     id = az.from_numpyro(mcmc)
-    id.to_netcdf(paths.data / "mcmc_parametric_PLP.nc4")
+    id.to_netcdf(paths.data / "mcmc_parametric_PLP_fitz.nc4")
     offset = np.abs(id.posterior['H0'][0].mean()-H0_FID)/id.posterior['H0'][0].std()
     with open(paths.output / "PLPh0offset.txt","w") as f:
         print(f"{offset:.1f}",file=f)
@@ -65,7 +64,7 @@ if  __name__ == "__main__":
 
     # save results
     id = az.from_numpyro(mcmc)
-    id.to_netcdf(paths.data / "mcmc_parametric_BPL.nc4")
+    id.to_netcdf(paths.data / "mcmc_parametric_BPL_fitz.nc4")
     offset = np.abs(id.posterior['H0'][0].mean()-H0_FID)/id.posterior['H0'][0].std()
     with open(paths.output / "BPLh0offset.txt","w") as f:
         print(f"{offset:.1f}",file=f)
