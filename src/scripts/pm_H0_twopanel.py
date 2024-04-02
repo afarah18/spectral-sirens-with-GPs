@@ -35,9 +35,9 @@ def two_panel(path, path_PLP, path_BPL, hyperparam='H0'):
     #     axes[0].plot(TEST_M1S, r[i]/TEST_M1S, lw=0.1, c=color_GP,alpha=0.03)
     #     axes[0].plot(TEST_M1S, r_PLP[i],lw=0.1, c=color_PLP,alpha=0.03)
     #     axes[0].plot(TEST_M1S, r_BPL[i],lw=0.1, c=color_BPL,alpha=0.03)
-    axes[0].plot(TEST_M1S,np.percentile(r/TEST_M1S,(5,95),axis=0).T,lw=0.2, c=color_GP,alpha=0.5)
+    axes[0].plot(TEST_M1S,np.percentile(r/TEST_M1S,(5,95),axis=0).T,lw=0.2, c=color_GP,alpha=0.7)
     # axes[0].plot(TEST_M1S,np.mean(r/TEST_M1S,axis=0),lw=1.5, c=color_GP)
-    axes[0].fill_between(TEST_M1S,*np.percentile(r/TEST_M1S,(5,95),axis=0), color=color_GP_light,alpha=0.3)
+    axes[0].fill_between(TEST_M1S,*np.percentile(r/TEST_M1S,(5,95),axis=0), color=color_GP_light,alpha=0.5)
     
     axes[0].plot(TEST_M1S,np.percentile(r_PLP,(5,95),axis=0).T, c=color_PLP,ls="--")
     # axes[0].plot(TEST_M1S,np.mean(r_PLP,axis=0),lw=2, c=color_PLP,ls="--")

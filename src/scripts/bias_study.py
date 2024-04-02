@@ -53,7 +53,7 @@ for i in trange(N_CATALOGS):
     mcmc.run(jax_rng,**kwargs)
 
     id_PLP = az.from_numpyro(mcmc)
-    id_PLP.to_netcdf(paths.data / f"bias/mcmc_parametric_{i}.nc4")
+    id_PLP.to_netcdf(paths.data / f"bias/mcmc_parametric_PLP_{i}.nc4")
     bias_PLP[i] = np.abs(id_PLP.posterior['H0'][0].mean() - H0_FID)/id_PLP.posterior['H0'][0].std()
     if plot:
         plt.hist(id_PLP.posterior['H0'][0],density=True, bins=50,histtype='step',color='green',alpha=0.5,lw=0.5)
