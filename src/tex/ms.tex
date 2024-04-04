@@ -373,17 +373,14 @@ With current observations, these systematic effects are likely smaller than stat
 However, next-generation detectors will herald sufficient \ac{GW} observations to substantially decrease statistical uncertainty in these measurements; for example, \citet{pierra_study_2023} show that incorrect assumptions about the shape of the mass distribution can lead to $\sim3\sigma$ systematic biases in \Ho{} with catalogs of 2,000 events, although this bias may be an overestimate as it does not include measurement uncertainty of the \ac{GW} parameters.
 Thus, non-parametric approaches may be preferable to avoid the systematic errors associated with choosing a parametric model.
 
-In parallel with this work, \citet{magana_inprep} performed a spectral siren analysis on public \ac{LVK} data using histogram bins defined at fixed locations in source-frame mass to flexibly measure the \ac{BBH} mass distribution \citep[as originally presented in][]{mandel_model-independent_2017,ray_non-parametric_2023}.
+In parallel with this work, \citet{magana_hernandez_beyond_2024} performed a spectral siren analysis on public \ac{LVK} data using histogram bins defined at fixed locations in source-frame mass to flexibly measure the \ac{BBH} mass distribution \citep[as originally presented in][]{mandel_model-independent_2017,ray_non-parametric_2023}.
 Both our method and theirs employ \acp{GP}.
 In our approach, the black hole mass function is \textit{itself} described by a Gaussian process, with no predefined features.
-In \citet{magana_inprep}, on the other hand, the mass distribution is fundamentally a binned piecewise constant function, with a \ac{GP} prior governing the relative heights of these bins.
+In \citet{magana_hernandez_beyond_2024}, on the other hand, the mass distribution is fundamentally a binned piecewise constant function, with a \ac{GP} prior governing the relative heights of these bins.
 While this binned model is flexible, sharp bin edges at predefined locations nevertheless constitute unphysical features.
-These features may yield overly optimistic constraints on cosmological parameters, possibly explaining the increase in precision that \citet{magana_inprep} find relative to the parametric analysis on the exact same dataset performed in \citet{gwtc3_cosmo}.
-\citet{magana_inprep} also include a  binned reconstruction of the \ac{BBH} merger rate as a function of redshift, which we fix or model parametrically in our own work.
+These features may yield overly optimistic constraints on cosmological parameters, possibly explaining the increase in precision that \citet{magana_hernandez_beyond_2024} find relative to the parametric analysis on the exact same dataset performed in \citet{gwtc3_cosmo}.
+\citet{magana_hernandez_beyond_2024} also include a  binned reconstruction of the \ac{BBH} merger rate as a function of redshift, which we fix or model parametrically in our own work.
 We stress, though, that this is not an intrinsic limitation of our method; one could straightforwardly adopt a second Gaussian process to govern the overall scaling of the merger rate with redshift.
-
-% While both the method presented in this work and that of \citet{magana_inprep} employ \acp{GP}, \citet{magana_inprep} uses \acp{GP} to modulate histogram bin heights, leading to a piecewise constant function in log mass, whereas we define the \ac{GP} at each data point, constructing a smooth function with no predefined features in source-frame mass. 
-% Sharp bin edges may lead to optimistic constraints on cosmological parameters, especially as such features are unlikely to exist in the true mass distribution, possibly explaining the increase in precision relative to parametric methods seen in \citet{magana_inprep}.
 
 More interesting is the possibility that the black hole mass distribution itself evolves with redshift.
 As demonstrated in \citet{ezquiaga_spectral_2022}, the degeneracy between an evolving mass distribution and the expansion of the universe can be broken provided that there are multiple features present in the mass distribution, and that we do not live in a fine-tuned universe where the evolutionary effects governing the \ac{CBC} mass distribution perfectly mimick the effects of cosmological redshift.
