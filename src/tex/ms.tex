@@ -1,5 +1,5 @@
 % Define document class
-\documentclass[preprint2,linenumbers]{aastex631}
+\documentclass[preprint2]{aastex631}
 \usepackage{showyourwork}
 \usepackage{macros}
 \usepackage{amsmath}
@@ -36,7 +36,7 @@
 \email{afarah@uchicago.edu}
 \affiliation{Department of Physics, University of Chicago, Chicago, IL 60637, USA}
 
-\author{Thomas A. Callister}
+\author[0000-0001-9892-177X]{Thomas A. Callister}
 \affiliation{Kavli Institute for Cosmological Physics, The University of Chicago, Chicago, IL 60637, USA}
 
 \author[0000-0002-7213-3211]{Jose Mar\'ia Ezquiaga}
@@ -113,7 +113,7 @@ Such parametric modeling of the compact binary mass distribution raises its own 
 It is well known that different parametric models can generically yield very different constraints on cosmological parameters ~\citep{abbott_population_2021,abbott_population_2023}.
 This is problematic: because the measured mass distribution serves as the template by which to extract redshifts, a mismodeled mass distribution would introduce systematic errors in inferred redshifts and, in turn, systematically bias any resulting cosmological inference~\citep{ezquiaga_spectral_2022,Mukherjee:2021rtw,mastrogiovanni_importance_2021,pierra_study_2023}.
 
-The situation is demonstrated in Fig.~\ref{fig:O5_GP}, in which we perform spectral siren cosmology on a simulated population of binary black holes.
+The situation is demonstrated in Figure~\ref{fig:O5_GP}, in which we perform spectral siren cosmology on a simulated population of binary black holes.
 We reconstruct the mass distribution using two parametric models, one that contains the true simulated mass distribution and one that does not.
 While the former yields a measurement of $H_0$ consistent with the true underlying value, the latter does not.
 Such systematic biases may already be relevant, as cosmological measurements by the LIGO-Virgo-KAGRA are known to depend on the choice of mass model used~\citep{gwtc3_cosmo}.
@@ -274,8 +274,10 @@ The three models are as follows:
     \item the \textsc{Broken Power Law} model presented in \citet{abbott_population_2021}, as we do not employ a high-mass truncation, which does not include the true mass distribution within its hyper-prior, and 
     \item the flexible, \ac{GP}-based model described in Section~\ref{sec:model}, which is able to closely approximate the morphology of the true mass distribution, along with many other morphologies.
 \end{enumerate}
-For all models considered in this work, we assume the redshift distribution used to generated the data, described in Equation~\ref{eq:underlying redshift dist}.
-The results of each of these fits are shown in Figure~\ref{fig:O5_GP}.  
+For all models considered in this work, we assume the form of the redshift distribution used to generate the data, described in Equation~\ref{eq:underlying redshift dist}.
+We have performed the analysis both with a fixed redshift distribution and while simultaneously fitting for the redshift distribution and find no qualitative differences in our conclusions: fitting for the redshift distribution broadens the inferred posteriors on \Ho{} equally for all mass models, but does not affect their mean values.
+
+The results of fitting each model to the same dataset are shown in Figure~\ref{fig:O5_GP}.
 The left panel shows the inferred source-frame mass distribution for each of the considered models, and the right panel shows the corresponding posteriors on \Ho{}. 
 We indicate the true underlying source mass distribution and \Ho{} value with solid black lines in each panel.
 
@@ -371,10 +373,19 @@ With current observations, these systematic effects are likely smaller than stat
 However, next-generation detectors will herald sufficient \ac{GW} observations to substantially decrease statistical uncertainty in these measurements; for example, \citet{pierra_study_2023} show that incorrect assumptions about the shape of the mass distribution can lead to $\sim3\sigma$ systematic biases in \Ho{} with catalogs of 2,000 events, although this bias may be an overestimate as it does not include measurement uncertainty of the \ac{GW} parameters.
 Thus, non-parametric approaches may be preferable to avoid the systematic errors associated with choosing a parametric model.
 
-In parallel with this work, \citet{magana_inprep} performed a spectral siren analysis on currently-public \ac{LVK} data using a model that employs histogram bins defined at fixed locations in source-frame mass to flexibly measure the \ac{BBH} mass distribution \citep[originally presented in][]{mandel_model-independent_2017,ray_non-parametric_2023}.
-While both the method presented in this work and that of \citet{magana_inprep} employ \acp{GP}, \citet{magana_inprep} uses \acp{GP} to modulate histogram bin heights, leading to a piecewise constant function in log mass, whereas we define the \ac{GP} at each data point, constructing a smooth function with no predefined features in source-frame mass. 
+In parallel with this work, \citet{magana_inprep} performed a spectral siren analysis on public \ac{LVK} data using histogram bins defined at fixed locations in source-frame mass to flexibly measure the \ac{BBH} mass distribution \citep[as originally presented in][]{mandel_model-independent_2017,ray_non-parametric_2023}.
+Both our method and theirs employ \acp{GP}.
+In our approach, the black hole mass function is \textit{itself} described by a Gaussian process, with no predefined features.
+In \citet{magana_inprep}, on the other hand, the mass distribution is fundamentally a binned piecewise constant function, with a \ac{GP} prior governing the relative heights of these bins.
+While this binned model is flexible, sharp bin edges at predefined locations nevertheless constitute unphysical features.
+These features may yield overly optimistic constraints on cosmological parameters, possibly explaining the increase in precision that \citet{magana_inprep} find relative to the parametric analysis on the exact same dataset performed in \citet{gwtc3_cosmo}.
+\citet{magana_inprep} also include a  binned reconstruction of the \ac{BBH} merger rate as a function of redshift, which we fix or model parametrically in our own work.
+We stress, though, that this is not an intrinsic limitation of our method; one could straightforwardly adopt a second Gaussian process to govern the overall scaling of the merger rate with redshift.
+
+% While both the method presented in this work and that of \citet{magana_inprep} employ \acp{GP}, \citet{magana_inprep} uses \acp{GP} to modulate histogram bin heights, leading to a piecewise constant function in log mass, whereas we define the \ac{GP} at each data point, constructing a smooth function with no predefined features in source-frame mass. 
 % Sharp bin edges may lead to optimistic constraints on cosmological parameters, especially as such features are unlikely to exist in the true mass distribution, possibly explaining the increase in precision relative to parametric methods seen in \citet{magana_inprep}.
 
+More interesting is the possibility that the black hole mass distribution itself evolves with redshift.
 As demonstrated in \citet{ezquiaga_spectral_2022}, the degeneracy between an evolving mass distribution and the expansion of the universe can be broken provided that there are multiple features present in the mass distribution, and that we do not live in a fine-tuned universe where the evolutionary effects governing the \ac{CBC} mass distribution perfectly mimick the effects of cosmological redshift.
 The first condition (multiple features) is known to be met in current data \citep{abbott_population_2023}, with three robust features \citep{farah_things_2023}: a maximum black hole mass and overdensities at $\sim10\Msun$ and $\sim35\Msun$.
 The latter scenario---with features identically and monotonically shifting to higher masses with increasing redshift---would be astrophysically unlikely as the locations of features in the mass distribution are each thought to be governed by fundamentally different physical processes \citep{mapelli_binary_2020}.
@@ -473,7 +484,7 @@ We use a Mat\'ern kernel \citep{handcock_bayesian_1993, stein_interpolation_1999
 In addition to the mean, Mat\'ern kernels have two parameters that determine their properties: a length scale $l$ and a variance $s$.
 In our use case, these are one level further removed from hyper-parameters, so we adopt the terminology used in \citet{callister_parameter-free_2023} and call them ``hyper-hyper-parameters.''
 We fit these hyper-hyper-parameters along with the hyper-parameters $\Lambda$ to minimize prior assumptions about the form of the mass distribution.
-We use penalized-complexity priors on the hyper-hyper-parameters to enforce that the model does not create small-scale structure uninformed by data, thereby avoiding over-fitting \citep{simpson_penalising_2017,simpson_garcpas_2022}. 
+We use penalized-complexity priors on the hyper-hyper-parameters to enforce that the model does not create small-scale structure uninformed by data, thereby avoiding over-fitting \citep{simpson_penalising_2017, simpson_garcpas_2022}. 
 Explicitly, the priors on $l$ and $s$ are Fr\'echet and Gamma distributions, respectively, and are defined to have less than 5\% support for correlation lengths smaller than the average spacing between event-level posterior means.
 
 The time to evaluate a \ac{GP} is notorious for scaling as the cube of the number of data points, making \acp{GP} unwieldy with large data sets, such as the $\mathcal{O}(10^9)$ posterior samples and software injections expected for \ac{O5}.
