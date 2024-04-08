@@ -8,7 +8,6 @@ from data_generation import H0_FID
 
 # inference
 import jax
-import jax.numpy as jnp
 import numpyro
 import arviz as az
 
@@ -51,7 +50,7 @@ if  __name__ == "__main__":
     with open(paths.output / "PLPh0offset.txt","w") as f:
         print(f"{offset:.1f}",file=f)
     with open(paths.output / "PLPh0percent.txt","w") as f:
-        print(f"{np.std(id.posterior['H0'][0])/np.mean(id.posterior['H0'][0])*100:.1f}",file=f)
+        print(f"{np.std(id.posterior['H0'][0])/np.mean(id.posterior['H0'][0])*100:.0f}",file=f)
 
     # Inference - broken power law
     nuts_settings = dict(target_accept_prob=0.9, max_tree_depth=10,dense_mass=False)
@@ -62,10 +61,10 @@ if  __name__ == "__main__":
     mcmc = numpyro.infer.MCMC(nuts_kernel,num_warmup=NSAMPS,num_samples=NSAMPS,
                               num_chains=1,progress_bar=True)   
     mcmc.run(jax_rng,**kwargs)
-    offset = np.abs(id.posterior['H0'][0].mean()-H0_FID)/id.posterior['H0'][0].std()
-    with open(paths.output / "BPLh0offset.txt","w") as f:
-        print(f"{offset:.1f}",file=f)
 
     # save results
     id = az.from_numpyro(mcmc)
     id.to_netcdf(paths.data / "mcmc_parametric_BPL.nc4")
+    offset = np.abs(id.posterior['H0'][0].mean()-H0_FID)/id.posterior['H0'][0].std()
+    with open(paths.output / "BPLh0offset.txt","w") as f:
+        print(f"{offset:.1f}",file=f)

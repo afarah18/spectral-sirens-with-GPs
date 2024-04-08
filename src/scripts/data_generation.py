@@ -5,7 +5,6 @@ Clight = gwcosmo.Clight
 from utils import inverse_transform_sample
 from mock_posteriors import gen_snr_scaled_PE
 
-import os
 import numpy as np
 from GWMockCat.vt_utils import draw_thetas, interpolate_optimal_snr_grid 
 print("test")
@@ -28,10 +27,12 @@ N_SAMPLES_PER_EVENT = 100
 SIGMA_M = 0.5
 SIGMA_DL = 1000
 SNR_THRESH=8.
-NUM_INJ=N_SOURCES*50
+NUM_INJ=N_SOURCES*50*30
+
+perf_meas = False
 
 # random number generators
-np_rng = np.random.default_rng(516)
+np_rng = np.random.default_rng(520)
 
 def true_vals_PLP(rng, n_sources=N_SOURCES):
     m1s_true = inverse_transform_sample(gwpop.powerlaw_peak,[1,400],rng,N=n_sources,
@@ -69,7 +70,7 @@ osnr_interp, reference_distance = interpolate_optimal_snr_grid(
 if  __name__ == "__main__":
     # generate data and save 
     m1s_true, zt, m1z_true, dL_true = true_vals_PLP(rng=np_rng)
-    os.mkdir(paths.data / "gw_data")
+    # os.mkdir(paths.data / "gw_data")
     np.save(paths.data / "gw_data/m1s_true_PLP.npy", dL_true)
     np.save(paths.data / "gw_data/z_true_PLP.npy", zt)
     np.save(paths.data / "gw_data/m1z_true_PLP.npy",m1z_true)
@@ -90,13 +91,20 @@ if  __name__ == "__main__":
     np.save(paths.data / "gw_data/log_pinj_det.npy",log_pinj_det)
     
     ## find events and generate mock PE
-    m1z_PE, m2z_PE, dL_PE, log_PE_prior = gen_snr_scaled_PE(np_rng,m1s_true,m1s_true,dL_true/1000,osnr_interp,
+    m1z_PE, m2z_PE, dL_PE, log_PE_prior, det_dict = gen_snr_scaled_PE(np_rng,m1s_true,m1s_true,dL_true/1000,osnr_interp,
                                                             reference_distance,N_SAMPLES_PER_EVENT,H0_FID,OM0_FID,
                                                             # errors taken from Jose's "gwutils.py" for O5
                                                             mc_sigma=3.0e-2,eta_sigma=5.0e-3,theta_sigma=5.0e-2, snr_thresh=SNR_THRESH,
-                                                            return_og=False)
+                                                            return_og=True)
 
     dL_PE *= 1000 # unit matching
+    if perf_meas:
+        # overwrite PE samples with the true values for each event, adding a dimension so that 
+        # later array operations still work
+        m1z_PE = np.expand_dims(det_dict['m1'] * (1 + det_dict['z']),1)
+        m2z_PE = np.expand_dims(det_dict['m2'] * (1 + det_dict['z']),1)
+        dL_PE = np.expand_dims(det_dict['lum_dist'], 1)
+        log_PE_prior = np.zeros((len(det_dict['m1']),1))
 
     # cut out samples below SNR interpolation range. 
     # It is very unlikely that any samples are down there, but we do this just in case.

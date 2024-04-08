@@ -15,7 +15,7 @@ jax.config.update("jax_enable_x64", True)
 NSAMPS=1000
 
 # random number generators
-jax_rng = jax.random.PRNGKey(425)
+jax_rng = jax.random.PRNGKey(42)
 
 # options
 remove_low_Neff=False
@@ -55,7 +55,7 @@ if  __name__ == "__main__":
     from data_generation import H0_FID
 
     with open(paths.output / "nonparh0percent.txt", "w") as f:
-        print(f"{np.std(h0samps)/np.mean(h0samps)*100:.1f}", file=f)
+        print(f"{np.std(h0samps)/np.mean(h0samps)*100:.0f}", file=f)
     lower = np.mean(h0samps)-np.percentile(h0samps,5)
     upper = np.percentile(h0samps,95)-np.mean(h0samps)
     with open(paths.output / "nonparh0CI.txt", "w") as f:

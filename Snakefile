@@ -24,7 +24,7 @@ rule h0fid:
 
 rule parinference:
     output:
-        "src/data/mcmc_parametric*.nc4"
+        "src/data/mcmc_parametric_PLP.nc4"
     cache:
         True
     input:
@@ -43,6 +43,8 @@ rule parbias:
 rule nonparinference:
     output:
         "src/data/mcmc_nonparametric.nc4"
+        "src/tex/output/nonparh0percent.txt"
+        "src/tex/output/nonparh0CI.txt"
     cache:
         True
     input:
@@ -81,3 +83,17 @@ rule mostsensitivez:
         "src/data/mcmc_nonparametric_fitOm0.nc4"
     script:
         "src/scripts/nonparametric_corner.py"
+
+rule algo:
+    output:
+        "src/tex/output/priors_placeholder.txt"
+    script:
+        "src/scripts/priors.py"
+
+rule GPeg:
+    output:
+        "src/tex/figures/GP_example.pdf"
+    input:
+        "src/data/mcmc_nonparametric.nc4"
+    script:
+        "src/scripts/GP_example_plot.py"

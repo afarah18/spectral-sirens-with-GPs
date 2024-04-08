@@ -10,17 +10,17 @@ from mock_posteriors import gen_snr_scaled_PE
 from data_generation import (true_vals_PLP, SNR_THRESH, N_SAMPLES_PER_EVENT,N_SOURCES,
                               H0_FID, OM0_FID, osnr_interp, reference_distance)
 from parametric_inference import NSAMPS
-from priors import PLP, BPL
+from priors import PLP, BPL, hyper_prior, get_ell_frechet_params, get_sigma_gamma_params
 
 jax.config.update("jax_enable_x64", True)
 
 # options
 N_CATALOGS=50
-N_SOURCES = N_SOURCES//2 # cut catalogs in half for this study, for computational feasibility
+N_SOURCES = N_SOURCES#//2 # cut catalogs in half for this study, for computational feasibility
 plot = True
 
 # random number generators
-jax_rng = jax.random.PRNGKey(42)
+jax_rng = jax.random.PRNGKey(42) # these numbers are arbitrary, I think I just copied them from a tutorial
 np_rng = np.random.default_rng(516)
 
  # load injection set
@@ -52,34 +52,74 @@ for i in trange(N_CATALOGS):
                               num_chains=1,progress_bar=False)   
     mcmc.run(jax_rng,**kwargs)
 
-    id = az.from_numpyro(mcmc)
-    id.to_netcdf(paths.data / f"bias/mcmc_parametric_PLP_{int}.nc4")
-    bias_PLP[i] = (id.posterior['H0'][0].mean() - H0_FID)/id.posterior['H0'][0].std()
+    id_PLP = az.from_numpyro(mcmc)
+    id_PLP.to_netcdf(paths.data / f"bias/mcmc_parametric_{i}.nc4")
+    bias_PLP[i] = np.abs(id_PLP.posterior['H0'][0].mean() - H0_FID)/id_PLP.posterior['H0'][0].std()
     if plot:
-        plt.hist(id.posterior['H0'][0],density=True, bins=50,histtype='step',color='green',alpha=0.5,lw=0.5)
+        plt.hist(id_PLP.posterior['H0'][0],density=True, bins=50,histtype='step',color='green',alpha=0.5,lw=0.5)
+    
     # Inference - broken power law
     nuts_settings = dict(target_accept_prob=0.9, max_tree_depth=10,dense_mass=False)
     nuts_kernel = numpyro.infer.NUTS(BPL,**nuts_settings)
-    kwargs = dict(m1det=m1z_PE,dL=dL_PE, m1det_inj=m1zinj_det,dL_inj=dLinj_det,
-                    log_pinj=log_pinj_det, log_PE_prior=log_PE_prior,
-                    remove_low_Neff=False)
     mcmc = numpyro.infer.MCMC(nuts_kernel,num_warmup=NSAMPS//4*3,num_samples=NSAMPS,
                               num_chains=1,progress_bar=False)   
     mcmc.run(jax_rng,**kwargs)
 
-    id = az.from_numpyro(mcmc)
-    id.to_netcdf(paths.data / f"bias/mcmc_parametric_BPL_{int}.nc4")
-    bias_BPL[i] = (id.posterior['H0'][0].mean() - H0_FID)/id.posterior['H0'][0].std()
+    id_BPL = az.from_numpyro(mcmc)
+    id_BPL.to_netcdf(paths.data / f"bias/mcmc_parametric_BPL_{i}.nc4")
+    bias_BPL[i] = np.abs(id_BPL.posterior['H0'][0].mean() - H0_FID)/id_BPL.posterior['H0'][0].std()
     if plot:
-        plt.hist(id.posterior['H0'][0],density=True, bins=50,histtype='step',color='orange',alpha=0.5,lw=0.5)
+        plt.hist(id_BPL.posterior['H0'][0],density=True, bins=50,histtype='step',color='orange',alpha=0.5,lw=0.5)
+    
+    # inference - GP
+    # this is expensive so we will by default only do it one time.
+    # arbitrarily choose an index to do it on so that its reproducible every time.
+    # I like 16 bc 4^2 = 2^4 = 16, so why not use that
+    if i==16:       
+        # parametric summary stats that we only need for this catalog
+        with open(paths.output / "PLPh0offset.txt","w") as f:
+            print(f"{bias_PLP[i]:.1f}",file=f)
+        with open(paths.output / "PLPh0percent.txt","w") as f:
+            print(f"{np.std(id_PLP.posterior['H0'][0])/np.mean(id_PLP.posterior['H0'][0])*100:.0f}",file=f)
+        with open(paths.output / "BPLh0offset.txt","w") as f:
+            print(f"{bias_BPL[i]:.1f}",file=f)
+        
+        # Penalized complexity priors on the hyper-hyper parameters
+        scale, concentration, L = get_ell_frechet_params(np.log(m1z_PE).mean(axis=1),return_L=True)
+        conc, lam_sigma = get_sigma_gamma_params(U=2.)
+        
+        nuts_kernel = numpyro.infer.NUTS(hyper_prior,**nuts_settings)
+        kwargs = dict(m1det=m1z_PE,dL=dL_PE, m1det_inj=m1zinj_det,dL_inj=dLinj_det,
+                        log_pinj=log_pinj_det, log_PE_prior=log_PE_prior,
+                        PC_params=dict(conc=conc,concentration=concentration,scale=scale,lam_sigma=lam_sigma),
+                        remove_low_Neff=False)
+        mcmc = numpyro.infer.MCMC(nuts_kernel,num_warmup=NSAMPS,num_samples=NSAMPS,
+                                num_chains=1,progress_bar=True)   
+        mcmc.run(jax_rng,**kwargs)
+        id = az.from_numpyro(mcmc)
+        id.to_netcdf(paths.data / f"bias/mcmc_nonparametric_{i}.nc4")
+        
+        # GP-specific summary stats
+        h0samps = id.posterior['H0'][0]
+        with open(paths.output / "nonparh0percent.txt", "w") as f:
+            print(f"{np.std(h0samps)/np.mean(h0samps)*100:.0f}", file=f)
+        lower = np.mean(h0samps)-np.percentile(h0samps,5)
+        upper = np.percentile(h0samps,95)-np.mean(h0samps)
+        with open(paths.output / "nonparh0CI.txt", "w") as f:
+            print(f"${np.mean(h0samps):.1f}"+"^{+"+f"{lower:.1f}"+"}"+"_{-"+f"{upper:.1f}"+"}$", file=f)
+        nonpar_offset = np.abs(h0samps.mean()-H0_FID)/h0samps.std()
+        with open(paths.output / "nonparh0offset.txt","w") as f:
+            print(f"{nonpar_offset:.1f}",file=f)
 
 # calcualte summary statistics and save
 percent_bias_PLP = np.sum(bias_PLP>1)/N_CATALOGS * 100
 percent_bias_BPL = np.sum(bias_BPL>1)/N_CATALOGS * 100
 with open(paths.output / "PLP_bias_percent.txt", "w") as f:
-    print(f"{percent_bias_PLP:.1f}", file=f)
+    print(f"{percent_bias_PLP:.0f}", file=f)
 with open(paths.output / "BPL_bias_percent.txt", "w") as f:
-    print(f"{percent_bias_BPL:.1f}", file=f)
+    print(f"{percent_bias_BPL:.0f}", file=f)
+np.savetxt(paths.data / "bias/bias_PLP.txt",bias_PLP)
+np.savetxt(paths.data / "bias/bias_BPL.txt",bias_BPL)
 
 if plot:
     plt.xlabel("H0")
