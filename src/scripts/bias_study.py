@@ -3,6 +3,7 @@ import arviz as az
 import numpy as np
 from tqdm import trange
 import jax
+import os
 
 # custom
 import paths
@@ -28,6 +29,10 @@ m1zinj_det = np.load(paths.data / "gw_data/m1zinj_det.npy")
 dLinj_det = np.load(paths.data / "gw_data/dLinj_det.npy")
 log_pinj_det = np.load(paths.data / "gw_data/log_pinj_det.npy")
 
+try:
+    os.mkdir(paths.data / "bias")
+except FileExistsError:
+    pass
 if plot:
     import matplotlib.pyplot as plt
 bias_PLP = np.zeros(N_CATALOGS)
