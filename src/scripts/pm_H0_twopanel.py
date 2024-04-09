@@ -84,6 +84,6 @@ def two_panel(path, path_PLP, path_BPL, hyperparam='H0'):
     fig.savefig(paths.figures / "O5_pm.pdf")
     plt.clf()
 
-two_panel(paths.data / "mcmc_nonparametric.nc4", 
+two_panel(paths.data / "bias/mcmc_nonparametric_16.nc4", 
           paths.data / "bias/mcmc_parametric_PLP_16.nc4",
           paths.data / "bias/mcmc_parametric_BPL_16.nc4")

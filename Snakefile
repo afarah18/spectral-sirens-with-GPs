@@ -68,7 +68,7 @@ rule nonparpm:
     output:
         "src/tex/figures/O5_pm.pdf"
     input:
-        "src/data/"
+        "src/tex/output/PLP_bias_percent.txt"
     script:
         "src/scripts/pm_H0_twopanel.py"
 rule nonparcorner:
