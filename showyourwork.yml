@@ -56,6 +56,7 @@ dependencies:
     - src/tex/figures/GP_example.pdf
     - src/tex/output/PLP_bias_percent.txt
     - src/tex/output/mostsensitivez.txt
+    - src/tex/output/num_found_events.txt
   # - src/tex/stylesheet.tex
 
 # Name of the `.tex` manuscript and corresponding `.pdf` article
