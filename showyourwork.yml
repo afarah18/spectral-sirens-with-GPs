@@ -39,18 +39,23 @@ dependencies:
     - src/data/gw_data/
   src/scripts/parametric_inference.py:
     - src/data/gw_data/
-  src/scripts/bias_study.py:
-    - src/data/gw_data/
+  src/scripts/nonparametric_numbers.py:
+    - src/data/mcmc_nonparametric.nc4
   src/scripts/pm_H0_twopanel.py:
     - src/data/mcmc_nonparametric.nc4
     - src/data/mcmc_parametric_PLP.nc4
     - src/data/mcmc_parametric_BPL.nc4
   src/scripts/nonparametric_corner.py:
     - src/data/mcmc_nonparametric_fitOm0.nc4
+  src/scripts/GP_example_plot.py:
+    - src/data/mcmc_nonparametric.nc4
 
   src/tex/ms.tex:
-    - src/tex/figures/
-    - src/tex/output/
+    - src/tex/figures/O5_pm.pdf
+    - src/tex/figures/O5_GP_corner.pdf
+    - src/tex/figures/GP_example.pdf
+    - src/tex/output/PLP_bias_percent.txt
+    - src/tex/output/mostsensitivez.txt
   # - src/tex/stylesheet.tex
 
 # Name of the `.tex` manuscript and corresponding `.pdf` article
@@ -67,8 +72,8 @@ overleaf:
   gh_actions_sync: true
   # List of files to push to Overleaf
   push:
-    - src/tex/figures
-    - src/tex/output
+    #- src/tex/figures
+    #- src/tex/output
   # List of files to pull from Overleaf
   pull:
     - src/tex/ms.tex

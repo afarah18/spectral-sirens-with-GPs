@@ -108,5 +108,5 @@ def H0_Om_corner(id):
     Hz(id,ax=axsRight,save=False)
     fig.savefig(paths.figures / "O5_GP_corner.pdf")
 
-id = az.InferenceData.from_netcdf(paths.data / "mcmc_nonparametric_fitOm0_old.nc4")
+id = az.InferenceData.from_netcdf(paths.data / "mcmc_nonparametric_fitOm0.nc4")
 H0_Om_corner(id)

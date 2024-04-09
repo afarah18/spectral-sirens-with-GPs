@@ -32,19 +32,15 @@ rule parinference:
     script:
         "src/scripts/parametric_inference.py"
 rule parbias:
+    input:
+         "src/data/gw_data"
     output:
         "src/tex/output/PLP_bias_percent.txt"
-    cache:
-        True
-    input:
-        "src/data/gw_data/"
     script:
         "src/scripts/bias_study.py"
 rule nonparinference:
     output:
         "src/data/mcmc_nonparametric.nc4"
-        "src/tex/output/nonparh0percent.txt"
-        "src/tex/output/nonparh0CI.txt"
     cache:
         True
     input:
@@ -61,11 +57,18 @@ rule nonparinference_fitOm0:
     script:
         "src/scripts/nonparametric_inference_fitOm0.py"
 
+rule nonparnumbers:
+    output:
+        "src/tex/output/nonparh0percent.txt"
+    input:
+        "src/data/mcmc_nonparametric.nc4"
+    script:
+        "src/scripts/nonparametric_numbers.py"
 rule nonparpm:
     output:
         "src/tex/figures/O5_pm.pdf"
     input:
-        "src/data/mcmc_nonparametric.nc4"
+        "src/data/"
     script:
         "src/scripts/pm_H0_twopanel.py"
 rule nonparcorner:

@@ -23,7 +23,8 @@ id = az.InferenceData.from_netcdf(path_fit)
 samples = id.posterior
 r = samples['log_rate_test'][0]
 
-for i in range(25):
+n = min(25,len(r))
+for i in range(n):
     axes[1].plot(logtestm1s, r[i], lw=0.7, c=color_GP,alpha=0.5)
 
 # prior
