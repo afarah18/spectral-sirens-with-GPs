@@ -64,10 +64,10 @@ def make_injections(rng, alpha, mmax_inj, mmin_inj, zmax_inj=ZMAX,num_inj=NUM_IN
 
     return m1zinj, dLinj, log_pinj
 
-osnr_interp, reference_distance = interpolate_optimal_snr_grid(
-    fname=paths.data / "optimal_snr_aplus_design_O5.h5")
-
 if  __name__ == "__main__":
+    osnr_interp, reference_distance = interpolate_optimal_snr_grid(
+        fname=paths.data / "optimal_snr_aplus_design_O5.h5")
+    
     # generate data and save 
     m1s_true, zt, m1z_true, dL_true = true_vals_PLP(rng=np_rng)
     try:
