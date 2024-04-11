@@ -10,6 +10,7 @@ import paths
 from mock_posteriors import gen_snr_scaled_PE
 from data_generation import (true_vals_PLP, SNR_THRESH, N_SAMPLES_PER_EVENT,N_SOURCES,
                               H0_FID, OM0_FID)
+from GWMockCat.vt_utils import interpolate_optimal_snr_grid 
 from parametric_inference import NSAMPS
 from priors import PLP, BPL, hyper_prior, get_ell_frechet_params, get_sigma_gamma_params
 
@@ -17,7 +18,7 @@ jax.config.update("jax_enable_x64", True)
 
 # options
 N_CATALOGS=50
-N_SOURCES = N_SOURCES#//2 # cut catalogs in half for this study, for computational feasibility
+N_SOURCES = N_SOURCES
 plot = True
 
 # random number generators
