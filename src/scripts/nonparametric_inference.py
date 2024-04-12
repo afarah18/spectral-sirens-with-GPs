@@ -12,7 +12,7 @@ import numpy as np
 
 jax.config.update("jax_enable_x64", True)
 
-NSAMPS=5
+NSAMPS=700
 
 # random number generators
 jax_rng = jax.random.PRNGKey(42)
@@ -22,9 +22,9 @@ remove_low_Neff=False
 
 if  __name__ == "__main__":
     # load data
-    m1z_PE = np.load(paths.data / "gw_data/m1z_PE.npy")
-    dL_PE = np.load(paths.data / "gw_data/dL_PE.npy")
-    log_PE_prior = np.load(paths.data / "gw_data/log_PE_prior.npy")
+    m1z_PE = np.load(paths.data / "gw_data/m1z_PE.npy")[700:]
+    dL_PE = np.load(paths.data / "gw_data/dL_PE.npy")[700:]
+    log_PE_prior = np.load(paths.data / "gw_data/log_PE_prior.npy")[700:]
 
     # load injection set
     m1zinj_det = np.load(paths.data / "gw_data/m1zinj_det.npy")
@@ -48,19 +48,19 @@ if  __name__ == "__main__":
 
     # save results
     id = az.from_numpyro(mcmc)
-    id.to_netcdf(paths.data / "mcmc_nonparametric.nc4")
+    id.to_netcdf("/home/afarah/mcmc_nonparametric_fewer.nc4")
 
     # calculate stats
     h0samps = id.posterior['H0'][0]
     from data_generation import H0_FID
 
-    with open(paths.output / "nonparh0percent.txt", "w") as f:
-        print(f"{np.std(h0samps)/np.mean(h0samps)*100:.0f}", file=f)
-    lower = np.mean(h0samps)-np.percentile(h0samps,5)
-    upper = np.percentile(h0samps,95)-np.mean(h0samps)
-    with open(paths.output / "nonparh0CI.txt", "w") as f:
-        print(f"${np.mean(h0samps):.1f}"+"^{+"+f"{lower:.1f}"+"}"+"_{-"+f"{upper:.1f}"+"}$", file=f)
+#    with open(paths.output / "nonparh0percent.txt", "w") as f:
+#        print(f"{np.std(h0samps)/np.mean(h0samps)*100:.0f}", file=f)
+#    lower = np.mean(h0samps)-np.percentile(h0samps,5)
+#    upper = np.percentile(h0samps,95)-np.mean(h0samps)
+#    with open(paths.output / "nonparh0CI.txt", "w") as f:
+#        print(f"${np.mean(h0samps):.1f}"+"^{+"+f"{lower:.1f}"+"}"+"_{-"+f"{upper:.1f}"+"}$", file=f)
 
-    nonpar_offset = np.abs(h0samps.mean()-H0_FID)/h0samps.std()
-    with open(paths.output / "nonparh0offset.txt","w") as f:
-        print(f"{nonpar_offset:.1f}",file=f)
+#    nonpar_offset = np.abs(h0samps.mean()-H0_FID)/h0samps.std()
+#    with open(paths.output / "nonparh0offset.txt","w") as f:
+#        print(f"{nonpar_offset:.1f}",file=f)
