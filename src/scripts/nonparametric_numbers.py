@@ -3,7 +3,7 @@ import numpy as np
 import paths
 from data_generation import H0_FID
 
-id = az.InferenceData.from_netcdf(paths.data / "mcmc_nonparametric.nc4")
+id = az.InferenceData.from_netcdf(paths.data / "bias/mcmc_nonparametric_16.nc4")
 h0samps = id.posterior['H0'][0]
 
 with open(paths.output / "nonparh0percent.txt", "w") as f:
