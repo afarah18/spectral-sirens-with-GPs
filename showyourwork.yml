@@ -41,12 +41,16 @@ dependencies:
     - src/data/gw_data/
   src/scripts/bias_study.py:
     - src/data/gw_data/
+  src/scripts/nonparametric_numbers.py:
+    - src/data/mcmc_nonparametric.nc4
   src/scripts/pm_H0_twopanel.py:
     - src/data/mcmc_nonparametric.nc4
     - src/data/mcmc_parametric_PLP.nc4
     - src/data/mcmc_parametric_BPL.nc4
   src/scripts/nonparametric_corner.py:
     - src/data/mcmc_nonparametric_fitOm0.nc4
+  src/scripts/GP_example_plot.py:
+    - src/data/mcmc_nonparametric.nc4
 
   src/tex/ms.tex:
     - src/tex/figures/
@@ -62,7 +66,7 @@ optimize_caching: false
 # Overleaf sync settings
 overleaf:
   # Overleaf project ID (blank = disabled)
-  id: 63fe92421f02c027b185fef6
+  id: # 63fe92421f02c027b185fef6
   # Perform sync on GitHub Actions?
   gh_actions_sync: true
   # List of files to push to Overleaf
