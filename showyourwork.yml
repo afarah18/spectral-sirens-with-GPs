@@ -28,11 +28,11 @@ datasets:
   10.5281/zenodo.8428643:
     contents:
       optimal_snr_aplus_design_O5.h5: src/data/optimal_snr_aplus_design_O5.h5
-  10.5072/zenodo.45078:
+  10.5281/zenodo.10963303:
     contents:
       bias.zip: src/data/bias.zip
       gw_data.zip: src/data/gw_data.zip
-      mcmc_nonparametric_fitOm0_old.nc4: src/data/mcmc_nonparametric_fitOm0.nc4
+      mcmc_nonparametric_fitOm0.nc4: src/data/mcmc_nonparametric_fitOm0.nc4
       PLPh0offset.txt: src/tex/output/PLPh0offset.txt
       PLPh0percent.txt: src/tex/output/PLPh0percent.txt
       PLP_bias_percent.txt: src/tex/output/PLP_bias_percent.txt
