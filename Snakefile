@@ -32,7 +32,7 @@ rule nonparpm:
     output:
         "src/tex/figures/O5_pm.pdf"
     input:
-        "src/tex/output/PLP_bias_percent.txt"
+        "src/data/bias"
     script:
         "src/scripts/pm_H0_twopanel.py"
 rule nonparcorner:
@@ -68,6 +68,6 @@ rule GPeg:
     output:
         "src/tex/figures/GP_example.pdf"
     input:
-        "src/data/bias/"
+        "src/data/bias/mcmc_nonparametric_16.nc4"
     script:
         "src/scripts/GP_example_plot.py"
