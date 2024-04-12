@@ -63,6 +63,7 @@ rule GPeg:
     output:
         "src/tex/figures/GP_example.pdf"
     input:
-        "src/data/bias"
+        "src/data/bias",
+        "src/data/bias.zip"
     script:
         "src/scripts/GP_example_plot.py"

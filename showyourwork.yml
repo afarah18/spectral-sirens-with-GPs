@@ -62,10 +62,12 @@ dependencies:
     - src/data/bias/mcmc_nonparametric_16.nc4
     - src/data/bias/mcmc_parametric_PLP_16.nc4
     - src/data/bias/mcmc_parametric_BPL_16.nc4
+    - src/data/bias.zip
   src/scripts/nonparametric_corner.py:
     - src/data/mcmc_nonparametric_fitOm0.nc4
   src/scripts/GP_example_plot.py:
     - src/data/bias/mcmc_nonparametric_16.nc4
+    - src/data/bias.zip
 
   src/tex/ms.tex:
     - src/tex/figures/O5_pm.pdf
