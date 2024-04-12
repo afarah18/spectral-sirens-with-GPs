@@ -13,28 +13,29 @@ rule unzipbias:
     script:
         "src/scripts/unzip_bias.sh"
 
-rule h0fid:
+rule datanumbers:
     output:
-        "src/tex/output/H0_FID.txt"
-    input:
-        "src/data/optimal_snr_aplus_design_O5.h5"
-    script:
-        "src/scripts/data_numbers.py"
-rule numevs:
-    output:
+        "src/tex/output/H0_FID.txt",
         "src/tex/output/num_found_events.txt"
     input:
         "src/data/gw_data"
     script:
         "src/scripts/data_numbers.py"
 
-rule nonparnumbers:
+rule biasnumbers:
     output:
-        "src/tex/output/nonparh0percent.txt"
+        "src/tex/output/nonparh0percent.txt",
+        "src/tex/output/nonparh0offset.txt",
+        "src/tex/output/nonparh0CI.txt",
+        "src/tex/output/PLPh0percent.txt",
+        "src/tex/output/PLPh0offset.txt",
+        "src/tex/output/BPLh0offset.txt",
+        "src/tex/output/BPL_bias_percent.txt",
+        "src/tex/output/PLP_bias_percent.txt"
     input:
-        "src/data/mcmc_nonparametric.nc4"
+        "src/data/bias"
     script:
-        "src/scripts/nonparametric_numbers.py"
+        "src/scripts/bias_numbers.py"
 rule nonparpm:
     output:
         "src/tex/figures/O5_pm.pdf"
@@ -44,21 +45,8 @@ rule nonparpm:
         "src/scripts/pm_H0_twopanel.py"
 rule nonparcorner:
     output:
-        "src/tex/figures/O5_GP_corner.pdf"
-    input:
-        "src/data/mcmc_nonparametric_fitOm0.nc4"
-    script:
-        "src/scripts/nonparametric_corner.py"
-
-rule mostsensitivez:
-    output:
-        "src/tex/output/mostsensitivez.txt"
-    input:
-        "src/data/mcmc_nonparametric_fitOm0.nc4"
-    script:
-        "src/scripts/nonparametric_corner.py"
-rule Hz_percent:
-    output:
+        "src/tex/figures/O5_GP_corner.pdf",
+        "src/tex/output/mostsensitivez.txt",
         "src/tex/output/Hz_percent.txt"
     input:
         "src/data/mcmc_nonparametric_fitOm0.nc4"
