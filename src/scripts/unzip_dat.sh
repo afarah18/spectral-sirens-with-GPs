@@ -1,3 +1,3 @@
 cd src/data
-unzip gw_data.zip
+unzip -o gw_data.zip
 cd ../../
