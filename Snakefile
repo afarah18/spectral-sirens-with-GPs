@@ -75,6 +75,6 @@ rule GPeg:
     output:
         "src/tex/figures/GP_example.pdf"
     input:
-        "src/data/bias/mcmc_nonparametric_16.nc4"
+        "src/data/bias"
     script:
         "src/scripts/GP_example_plot.py"
