@@ -1,6 +1,7 @@
 import gwcosmo
 import gwpop
 import paths
+import os
 Clight = gwcosmo.Clight
 from utils import inverse_transform_sample
 from mock_posteriors import gen_snr_scaled_PE
@@ -63,14 +64,17 @@ def make_injections(rng, alpha, mmax_inj, mmin_inj, zmax_inj=ZMAX,num_inj=NUM_IN
 
     return m1zinj, dLinj, log_pinj
 
-osnr_interp, reference_distance = interpolate_optimal_snr_grid(
-    fname=paths.data / "optimal_snr_aplus_design_O5.h5")
-
 if  __name__ == "__main__":
+    osnr_interp, reference_distance = interpolate_optimal_snr_grid(
+        fname=paths.data / "optimal_snr_aplus_design_O5.h5")
+    
     # generate data and save 
     m1s_true, zt, m1z_true, dL_true = true_vals_PLP(rng=np_rng)
-    # os.mkdir(paths.data / "gw_data")
-    np.save(paths.data / "gw_data/m1s_true_PLP.npy", dL_true)
+    try:
+        np.save(paths.data / "gw_data/m1s_true_PLP.npy", dL_true)
+    except FileNotFoundError:
+        os.mkdir(paths.data / "gw_data")
+        np.save(paths.data / "gw_data/m1s_true_PLP.npy", dL_true)
     np.save(paths.data / "gw_data/z_true_PLP.npy", zt)
     np.save(paths.data / "gw_data/m1z_true_PLP.npy",m1z_true)
     np.save(paths.data / "gw_data/dL_true_PLP.npy",dL_true)

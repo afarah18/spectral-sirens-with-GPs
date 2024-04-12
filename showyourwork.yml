@@ -1,5 +1,5 @@
 # Enable rule caching on Zenodo?
-cache_on_zenodo: true
+cache_on_zenodo: false
 
 # Workflow graph (DAG) generation
 dag:
@@ -19,18 +19,33 @@ dag:
     penwidth: "2"
     width: "1"
   # Files and glob patterns to ignore
-  # ignore_files:
-  #  - src/tex/orcid-ID.png
-
+  ignore_files:
+   - src/tex/orcid-ID.png
 
 # Externally-hosted datasets, e.g. on Zenodo
 datasets:
   10.5281/zenodo.8428643:
     contents:
       optimal_snr_aplus_design_O5.h5: src/data/optimal_snr_aplus_design_O5.h5
+  10.5072/zenodo.45078:
+    contents:
+      bias.zip: src/data/bias.zip
+      gw_data.zip: src/data/gw_data.zip
+      mcmc_nonparametric_fitOm0_old.nc4: src/data/mcmc_nonparametric_fitOm0.nc4
+      PLPh0offset.txt: src/tex/output/PLPh0offset.txt
+      PLPh0percent.txt: src/tex/output/PLPh0percent.txt
+      PLP_bias_percent.txt: src/tex/output/PLP_bias_percent.txt
+      nonparh0offset.txt: src/tex/output/nonparh0offset.txt
+      nonparh0percent.txt: src/tex/output/nonparh0percent.txt
+      BPLh0offset.txt: src/tex/output/BPLh0offset.txt
+      BPL_bias_percent.txt: src/tex/output/BPL_bias_percent.txt
 
 # Custom file dependencies
 dependencies:
+  src/scripts/unzip_dat.sh:
+    - src/data/gw_data.zip
+  src/scripts/unzip_bias.sh:
+    - src/data/bias.zip
   src/scripts/data_generation.py:
     - src/data/optimal_snr_aplus_design_O5.h5
   src/scripts/data_numbers.py:
@@ -45,17 +60,34 @@ dependencies:
     - src/data/mcmc_nonparametric.nc4
   src/scripts/pm_H0_twopanel.py:
     - src/data/mcmc_nonparametric.nc4
-    - src/data/mcmc_parametric_PLP.nc4
-    - src/data/mcmc_parametric_BPL.nc4
+  src/scripts/pm_H0_twopanel.py:
+    - src/data/bias/mcmc_nonparametric_16.nc4
+    - src/data/bias/mcmc_parametric_PLP_16.nc4
+    - src/data/bias/mcmc_parametric_BPL_16.nc4
   src/scripts/nonparametric_corner.py:
     - src/data/mcmc_nonparametric_fitOm0.nc4
   src/scripts/GP_example_plot.py:
-    - src/data/mcmc_nonparametric.nc4
+    - src/data/bias/mcmc_nonparametric_16.nc4
 
   src/tex/ms.tex:
-    - src/tex/figures/
-    - src/tex/output/
+    - src/tex/figures/O5_pm.pdf
+    - src/tex/figures/O5_GP_corner.pdf
+    - src/tex/figures/GP_example.pdf
+    - src/tex/output/num_found_events.txt
+    - src/tex/output/H0_FID.txt
+    - src/tex/output/PLP_bias_percent.txt
+    - src/tex/output/PLPh0offset.txt
+    - src/tex/output/PLPh0percent.txt
+    - src/tex/output/BPLh0offset.txt
+    - src/tex/output/BPL_bias_percent.txt
+    - src/tex/output/nonparh0percent.txt
+    - src/tex/output/nonparh0offset.txt
+    - src/tex/output/mostsensitivez.txt
+    - src/tex/output/Hz_percent.txt
+    
   # - src/tex/stylesheet.tex
+tex_files_out:
+    - src/tex/orcid-ID.png # this is a workaround to avoid an error message
 
 # Name of the `.tex` manuscript and corresponding `.pdf` article
 ms_name: ms
@@ -78,8 +110,6 @@ overleaf:
     - src/tex/ms.tex
     - src/tex/bib.bib
     - src/tex/macros.sty
-    # - src/tex/output
-    # - src/tex/figures
 
 # Always require all input files to be present on disk for workflow to pass?
 require_inputs: true
@@ -120,4 +150,4 @@ tectonic_args: []
 verbose: false
 
 # Version of `showyourwork` used to create this workflow
-version: 0.4.3
+version: 0.4.4.dev37+g1526059

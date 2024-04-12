@@ -12,7 +12,7 @@ import numpy as np
 
 jax.config.update("jax_enable_x64", True)
 
-NSAMPS=1000
+NSAMPS=5
 
 # random number generators
 jax_rng = jax.random.PRNGKey(42)

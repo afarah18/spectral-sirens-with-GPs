@@ -17,13 +17,14 @@ fig, axes = plt.subplots(ncols=2,figsize=(7.5,4*.75),facecolor='none',sharex=Tru
 
 # posterior
 axes[1].set_title("Population Posterior")
-path_fit = paths.data / "mcmc_nonparametric.nc4"
+path_fit = paths.data / "bias/mcmc_nonparametric_16.nc4"
 
 id = az.InferenceData.from_netcdf(path_fit)
 samples = id.posterior
 r = samples['log_rate_test'][0]
 
-for i in range(25):
+n = min(25,len(r))
+for i in range(n):
     axes[1].plot(logtestm1s, r[i], lw=0.7, c=color_GP,alpha=0.5)
 
 # prior

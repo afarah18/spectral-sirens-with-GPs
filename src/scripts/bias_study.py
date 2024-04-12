@@ -3,12 +3,14 @@ import arviz as az
 import numpy as np
 from tqdm import trange
 import jax
+import os
 
 # custom
 import paths
 from mock_posteriors import gen_snr_scaled_PE
 from data_generation import (true_vals_PLP, SNR_THRESH, N_SAMPLES_PER_EVENT,N_SOURCES,
-                              H0_FID, OM0_FID, osnr_interp, reference_distance)
+                              H0_FID, OM0_FID)
+from GWMockCat.vt_utils import interpolate_optimal_snr_grid 
 from parametric_inference import NSAMPS
 from priors import PLP, BPL, hyper_prior, get_ell_frechet_params, get_sigma_gamma_params
 
@@ -16,18 +18,26 @@ jax.config.update("jax_enable_x64", True)
 
 # options
 N_CATALOGS=50
-N_SOURCES = N_SOURCES#//2 # cut catalogs in half for this study, for computational feasibility
+N_SOURCES = N_SOURCES
 plot = True
 
 # random number generators
 jax_rng = jax.random.PRNGKey(42) # these numbers are arbitrary, I think I just copied them from a tutorial
 np_rng = np.random.default_rng(516)
 
- # load injection set
+# load injection set
 m1zinj_det = np.load(paths.data / "gw_data/m1zinj_det.npy")
 dLinj_det = np.load(paths.data / "gw_data/dLinj_det.npy")
 log_pinj_det = np.load(paths.data / "gw_data/log_pinj_det.npy")
 
+# load SNR interpolator
+osnr_interp, reference_distance = interpolate_optimal_snr_grid(
+    fname=paths.data / "optimal_snr_aplus_design_O5.h5")
+
+try:
+    os.mkdir(paths.data / "bias")
+except FileExistsError:
+    pass
 if plot:
     import matplotlib.pyplot as plt
 bias_PLP = np.zeros(N_CATALOGS)

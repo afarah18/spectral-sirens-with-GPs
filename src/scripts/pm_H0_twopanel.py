@@ -72,8 +72,10 @@ def two_panel(path, path_PLP, path_BPL, hyperparam='H0'):
     except np.linalg.LinAlgError:
         prior = H0_FID
         kde = lambda x: 1.
-    axes[1].plot(prior,kde(prior),c=color_GP,lw=1)
-    axes[1].fill_between(prior,np.zeros_like(prior),kde(prior),color=color_GP,alpha=0.3,label='Gaussian process')
+        kde_PLP = kde
+        kde_BPL = kde    
+    axes[1].plot(prior,kde(prior),c=color_GP,lw=1,label='Gaussian process')
+    # axes[1].fill_between(prior,np.zeros_like(prior),kde(prior),color=color_GP,alpha=0.3)
     axes[1].plot(prior,kde_PLP(prior),c=color_PLP,ls="--",label=r'\textsc{Power Law + Peak}')
     axes[1].plot(prior,kde_BPL(prior),c=color_BPL,label=r'\textsc{Broken Power Law}')
     axes[1].set_ylabel('posterior density')
@@ -82,6 +84,6 @@ def two_panel(path, path_PLP, path_BPL, hyperparam='H0'):
     fig.savefig(paths.figures / "O5_pm.pdf")
     plt.clf()
 
-two_panel(paths.data / "mcmc_nonparametric.nc4", 
+two_panel(paths.data / "bias/mcmc_nonparametric_16.nc4", 
           paths.data / "bias/mcmc_parametric_PLP_16.nc4",
           paths.data / "bias/mcmc_parametric_BPL_16.nc4")
