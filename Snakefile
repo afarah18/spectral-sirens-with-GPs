@@ -28,6 +28,13 @@ rule numevs:
     script:
         "src/scripts/data_numbers.py"
 
+rule nonparnumbers:
+    output:
+        "src/tex/output/nonparh0percent.txt"
+    input:
+        "src/data/mcmc_nonparametric.nc4"
+    script:
+        "src/scripts/nonparametric_numbers.py"
 rule nonparpm:
     output:
         "src/tex/figures/O5_pm.pdf"
