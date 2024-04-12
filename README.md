@@ -17,4 +17,4 @@
 
 An open source scientific article created using the [showyourwork](https://github.com/showyourwork/showyourwork) workflow about doing GW spectral siren cosmology with a non-parametric model for the mass distribution of GW sources. 
 
-All source code for this project is containted within `src/scripts/`. Unfortuatnely the links in the paper do not work, as caching was broken in showyourwork at the time of this writing, so each script had to be run individually instead of as part of the showyourwork workflow. We are working on resolving this and hope to have it working before publication.
+All source code for this project is containted within `src/scripts/`. Some are not used within the showyourwork workflow as they are expensive (bias_study.py and nonparametric_inference_fitOm0.py). The outputs of these have instead been published to zenodo and showyourwork is set up to automatically download them when building the article.
