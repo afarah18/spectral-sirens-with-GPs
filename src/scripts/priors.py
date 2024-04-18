@@ -119,8 +119,8 @@ def get_sigma_gamma_params(U,alpha=0.05):
 def hyper_prior(m1det,dL,m1det_inj,dL_inj,log_pinj,log_PE_prior=0.,PC_params=dict(),remove_low_Neff=False,fit_Om0=False):
     """ Non-parametric population inference """
     mean = numpyro.sample("mean",dist.Normal(0,3))
-    sigma = numpyro.deterministic("sigma",2.5)
-    # sigma = numpyro.sample("sigma",dist.Gamma(concentration=PC_params["conc"], rate=PC_params["lam_sigma"]))
+    # sigma = numpyro.deterministic("sigma",2.5)
+    sigma = numpyro.sample("sigma",dist.Gamma(concentration=PC_params["conc"], rate=PC_params["lam_sigma"]))
     # rho = numpyro.deterministic("rho",0.5)
     rho = numpyro.sample("rho",Frechet(concentration=PC_params["concentration"],scale=PC_params["scale"]))
 
@@ -138,8 +138,8 @@ def hyper_prior(m1det,dL,m1det_inj,dL_inj,log_pinj,log_PE_prior=0.,PC_params=dic
     # construct GP in the source frame
     logtestm1s = jnp.log(TEST_M1S)
     kernel = sigma**2 * kernels.quasisep.Matern52(rho) # can change kernel type
-    gp = GaussianProcess(kernel,logtestm1s,mean=mean,diag=0.001,
-                         solver=QuasisepSolver,assume_sorted=True)
+    gp = GaussianProcess(kernel,logtestm1s,mean=mean,diag=0.001)
+                         #solver=QuasisepSolver,assume_sorted=True)
     log_rate_test = numpyro.sample("log_rate_test",gp.numpyro_dist())
 
     # convert event data to source frame
@@ -194,7 +194,7 @@ def hyper_prior(m1det,dL,m1det_inj,dL_inj,log_pinj,log_PE_prior=0.,PC_params=dic
     if remove_low_Neff:
         numpyro.factor("Neff_inj_penalty",jnp.log(1./(1.+(Neff/(4.*len(single_event_logL)))**(-30.))))
 
-def PLP(m1det,dL,m1det_inj,dL_inj,log_pinj,log_PE_prior=0.,remove_low_Neff=False,fit_Om0=False):
+def PLP(m1det,dL,q,m1det_inj,dL_inj,q_inj,log_pinj,log_PE_prior=0.,remove_low_Neff=False,fit_Om0=False):
     """Correct parametric population inference"""
     # cosmology
     H0 = numpyro.sample("H0",dist.Uniform(H0_PRIOR_MIN,H0_PRIOR_MAX))
@@ -210,7 +210,9 @@ def PLP(m1det,dL,m1det_inj,dL_inj,log_pinj,log_PE_prior=0.,remove_low_Neff=False
     mu_m1 = numpyro.sample("mu_m1",dist.Uniform(20,60))# TRUEVALS['mu_m1']
     sig_m1 = numpyro.sample("sig_m1",dist.Uniform(1,10))# TRUEVALS['sig_m1']
     f_peak = TRUEVALS['f_peak'] #numpyro.sample("f_peak",dist.Uniform(0,1))
-    #Fixed
+    bq = numpyro.sample("bq",dist.Normal(0,5))
+
+    # Fixed
     alpha_z = TRUEVALS['alpha_z']# numpyro.sample("alpha_z",dist.Uniform(0,2)) #
     zp = TRUEVALS['zp']#numpyro.sample("zp",dist.Uniform(0,5)) #
     beta = TRUEVALS['beta_z'] #numpyro.sample("beta_z",dist.Uniform(0,5)) # numpyro.deterministic('beta',TRUEVALS['beta_z'])# 
@@ -239,15 +241,16 @@ def PLP(m1det,dL,m1det_inj,dL_inj,log_pinj,log_PE_prior=0.,remove_low_Neff=False
 
     # evaluate mass dist on data
     log_pm1_data = jgwpop.logpowerlaw_peak(m1source,mmin,mmax,alpha,sig_m1,mu_m1,f_peak)
-    log_pm2_data = 0.
+    log_pq_data = jgwpop.logpowerlaw(q,0.,1.,bq)
     logJacobian_m1z_m1_data = - 1.0*jnp.log1p(z)
-    log_pm_data = log_pm1_data + log_pm2_data + logJacobian_m1z_m1_data
+    logJacobian_m1m2_m1q_data = - jnp.log(m1det) # this is needed bc PE prior is in m1 and m2
+    log_pm_data = log_pm1_data + log_pq_data + logJacobian_m1z_m1_data + logJacobian_m1m2_m1q_data
 
     # evaluate mass dist on injs
     log_pm1_injs = jgwpop.logpowerlaw_peak(m1_injs,mmin,mmax,alpha,sig_m1,mu_m1,f_peak)
-    log_pm2_injs = 0.
+    log_pq_injs = jgwpop.logpowerlaw(q_inj,0.,1.,bq)
     logJacobian_m1z_m1_injs = - 1.0*jnp.log1p(z_injs)
-    log_pm_injs = log_pm1_injs + log_pm2_injs + logJacobian_m1z_m1_injs
+    log_pm_injs = log_pm1_injs + log_pq_injs + logJacobian_m1z_m1_injs
 
     # event part of likelihood
     single_event_logL = jax.scipy.special.logsumexp(log_pm_data + log_pz_data +jnp.log(rate) - log_PE_prior,
