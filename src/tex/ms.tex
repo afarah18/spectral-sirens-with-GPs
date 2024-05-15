@@ -1,5 +1,5 @@
 % Define document class
-\documentclass[preprint2]{aastex631}
+\documentclass[preprint2,linenumbers]{aastex631}
 \usepackage{showyourwork}
 \usepackage{macros}
 \usepackage{amsmath}
@@ -122,16 +122,18 @@ The prospects of such a dominant systematic uncertainty is troubling.
 If prior knowledge of the mass distribution's morphology (whether an exact theoretical prediction or knowledge of the correct parametric family of models) is a prerequisite for the spectral siren method, the effectiveness of such a technique would be significantly hampered.
 
 In this work, we explicitly demonstrate that no prior knowledge of the shape of the \ac{CBC} mass spectrum is necessary to use the spectral siren methodology. 
-We do this by inferring $H(z)$ with a flexible, non-parametric model for the mass distribution of \acp{CBC} (blue lines in Figure~\ref{fig:O5_GP}). 
+We do this by inferring $H(z)$ with a flexible, non-parametric model for the mass distribution of \acp{CBC} (blue shaded band in Figure~\ref{fig:O5_GP}). 
 This model makes minimal prior assumptions about the shape of the mass distribution, enabling it to accurately infer a wide range of morphologies and remain agnostic to the astrophysical processes that give rise to features in the mass distribution.
-Despite its flexibility, our approach is able to consistently obtain unbiased measurements of cosmological parameters, showing that nonparametric methods are not only sufficient for a spectral siren measurement, they can also mitigate systematic effects in the measurement caused by model misspecification.
-The success of the non-parametric mass model in recovering the injected cosmological parameters demonstrates that the information in the spectral siren measurement does not come from the enforcement of specific features in the mass distribution.
+Despite its flexibility, our approach is able to consistently obtain unbiased measurements of cosmological parameters, showing that non-parametric methods are not only sufficient for a spectral siren measurement, they can also mitigate systematic effects in the measurement caused by model misspecification.
+
+\new{The non-parametric mass model's ability to recover injected cosmological parameters demonstrates} that the information in the spectral siren measurement does not come from the enforcement of specific features in the mass distribution.
 Rather, it is provided by the assumption that either all \acp{CBC} follow a common mass distribution, or that any evolution of the mass distribution with redshift does not exactly mimic cosmology \citep{ezquiaga_spectral_2022}.
 
-We find that our non-parametric model allows for a $\variable{output/nonparh0percent.txt}\%$ measurement of \Ho{} and a $\variable{output/Hz_percent.txt}\%$ measurement of $H(z=\variable{output/mostsensitivez.txt})$ during \ac{O5}, when the detectors will reach their design sensitivity. %, and a \result{X}\% measurement with only \result{X} weeks of observing with a next-generation detector network. 
-We highlight measurements of \Ho{} in order to benchmark the accuracy and precision of our non-parametric method, as well as explore the role of spectral sirens in elucidating the Hubble tension.
-However, a primary utility of spectral siren measurements will be in constraining $H(z)$ at redshifts that are relatively inaccessible by electromagnetic observations, especially with next-generation gravitational-wave detectors \citep{You:2020wju, Ezquiaga:2020tns, ezquiaga_spectral_2022, Chen:2024gdn}.\footnote{See example spectral siren cosmological inference using parametric mass spectrum models: \href{https://github.com/ezquiaga/spectral_sirens}{https://github.com/ezquiaga/spectral\_sirens}.}
-When applied to data from next-generation detectors, this method will measure the dark energy equation of state parameter, $w$, at redshifts $\gtrsim 2$.
+We find that our non-parametric model allows for a $\variable{output/nonparh0percent.txt}\%$ measurement of \Ho{} and a $\variable{output/Hz_percent.txt}\%$ measurement of $H(z=\variable{output/mostsensitivez.txt})$ during \ac{O5}, when the detectors will reach their design sensitivity. 
+% \new{This is to be compared with a $\variable{output/PLPh0percent.txt}\%$ measurement of $H(z=\variable{output/mostsensitivez.txt})$ with the correct parametric model, which does not represent a statistically-significant difference.}
+We highlight measurements of \Ho{} \new{within a $\Lambda$CDM universe} in order to benchmark the accuracy and precision of our non-parametric method, as well as explore the role of spectral sirens in elucidating the Hubble tension.
+However, a primary utility of spectral siren measurements will be in constraining $H(z)$ \new{under different cosmological models, and} at redshifts that are relatively inaccessible by electromagnetic observations, especially with next-generation gravitational-wave detectors \citep{You:2020wju, Ezquiaga:2020tns, ezquiaga_spectral_2022, Chen:2024gdn}.\footnote{See example spectral siren cosmological inference using parametric mass spectrum models: \href{https://github.com/ezquiaga/spectral_sirens}{https://github.com/ezquiaga/spectral\_sirens}.}
+When applied to data from next-generation detectors, this method will measure \new{all cosmological parameters that govern $H(z)$, such as the curvature parameter, $\kappa$, matter density, \Omm, dark energy density, $\Omega_\Lambda$, and dark energy equation of state parameter, $w$.}
 
 This paper is organized as follows: Section~\ref{sec:data generation} describes the simulated dataset.
 Section~\ref{sec:ss} introduces the spectral siren method, demonstrating how cosmological parameters are inferred from the mass distribution of \ac{GW} sources.
@@ -139,7 +141,11 @@ Section~\ref{sec:model} describes the non-parametric mass distribution we develo
 In Section~\ref{sec:results}, we present the results of using parametric and non-parametric mass distributions, as well as projections for future constraints on $H(z)$.
 We discuss the implications of our results and outline future work in Section~\ref{sec:discussion}.
 
-The code used to generate all simulated data, perform the population inference, and create all figures in this paper is made publicly available at \GitHubURL{}, and was enabled by the \showyourwork package \citep{Luger2021}. %\url{https://github.com/afarah18/spectral-sirens-with-GPs}. %
+
+This study was carried out using the reproducibility software \href{https://github.com/showyourwork/showyourwork}{\showyourwork} \citep{Luger2021}, which leverages continuous integration to programmatically download the data from \href{https://zenodo.org/}{zenodo.org}, create the figures, and compile the manuscript.
+The icons next to each Figure caption are hyperlinks that lead to the code used to make that Figure (github icons), and to the data behind the Figure (cylindrical icons).
+Some programatically-generated numbers in the text also have these icons, which function in the same way.
+We encourage readers to click these hyperlinks to verify or reproduce the results and methods of this work. The git repository associated to this study is publicly available at \GitHubURL{}, which allows anyone to re-build the entire manuscript.
 
 \section{Cosmology with an astrophysically-agnostic mass model}
 \label{sec:methods}
@@ -169,7 +175,7 @@ This choice encodes very little prior information about the shape of the mass di
 %% TRANSITION: Describe how our goal is to demonstrate the utility of GPs and cosmology by constructing and analyzing a simulated catalog. 
 To demonstrate the effectiveness of our \ac{GP}-based mass distribution in agnostically inferring both cosmological parameters and the population properties of \ac{GW} sources, we apply our methodology to a simulated dataset.
 By generating a catalog of \ac{GW} sources from a known population and cosmological model, we are able to quantify the accuracy of our method.
-The use of simulated data also enables us to make projections for future datasets and safely ignore dimensions such as spin and mass ratio that do not impact cosmological measurements but would otherwise be important to simultaneously fit to avoid biases in population inference of real data~\citep{biscoveanu_sources_2021}.
+The use of simulated data also enables us to make projections for future datasets and safely ignore dimensions such as spin that do not impact cosmological measurements but would otherwise be important to simultaneously fit to avoid biases in population inference of real data, \new{as real data exhibit correlations between distance, mass, and spin measurements}~\citep{biscoveanu_sources_2021}.
 
 %% Describe details of catalog
 We design our simulated catalog to match the characteristics of the data expected from one year of observation in \ac{O5}. 
@@ -271,7 +277,7 @@ We illustrate this explicitly by using three different models for the source-fra
 The three models are as follows:
 \begin{enumerate}
     \item \plp{}, which includes the true mass distribution within its hyper-prior,
-    \item the \textsc{Broken Power Law} model presented in \citet{abbott_population_2021}, as we do not employ a high-mass truncation, which does not include the true mass distribution within its hyper-prior, and 
+    \item the \bpl{} model presented in \citet{abbott_population_2021}, as we do not employ a high-mass truncation, which does not include the true mass distribution within its hyper-prior, and 
     \item the flexible, \ac{GP}-based model described in Section~\ref{sec:model}, which is able to closely approximate the morphology of the true mass distribution, along with many other morphologies.
 \end{enumerate}
 For all models considered in this work, we assume the form of the redshift distribution used to generate the data, described in Equation~\ref{eq:underlying redshift dist}.
@@ -283,10 +289,11 @@ We indicate the true underlying source mass distribution and \Ho{} value with so
 
 The fits presented in Figure~\ref{fig:O5_GP} are representative results from a single simulated catalog.
 These provide insight into the full statistical results presented below.
-In particular, it can be seen that the broken power law (orange curve) is inconsistent with the true value of $H_0$: in the run shown in Figure~\ref{fig:O5_GP}, the true value of \Ho{} is offset from the mean of the posterior by $\variable{output/BPLh0offset.txt}\sigma$.
+In particular, it can be seen that the \bpl{} (orange curve) is inconsistent with the true value of $H_0$: in the run shown in Figure~\ref{fig:O5_GP}, the true value of \Ho{} is offset from the mean of the posterior by $\variable{output/BPLh0offset.txt}\sigma$.
 In contrast, the \plp{} and \ac{GP}-based models (green and blue curves) are consistent with the underlying truth.
 These models recover mean values of \Ho{} that are offset from the true value at $\variable{output/PLPh0offset.txt}\sigma$ and $\variable{output/nonparh0offset.txt}\sigma$, respectively. 
 Additionally, the mass distribution inferred with the \ac{GP}-based model closely resembles the true, simulated distribution.
+\new{The \plp{} fit appears to be inconsistent with the true distribution at low masses, but this inconsistency is not observed in the majority of fits to other realizations of simulated catalogs, so is likely a statistical fluctuation in the particular catalog arbitrarily chosen for this plot.}
 This indicates that using models that cannot accurately approximate the true mass distribution will lead to a significant systematic bias in the estimation of cosmological parameters.
 
 This bias is not due to the need to know the morphology of the mass distribution \emph{a priori}, as the \ac{GP}-based model recovers the correct value of \Ho{} despite making minimal assumptions about the mass distribution.
@@ -295,14 +302,18 @@ In reality, we do not know the true functional form of the mass distribution, %s
 so it may be desirable to use a non-parametric approach to avoid potential systematic errors introduced by choosing a parametric model that likely does not contain the true mass distribution within its hyper-prior.
 
 To obtain a quantitative measure of the systematic bias introduced by mismodeling the mass distribution, we repeat the parametric analyses with 50 separate simulated catalogs of $\sim1,000$ events each.
-We find that the broken power law model produces an overestimate of \Ho{} at greater than $1\sigma$ $\variable{output/BPL_bias_percent.txt}\%$ of the time, %whereas the \ac{GP}-based model reaches that level of bias only \result{Z}\% of the time, 
+We find that the \bpl{} model produces an \new{over- or under}estimate of \Ho{} at greater than $1\sigma$ $\variable{output/BPL_bias_percent.txt}\%$ of the time, %whereas the \ac{GP}-based model reaches that level of bias only \result{Z}\% of the time, 
 and the \plp{} model reaches the same level of bias only $\variable{output/PLP_bias_percent.txt}\%$ 
 of the time.
+\new{Additionally, the \bpl{} model typically overestimates \Ho{}, while the \plp{} model produces a roughly equal number of over- and underestimates of \Ho{}, implying a systematic bias in the incorrect but not the correct parametric model.}\footnote{\new{
+We note that \citep{pierra_study_2023} report an underestimate of \Ho{} with a fit of their Broken Power Law model to a single dataset generated with \plp, but their prior bounds on the maximum mass parameter do not extend below the injected value of that parameter, which in turn does not allow for the possibility of an overestimated \Ho{}.}}
 
 Collectively, these results indicate that prior knowledge of the shape of the mass distribution is not required to perform an unbiased spectral siren measurement, so long as strong assumptions about the shape of the mass distribution are not made.
 
 \subsection{Projections for Future Measurements}
 Figure~\ref{fig:O5_GP} demonstrates an expected $\variable{output/nonparh0percent.txt}\%$ ($1\sigma$ uncertainties) measurement of \Ho{} after one year of \ac{O5} using the \ac{GP}-based spectral siren method, and a $\variable{output/PLPh0percent.txt}\%$ measurement with parametric spectral sirens, demonstrating comparable statistical uncertainties.
+\new{However, we note that the precision reached in \ac{O5} may lessen depending on the actual level of measurement uncertainty in individual events, and the existence (or lack thereof) of a maximum mass feature, which we have assumed to be present in our simulated dataset.}
+\new{These numbers are estimated from a fit to a single simulated catalog, but we find similar levels of statistical uncertainty from fits to different catalog realizations.}
 By the time of \ac{O5}, the \ac{GW} detector network is projected to detect \acp{BBH} up to redshift $\approx 3$, with most sources lying near redshift $\simeq 1.2$ \citep{chen_distance_2021}.
 Additionally, next-generation detectors will be sensitive to sources up to redshift $\sim 100$.
 This means that future \ac{GW} observations will be more sensitive to $H(z\gtrsim1)$ than to \Ho, and can therefore constrain several additional cosmological parameters \citep{Chen:2024gdn}.
@@ -385,15 +396,23 @@ We stress, though, that this is not an intrinsic limitation of our method; one c
 More interesting is the possibility that the black hole mass distribution itself evolves with redshift.
 As demonstrated in \citet{ezquiaga_spectral_2022}, the degeneracy between an evolving mass distribution and the expansion of the universe can be broken provided that there are multiple features present in the mass distribution, and that we do not live in a fine-tuned universe where the evolutionary effects governing the \ac{CBC} mass distribution perfectly mimick the effects of cosmological redshift.
 The first condition (multiple features) is known to be met in current data \citep{abbott_population_2023}, with three robust features \citep{farah_things_2023}: a maximum black hole mass and overdensities at $\sim10\Msun$ and $\sim35\Msun$.
+\new{It is also predicted by many population synthesis studies, \citep[e.g.][]{mapelli_cosmic_2018,giacobbo_merging_2018,van_son_locations_2023}}
 The latter scenario---with features identically and monotonically shifting to higher masses with increasing redshift---would be astrophysically unlikely as the locations of features in the mass distribution are each thought to be governed by fundamentally different physical processes \citep{mapelli_binary_2020}.
-The non-parametric methods presented here will allow for arbitrary redshift evolution.
+Extensions to the non-parametric methods presented here will allow for arbitrary redshift evolution.
 Additionally, since \aclp{GP} naturally scale to multiple data dimensions \citep{rasmussen_gaussian_2006}, the method presented here can easily be generalized to fit the redshift dependence of the mass distribution. 
 Future work will extend the method developed here to mass distributions that are allowed to evolve with redshift.
+\new{When applying an evolving mass distribution model to a dataset that exhibits evolution, we expect errors on cosmological parameters to broaden.
+Noticeable redshift evolution in the mass distribution is expected to occur above $z\simeq 1.5$, \citep{van_son_redshift_2022}, which is not yet relevant in current data or in expected O5 data, but will certainly be visible in next-generation detectors.}
 
-Because \ac{GW} observations are the only data input to spectral sirens, they are uniquely positioned to probe the expansion history of the universe over a wide range of cosmological redshift, rather than just the local expansion \Ho.
+Because \ac{GW} observations are the only data input to spectral sirens, they are sensitive to the expansion history of the universe over a wide range of cosmological redshift, rather than just the local expansion \Ho.
 We have shown this by simultaneously measuring \Omm{} and \Ho{}; the method can be trivially expanded to constrain additional cosmological parameters that govern $H(z)$, such as the dark energy equation of state parameter, $w$. 
+\new{It is also possible to use a non-$\Lambda$CDM cosmological model for $H(z)$, with different parameters entirely.
+It may also be possible to forego the need for a parametric representation of $H(z)$ altogether, for example by using bins in luminosity distance.
+A similar technique using redshift bins is commonly used in cosmological measurements using galaxy surveys and type 1a supernovae \citep[e.g.][]{perlmutter_measuring_2003,anderson_clustering_2014,aghamousa_desi_2016}, but we have not pursued that possibility in this work.
+Such a method would likely increase uncertainties on $H(z)$, especially for $z\gtrsim 1.5$.}
 We find that for \acl{O5}, spectral sirens will be most constraining at $z=\variable{output/mostsensitivez.txt}$.
 This redshift is larger than the expected redshifts of detectable electromagnetic counterparts of binary neutron star mergers~\citep{kiendrebeogo_updated_2023}, implying that upgrades to current \ac{GW} detectors will allow the spectral siren method to probe $H(z)$ at otherwise unexplored distances by \acp{GW}. 
+
 Proposed next-generation \ac{GW} detectors such as Cosmic Explorer and Einstein Telescope will be sensitive to \acp{CBC} across cosmic time (out to $z\sim100$)~\citep{et_steering_committee_einstein_2020, evans_horizon_2021}.
 Future cosmological surveys, such as those enabled by the Nancy Grace Roman Space Telescope and the Vera Rubin Observatory, are expected to be able to precisely measure $H(z)$ to $z\sim3$ \citep{spergel_wide-field_2015}, making the spectral siren method uniquely positioned to measure the expansion of the universe at high redshift.
 When combined with bright and dark siren methods, the low-redshift expansion history will also be well-constrained \citep{Chen:2024gdn}.
@@ -436,11 +455,12 @@ where
 \label{eq:underlying mass dist}
 \end{align}
 \begin{equation}
-    p(z|H_0, \Omega_M) \propto \frac{\diff V_C}{\diff z} \frac{1}{1+z} \frac{(1+z)^\alpha}{1+\left(\frac{1+z}{1+z_p}\right)^{\alpha+\beta}}.
+    p(z|H_0, \Omega_M) \propto \frac{\diff V_C}{\diff z} \frac{1}{1+z} \frac{(1+z)^\alpha_z}{1+\left(\frac{1+z}{1+z_p}\right)^{\alpha_z+\beta_z}}.
     \label{eq:underlying redshift dist}
 \end{equation}
 Here, $V_C(H_0, \Omega_M)$ is the comoving volume for given cosmological parameters \Ho{} and \Omm{}, and $\bar{\Lambda}_m = \{\alpha, m_{\min}, m_{\max}, \mu, \sigma, f_{\text{peak}}\}$ are the (hyper-)parameters describing the power law in primary mass, minimum and maximum black hole mass, Gaussian peak location and width, and fraction of events in the Gaussian peak, respectively.
 $\mathcal{S}$ is a smoothing function at low and high masses, and $\mathcal{N}_{\text{pl}}$ and $\mathcal{N}_{\text{g}}$ are the normalizations between  $m_{\min}$ and $m_{\max}$ for the power law component and truncated Gaussian component, respectively.
+\new{The smoothing creates support for masses below $m_{\min}$ and above $m_{\max}$.}
 $\bar{\Lambda}_z = \{z_p,\alpha_z,\beta_z\}$ are the parameters governing the peak of the redshift distribution, low-$z$ power law slope, and high-$z$ power law slope.
 When generating the simulated events, we have fixed $\alpha=-2.7$, $m_{\max}=78\Msun$, $m_{\min}=10~\Msun$, $\mu=30~\Msun$, $\sigma=7.0~\Msun$, $f_{\text{peak}}=0.05$, $z_p=2.4$, $\alpha_z=1.0$, and $\beta_z=3.4$.
 These choices correspond to the maximum \emph{a posteriori} values obtained by an analysis of GWTC-3 data using the \plp{} model \citep{abbott_population_2023}.
@@ -563,5 +583,11 @@ This can be seen explicitly in the source code accompanying this paper, in the \
 % a parametric model of the same form as the true simulated distribution (\plp) 
 % a model that cannot accurately represent the true shape of the mass distribution (BPL)
 
+
+%GW datasets have only just become large enough to support non-parametric methods, and we have shown that by the next LVK observing run, datasets will have become large enough that systmatic uncertainties in the mass distribution are relevant to cosmological constraints. Removing the need to specify a mass model parametrization eliminates the largest systematic in GW spectral sirens, and thus directly informs the cause of the "Hubble tension," one of the most pressing problems in cosmology today. 
+
+% Because of this systematic uncertaintiy, spectral siren cosmology would be severely hampered in the era of next-generation GW detectors without the techniques presented in this work. Spectral sirens are the only method that can make use of the high-redshift data in next generation detectors. We therefore believe that both the method of non-parmetric spectral sirens as well as the result that theoretical knowledge of the mass distribution is not necessary for it to inform cosmological measurements will continue to impact the field of GW cosmology into the next-generation detector era.
+
+% A secondary effect may be their reconstructed mass distribution. Firstly, the rate at ~35 solar masses is likely lower to allow for a lack of mergers near 100 solar masses to be acheived while also maintaining a second power law slope that is not too steep. However, it is hard to verify this hypothesis as the plotted distributions in 2312.11627 are normalized probability distributions rather than differential merger rates.  
 
 \end{document}
