@@ -194,7 +194,7 @@ def hyper_prior(m1det,dL,m1det_inj,dL_inj,log_pinj,log_PE_prior=0.,PC_params=dic
     if remove_low_Neff:
         numpyro.factor("Neff_inj_penalty",jnp.log(1./(1.+(Neff/(4.*len(single_event_logL)))**(-30.))))
 
-def PLP(m1det,dL,q,m1det_inj,dL_inj,q_inj,log_pinj,log_PE_prior=0.,remove_low_Neff=False,fit_Om0=False):
+def PLP(m1det,dL,m1det_inj,dL_inj,log_pinj,log_PE_prior=0.,remove_low_Neff=False,fit_Om0=False):
     """Correct parametric population inference"""
     # cosmology
     H0 = numpyro.sample("H0",dist.Uniform(H0_PRIOR_MIN,H0_PRIOR_MAX))
@@ -210,7 +210,6 @@ def PLP(m1det,dL,q,m1det_inj,dL_inj,q_inj,log_pinj,log_PE_prior=0.,remove_low_Ne
     mu_m1 = numpyro.sample("mu_m1",dist.Uniform(20,60))# TRUEVALS['mu_m1']
     sig_m1 = numpyro.sample("sig_m1",dist.Uniform(1,10))# TRUEVALS['sig_m1']
     f_peak = TRUEVALS['f_peak'] #numpyro.sample("f_peak",dist.Uniform(0,1))
-    bq = numpyro.sample("bq",dist.Normal(0,5))
 
     # Fixed
     alpha_z = TRUEVALS['alpha_z']# numpyro.sample("alpha_z",dist.Uniform(0,2)) #
@@ -241,16 +240,13 @@ def PLP(m1det,dL,q,m1det_inj,dL_inj,q_inj,log_pinj,log_PE_prior=0.,remove_low_Ne
 
     # evaluate mass dist on data
     log_pm1_data = jgwpop.logpowerlaw_peak(m1source,mmin,mmax,alpha,sig_m1,mu_m1,f_peak)
-    log_pq_data = jgwpop.logpowerlaw(q,0.,1.,bq)
     logJacobian_m1z_m1_data = - 1.0*jnp.log1p(z)
-    logJacobian_m1m2_m1q_data = - jnp.log(m1det) # this is needed bc PE prior is in m1 and m2
-    log_pm_data = log_pm1_data + log_pq_data + logJacobian_m1z_m1_data + logJacobian_m1m2_m1q_data
+    log_pm_data = log_pm1_data + logJacobian_m1z_m1_data
 
     # evaluate mass dist on injs
     log_pm1_injs = jgwpop.logpowerlaw_peak(m1_injs,mmin,mmax,alpha,sig_m1,mu_m1,f_peak)
-    log_pq_injs = jgwpop.logpowerlaw(q_inj,0.,1.,bq)
     logJacobian_m1z_m1_injs = - 1.0*jnp.log1p(z_injs)
-    log_pm_injs = log_pm1_injs + log_pq_injs + logJacobian_m1z_m1_injs
+    log_pm_injs = log_pm1_injs + logJacobian_m1z_m1_injs
 
     # event part of likelihood
     single_event_logL = jax.scipy.special.logsumexp(log_pm_data + log_pz_data +jnp.log(rate) - log_PE_prior,
