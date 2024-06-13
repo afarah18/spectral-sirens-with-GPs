@@ -1,7 +1,7 @@
 #!/bin/bash
-#SBATCH --job-name=nonparametric_fewer_nonquasisep
-#SBATCH --output=/home/afarah/p2/spectral-sirens-with-GPs/src/outfiles/nonparametric_fewer_nonquasisep.out
-#SBATCH --error=/home/afarah/p2/spectral-sirens-with-GPs/src/outfiles/nonparametric_fewer_nonquasisep.err
+#SBATCH --job-name=parametric_mmin_investigation
+#SBATCH --output=/home/afarah/p2/spectral-sirens-with-GPs/src/outfiles/parametric_mmin_investigation.out
+#SBATCH --error=/home/afarah/p2/spectral-sirens-with-GPs/src/outfiles/parametric_mmin_investigation.err
 #SBATCH --account=kicp
 #SBATCH --time=48:00:00
 #SBATCH --partition=kicp-gpu
@@ -16,4 +16,4 @@ module load python/anaconda-2022.05
 echo "loaded anaconda"
 source activate jax_gpu
 echo "activated env"
-python /home/afarah/p2/spectral-sirens-with-GPs/src/scripts/nonparametric_inference.py
+python /project2/kicp/afarah/spectral-sirens-with-GPs/src/scripts/bias_study.py
