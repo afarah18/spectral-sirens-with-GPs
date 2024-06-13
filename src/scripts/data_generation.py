@@ -32,7 +32,7 @@ NUM_INJ=N_SOURCES*50*30
 perf_meas = False
 
 # random number generators
-np_rng = np.random.default_rng(520)
+np_rng = np.random.default_rng(516)
 
 def true_vals_PLP(rng, n_sources=N_SOURCES):
     m1s_true = inverse_transform_sample(gwpop.powerlaw_peak,[1,400],rng,N=n_sources,
@@ -45,13 +45,22 @@ def true_vals_PLP(rng, n_sources=N_SOURCES):
     dL_true = gwcosmo.dL_approx(zt,H0_FID,OM0_FID)
     m1z_true = m1s_true * (1 + zt)
 
-    return m1s_true, zt, m1z_true, dL_true
+    # m2s_true = rng.uniform(low=2.,high=m1s_true,size=n_sources)
+    m2s_true = np.zeros_like(m1s_true)
+    for i in range(n_sources):
+        m2s_true[i] = inverse_transform_sample(gwpop.powerlaw_peak,[1,400],rng,N=1,
+                                            alpha=0.,mMax=m1s_true[i],mMin=TRUEVALS['mmin'],f_peak=0.,mu_m1=25.,sig_m1=5.)
+    m2z_true = m2s_true * (1 + zt)
+
+    return m1s_true, m2s_true, zt, m1z_true, m2z_true, dL_true
 
 def make_injections(rng, alpha, mmax_inj, mmin_inj, zmax_inj=ZMAX,num_inj=NUM_INJ):
     m1zinj = inverse_transform_sample(gwpop.powerlaw, [mmin_inj,mmax_inj],rng, N=num_inj, 
                                  alpha=-alpha, high=mmax_inj, low=mmin_inj)
     log_pinj = -alpha * np.log(m1zinj) + np.log(
         (-alpha + 1)/(mmax_inj**(-alpha + 1)-mmin_inj**(-alpha + 1)))
+    m2zinj = rng.uniform(mmin_inj,m1zinj,num_inj)
+    log_pinj += -np.log(m1zinj-mmin_inj) # this is the same as uniform in mass ratio bw mmin and m1
     dLinj = gwcosmo.dL_approx(inverse_transform_sample(
         gwpop.unif_comoving_rate, [ZMIN,zmax_inj], rng, N=num_inj, H0=H0_FID, Om0=OM0_FID),
           H0=H0_FID, Om0=OM0_FID)
@@ -62,24 +71,26 @@ def make_injections(rng, alpha, mmax_inj, mmin_inj, zmax_inj=ZMAX,num_inj=NUM_IN
     )
     log_pinj += np.log(pdl)
 
-    return m1zinj, dLinj, log_pinj
+    return m1zinj, m2zinj, dLinj, log_pinj
 
 if  __name__ == "__main__":
     osnr_interp, reference_distance = interpolate_optimal_snr_grid(
         fname=paths.data / "optimal_snr_aplus_design_O5.h5")
     
     # generate data and save 
-    m1s_true, zt, m1z_true, dL_true = true_vals_PLP(rng=np_rng)
+    m1s_true, m2s_true, zt, m1z_true, m2z_true, dL_true = true_vals_PLP(rng=np_rng)
     try:
-        np.save(paths.data / "gw_data/m1s_true_PLP.npy", dL_true)
+        np.save(paths.data / "gw_data/m1s_true_PLP.npy", m1s_true)
     except FileNotFoundError:
         os.mkdir(paths.data / "gw_data")
-        np.save(paths.data / "gw_data/m1s_true_PLP.npy", dL_true)
+        np.save(paths.data / "gw_data/m1s_true_PLP.npy", m1s_true)
+    np.save(paths.data / "gw_data/m2s_true_PLP.npy",m2s_true)
     np.save(paths.data / "gw_data/z_true_PLP.npy", zt)
     np.save(paths.data / "gw_data/m1z_true_PLP.npy",m1z_true)
+    np.save(paths.data / "gw_data/m2z_true_PLP.npy",m2z_true)
     np.save(paths.data / "gw_data/dL_true_PLP.npy",dL_true)
     # generate injection set
-    m1zinj, dLinj, log_pinj = make_injections(np_rng,alpha=2.,mmax_inj=350., mmin_inj=1.5)
+    m1zinj, m2zinj, dLinj, log_pinj = make_injections(np_rng,alpha=2.,mmax_inj=350., mmin_inj=2.)
     
     # select injections and data based off of an SNR threshold
     ## find injections
@@ -87,14 +98,16 @@ if  __name__ == "__main__":
     snr_true_inj = osnr_interp(m1zinj, m1zinj, grid=False)/dLinj * thetas_inj * 1000.
     snr_obs_inj = snr_true_inj + 1. * np_rng.normal(size=len(dLinj))
     m1zinj_det = m1zinj[snr_obs_inj>SNR_THRESH]
+    m2zinj_det = m2zinj[snr_obs_inj>SNR_THRESH]
     dLinj_det = dLinj[snr_obs_inj>SNR_THRESH]
     log_pinj_det = log_pinj[snr_obs_inj>SNR_THRESH]
     np.save(paths.data / "gw_data/m1zinj_det.npy",m1zinj_det)
+    np.save(paths.data / "gw_data/m2zinj_det.npy",m2zinj_det)
     np.save(paths.data / "gw_data/dLinj_det.npy",dLinj_det)
     np.save(paths.data / "gw_data/log_pinj_det.npy",log_pinj_det)
     
     ## find events and generate mock PE
-    m1z_PE, m2z_PE, dL_PE, log_PE_prior, det_dict = gen_snr_scaled_PE(np_rng,m1s_true,m1s_true,dL_true/1000,osnr_interp,
+    m1z_PE, m2z_PE, dL_PE, log_PE_prior, det_dict = gen_snr_scaled_PE(np_rng,m1s_true,m2s_true,dL_true/1000,osnr_interp,
                                                             reference_distance,N_SAMPLES_PER_EVENT,H0_FID,OM0_FID,
                                                             # errors taken from Jose's "gwutils.py" for O5
                                                             mc_sigma=3.0e-2,eta_sigma=5.0e-3,theta_sigma=5.0e-2, snr_thresh=SNR_THRESH,
@@ -128,5 +141,6 @@ if  __name__ == "__main__":
         N_SAMPLES_PER_EVENT = n_samps
     
     np.save(paths.data / "gw_data/m1z_PE.npy",m1z_PE)
+    np.save(paths.data / "gw_data/m2z_PE.npy",m2z_PE)
     np.save(paths.data / "gw_data/dL_PE.npy",dL_PE)
     np.save(paths.data / "gw_data/log_PE_prior.npy",log_PE_prior)

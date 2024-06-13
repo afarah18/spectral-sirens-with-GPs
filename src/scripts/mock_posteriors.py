@@ -47,8 +47,8 @@ def gen_snr_scaled_PE(rng, true_m1s, true_m2s, true_dl, osnr_interp, reference_d
     m1det_PE, m2det_PE = posterior_utils.m1m2_from_mceta(mc_det,eta)
     dl_PE = theta * osnr_interp(m1det_PE,m2det_PE,grid=False)/rho
     # transform prior to be represented in terms of det frame m1, m2 and dl
-    log_jacobian = np.log(mc_det) - np.log(posterior_utils.dm1m2_dMceta(m1det_PE,m2det_PE)) \
-        - np.log(posterior_utils.ddL_drho(osnr_interp,m1det_PE,m2det_PE,rho,theta))#*rho**2/(dl_PE**2))
+    log_jacobian =  np.log(mc_det) - np.log(posterior_utils.dm1m2_dMceta(m1det_PE,m2det_PE)) \
+        - np.log(posterior_utils.ddL_drho(osnr_interp,m1det_PE,m2det_PE,rho,theta))#*rho**2/(dl_PE**2)) \
     log_prior_PE = - np.log(0.25*mc_det.max()*rho.max()*theta.max()) + log_jacobian + np.log(1e6)
     if return_og:
         return m1det_PE, m2det_PE, dl_PE, log_prior_PE, detected_dict

@@ -13,6 +13,7 @@ from data_generation import (true_vals_PLP, SNR_THRESH, N_SAMPLES_PER_EVENT,N_SO
 from GWMockCat.vt_utils import interpolate_optimal_snr_grid 
 from parametric_inference import NSAMPS
 from priors import PLP, BPL, hyper_prior, get_ell_frechet_params, get_sigma_gamma_params
+import gwcosmo
 
 jax.config.update("jax_enable_x64", True)
 
@@ -44,7 +45,7 @@ bias_PLP = np.zeros(N_CATALOGS)
 bias_BPL = np.zeros(N_CATALOGS)
 for i in trange(N_CATALOGS):
     ## draw events, find them, and generate mock PE
-    m1s_true, zt, m1z_true, dL_true = true_vals_PLP(rng=np_rng)
+    m1s_true, m2s_true, zt, m1z_true, m2z_true, dL_true = true_vals_PLP(rng=np_rng)
     m1z_PE, m2z_PE, dL_PE, log_PE_prior = gen_snr_scaled_PE(np_rng,m1s_true,m1s_true,dL_true/1000,osnr_interp,
                                                             reference_distance,N_SAMPLES_PER_EVENT,H0_FID,OM0_FID,
                                                             mc_sigma=3.0e-2,eta_sigma=5.0e-3,theta_sigma=5.0e-2, snr_thresh=SNR_THRESH,
