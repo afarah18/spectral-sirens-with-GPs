@@ -55,24 +55,24 @@ for i in trange(N_CATALOGS):
     dL_PE *= 1000 # unit matching
     mmin_PE[i], mmin_true[i] = (m1z_PE/(1+gwcosmo.z_at_dl_approx(dL_PE,H0_FID, OM0_FID))).mean(axis=1).min(), m1s_true.min()
 
-    # # Inference - power law peak
-    # nuts_settings = dict(target_accept_prob=0.9, max_tree_depth=10,dense_mass=False)
-    # nuts_kernel = numpyro.infer.NUTS(PLP,**nuts_settings)
-    # kwargs = dict(m1det=m1z_PE,dL=dL_PE, m1det_inj=m1zinj_det,dL_inj=dLinj_det,
-    #                 log_pinj=log_pinj_det, log_PE_prior=log_PE_prior,
-    #                 remove_low_Neff=False)
-    # mcmc = numpyro.infer.MCMC(nuts_kernel,num_warmup=NSAMPS//4*3,num_samples=NSAMPS,
-    #                           num_chains=1,progress_bar=False)   
-    # mcmc.run(jax_rng,**kwargs)
+    # Inference - power law peak
+    nuts_settings = dict(target_accept_prob=0.9, max_tree_depth=10,dense_mass=False)
+    nuts_kernel = numpyro.infer.NUTS(PLP,**nuts_settings)
+    kwargs = dict(m1det=m1z_PE,dL=dL_PE, m1det_inj=m1zinj_det,dL_inj=dLinj_det,
+                    log_pinj=log_pinj_det, log_PE_prior=log_PE_prior,
+                    remove_low_Neff=False)
+    mcmc = numpyro.infer.MCMC(nuts_kernel,num_warmup=NSAMPS//4*3,num_samples=NSAMPS,
+                              num_chains=1,progress_bar=False)   
+    mcmc.run(jax_rng,**kwargs)
 
-    # id_PLP = az.from_numpyro(mcmc)
-    # id_PLP.to_netcdf(paths.data / f"bias/mcmc_parametric_PLP_{i}.nc4")
+    id_PLP = az.from_numpyro(mcmc)
+    id_PLP.to_netcdf(paths.data / f"bias/mcmc_parametric_PLP_1ksamps_{i}.nc4")
     # bias_PLP[i] = np.abs(id_PLP.posterior['H0'][0].mean() - H0_FID)/id_PLP.posterior['H0'][0].std()
     # if plot:
     #     plt.hist(id_PLP.posterior['H0'][0],density=True, bins=50,histtype='step',color='green',alpha=0.5,lw=0.5)
     
     # # Inference - broken power law
-    nuts_settings = dict(target_accept_prob=0.9, max_tree_depth=10,dense_mass=False)
+    # nuts_settings = dict(target_accept_prob=0.9, max_tree_depth=10,dense_mass=False)
     # nuts_kernel = numpyro.infer.NUTS(BPL,**nuts_settings)
     # mcmc = numpyro.infer.MCMC(nuts_kernel,num_warmup=NSAMPS//4*3,num_samples=NSAMPS,
     #                           num_chains=1,progress_bar=False)   
@@ -139,8 +139,8 @@ for i in trange(N_CATALOGS):
 #     plt.axvline(H0_FID,c='k')
 #     plt.savefig(paths.output / "bias.pdf")
 
-plt.hist(mmin_PE,bins=15,histtype='step',c='b',label='mean of lightest found event')
-plt.hist(mmin_true,bins=15,histtype='step',c='k',label='direct draws from underlying distribution')
+plt.hist(mmin_PE,bins=15,histtype='step',color='b',label='mean of lightest found event')
+plt.hist(mmin_true,bins=15,histtype='step',color='k',label='direct draws from underlying distribution')
 plt.xlabel("smallest mass")
-plt.savefig(paths.output / "mmin_events.png")
+plt.savefig(paths.figures / "mmin_events_1ksamps.png")
 plt.clf()
