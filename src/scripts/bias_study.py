@@ -43,15 +43,17 @@ if plot:
     import matplotlib.pyplot as plt
 bias_PLP = np.zeros(N_CATALOGS)
 bias_BPL = np.zeros(N_CATALOGS)
+mmin_PE,mmin_true = np.zeros(N_CATALOGS),np.zeros(N_CATALOGS)
 for i in trange(N_CATALOGS):
     ## draw events, find them, and generate mock PE
-    m1s_true, m2s_true, zt, m1z_true, m2z_true, dL_true = true_vals_PLP(rng=np_rng)
-    m1z_PE, m2z_PE, dL_PE, log_PE_prior = gen_snr_scaled_PE(np_rng,m1s_true,m1s_true,dL_true/1000,osnr_interp,
+    m1s_true, zt, m1z_true, dL_true, q_true = true_vals_PLP(rng=np_rng)
+    m1z_PE, m2z_PE, dL_PE, log_PE_prior = gen_snr_scaled_PE(np_rng,m1s_true,m1s_true*q_true,dL_true/1000,osnr_interp,
                                                             reference_distance,N_SAMPLES_PER_EVENT,H0_FID,OM0_FID,
                                                             mc_sigma=3.0e-2,eta_sigma=5.0e-3,theta_sigma=5.0e-2, snr_thresh=SNR_THRESH,
                                                             return_og=False)
 
     dL_PE *= 1000 # unit matching
+    mmin_PE[i], mmin_true[i] = (m1z_PE/(1+gwcosmo.z_at_dl_approx(dL_PE,H0_FID, OM0_FID))).mean(axis=1).min(), m1s_true.min()
 
     # Inference - power law peak
     nuts_settings = dict(target_accept_prob=0.9, max_tree_depth=10,dense_mass=False)
@@ -64,7 +66,7 @@ for i in trange(N_CATALOGS):
     mcmc.run(jax_rng,**kwargs)
 
     id_PLP = az.from_numpyro(mcmc)
-    id_PLP.to_netcdf(paths.data / f"bias/mcmc_parametric_PLP_{i}.nc4")
+    id_PLP.to_netcdf(paths.data / f"bias/mcmc_parametric_PLP_unifq_actually_{i}.nc4")
     bias_PLP[i] = np.abs(id_PLP.posterior['H0'][0].mean() - H0_FID)/id_PLP.posterior['H0'][0].std()
     if plot:
         plt.hist(id_PLP.posterior['H0'][0],density=True, bins=50,histtype='step',color='green',alpha=0.5,lw=0.5)
@@ -76,17 +78,17 @@ for i in trange(N_CATALOGS):
                               num_chains=1,progress_bar=False)   
     mcmc.run(jax_rng,**kwargs)
 
-    id_BPL = az.from_numpyro(mcmc)
-    id_BPL.to_netcdf(paths.data / f"bias/mcmc_parametric_BPL_{i}.nc4")
-    bias_BPL[i] = np.abs(id_BPL.posterior['H0'][0].mean() - H0_FID)/id_BPL.posterior['H0'][0].std()
-    if plot:
-        plt.hist(id_BPL.posterior['H0'][0],density=True, bins=50,histtype='step',color='orange',alpha=0.5,lw=0.5)
+    # id_BPL = az.from_numpyro(mcmc)
+    # id_BPL.to_netcdf(paths.data / f"bias/mcmc_parametric_BPL_unifq_{i}.nc4")
+    # bias_BPL[i] = np.abs(id_BPL.posterior['H0'][0].mean() - H0_FID)/id_BPL.posterior['H0'][0].std()
+    # if plot:
+    #     plt.hist(id_BPL.posterior['H0'][0],density=True, bins=50,histtype='step',color='orange',alpha=0.5,lw=0.5)
     
     # inference - GP
     # this is expensive so we will by default only do it one time.
     # arbitrarily choose an index to do it on so that its reproducible every time.
     # I like 16 bc 4^2 = 2^4 = 16, so why not use that
-    if i==16:       
+    if i==35:       
         # parametric summary stats that we only need for this catalog
         with open(paths.output / "PLPh0offset.txt","w") as f:
             print(f"{bias_PLP[i]:.1f}",file=f)
@@ -108,7 +110,7 @@ for i in trange(N_CATALOGS):
                                 num_chains=1,progress_bar=True)   
         mcmc.run(jax_rng,**kwargs)
         id = az.from_numpyro(mcmc)
-        id.to_netcdf(paths.data / f"bias/mcmc_nonparametric_{i}.nc4")
+        id.to_netcdf(paths.data / f"bias/mcmc_nonparametric_unifq_{i}.nc4")
         
         # GP-specific summary stats
         h0samps = id.posterior['H0'][0]
@@ -122,7 +124,7 @@ for i in trange(N_CATALOGS):
         with open(paths.output / "nonparh0offset.txt","w") as f:
             print(f"{nonpar_offset:.1f}",file=f)
 
-# calcualte summary statistics and save
+# calcualte more summary statistics and save
 percent_bias_PLP = np.sum(bias_PLP>1)/N_CATALOGS * 100
 percent_bias_BPL = np.sum(bias_BPL>1)/N_CATALOGS * 100
 with open(paths.output / "PLP_bias_percent.txt", "w") as f:
@@ -136,3 +138,10 @@ if plot:
     plt.xlabel("H0")
     plt.axvline(H0_FID,c='k')
     plt.savefig(paths.output / "bias.pdf")
+    plt.clf()
+
+    plt.hist(mmin_PE,bins=15,histtype='step',color='b',label='mean of lightest found event')
+    plt.hist(mmin_true,bins=15,histtype='step',color='k',label='direct draws from underlying distribution')
+    plt.xlabel("smallest mass")
+    plt.savefig(paths.figures / "mmin_events_1ksamps.png")
+    plt.clf()

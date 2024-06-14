@@ -1,7 +1,7 @@
 #!/bin/bash
-#SBATCH --job-name=bias_35
-#SBATCH --output=/home/afarah/p2/spectral-sirens-with-GPs/src/outfiles/bias_35.out
-#SBATCH --error=/home/afarah/p2/spectral-sirens-with-GPs/src/outfiles/bias_35.err
+#SBATCH --job-name=parametric_unifq_actually
+#SBATCH --output=/home/afarah/projects/spectral-sirens-with-GPs/src/outfiles/parametric_unifq_actually.out
+#SBATCH --error=/home/afarah/projects/spectral-sirens-with-GPs/src/outfiles/parametric_unifq_actually.err
 #SBATCH --account=kicp
 #SBATCH --time=48:00:00
 #SBATCH --partition=kicp-gpu
@@ -14,6 +14,6 @@ module load cuda/11.5
 echo "loaded cuda"
 module load python/anaconda-2022.05
 echo "loaded anaconda"
-source activate jax_gpu
+source activate test
 echo "activated env"
-python /home/afarah/p2/spectral-sirens-with-GPs/src/scripts/bias_study.py
+python /home/afarah/projects/spectral-sirens-with-GPs/src/scripts/bias_study.py
