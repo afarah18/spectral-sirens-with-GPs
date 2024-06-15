@@ -29,6 +29,7 @@ np_rng = np.random.default_rng(516)
 # load injection set
 m1zinj_det = np.load(paths.data / "gw_data/m1zinj_det.npy")
 dLinj_det = np.load(paths.data / "gw_data/dLinj_det.npy")
+qinj_det = np.load(paths.data / "gw_data/qinj_det.npy")
 log_pinj_det = np.load(paths.data / "gw_data/log_pinj_det.npy")
 
 # load SNR interpolator
@@ -58,7 +59,7 @@ for i in trange(N_CATALOGS):
     # Inference - power law peak
     nuts_settings = dict(target_accept_prob=0.9, max_tree_depth=10,dense_mass=False)
     nuts_kernel = numpyro.infer.NUTS(PLP,**nuts_settings)
-    kwargs = dict(m1det=m1z_PE,dL=dL_PE, m1det_inj=m1zinj_det,dL_inj=dLinj_det,
+    kwargs = dict(m1det=m1z_PE,dL=dL_PE, m2det=m2z_PE,m1det_inj=m1zinj_det,dL_inj=dLinj_det,q_inj=qinj_det,
                     log_pinj=log_pinj_det, log_PE_prior=log_PE_prior,
                     remove_low_Neff=False)
     mcmc = numpyro.infer.MCMC(nuts_kernel,num_warmup=NSAMPS//4*3,num_samples=NSAMPS,
@@ -66,7 +67,7 @@ for i in trange(N_CATALOGS):
     mcmc.run(jax_rng,**kwargs)
 
     id_PLP = az.from_numpyro(mcmc)
-    id_PLP.to_netcdf(paths.data / f"bias/mcmc_parametric_PLP_unifq_actually_{i}.nc4")
+    id_PLP.to_netcdf(paths.data / f"bias/mcmc_parametric_PLP_unifq_fitq_{i}.nc4")
     bias_PLP[i] = np.abs(id_PLP.posterior['H0'][0].mean() - H0_FID)/id_PLP.posterior['H0'][0].std()
     if plot:
         plt.hist(id_PLP.posterior['H0'][0],density=True, bins=50,histtype='step',color='green',alpha=0.5,lw=0.5)
@@ -88,7 +89,7 @@ for i in trange(N_CATALOGS):
     # this is expensive so we will by default only do it one time.
     # arbitrarily choose an index to do it on so that its reproducible every time.
     # I like 16 bc 4^2 = 2^4 = 16, so why not use that
-    if i==35:       
+    if i==16:       
         # parametric summary stats that we only need for this catalog
         with open(paths.output / "PLPh0offset.txt","w") as f:
             print(f"{bias_PLP[i]:.1f}",file=f)
@@ -110,7 +111,7 @@ for i in trange(N_CATALOGS):
                                 num_chains=1,progress_bar=True)   
         mcmc.run(jax_rng,**kwargs)
         id = az.from_numpyro(mcmc)
-        id.to_netcdf(paths.data / f"bias/mcmc_nonparametric_unifq_{i}.nc4")
+        id.to_netcdf(paths.data / f"bias/mcmc_nonparametric_unifq_fitq_{i}.nc4")
         
         # GP-specific summary stats
         h0samps = id.posterior['H0'][0]

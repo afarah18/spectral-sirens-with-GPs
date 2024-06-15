@@ -80,10 +80,9 @@ if  __name__ == "__main__":
     except FileNotFoundError:
         os.mkdir(paths.data / "gw_data")
         np.save(paths.data / "gw_data/m1s_true_PLP.npy", m1s_true)
-    np.save(paths.data / "gw_data/m2s_true_PLP.npy",m2s_true)
+    np.save(paths.data / "gw_data/q_true_PLP.npy",q_true)
     np.save(paths.data / "gw_data/z_true_PLP.npy", zt)
     np.save(paths.data / "gw_data/m1z_true_PLP.npy",m1z_true)
-    np.save(paths.data / "gw_data/m2z_true_PLP.npy",m2z_true)
     np.save(paths.data / "gw_data/dL_true_PLP.npy",dL_true)
     # generate injection set
     m1zinj, dLinj, qinj, log_pinj = make_injections(np_rng,alpha=2.,mmax_inj=350., mmin_inj=1.5)
@@ -94,11 +93,11 @@ if  __name__ == "__main__":
     snr_true_inj = osnr_interp(m1zinj, m1zinj*qinj, grid=False)/dLinj * thetas_inj * 1000.
     snr_obs_inj = snr_true_inj + 1. * np_rng.normal(size=len(dLinj))
     m1zinj_det = m1zinj[snr_obs_inj>SNR_THRESH]
-    m2zinj_det = m2zinj[snr_obs_inj>SNR_THRESH]
+    qinj_det = qinj[snr_obs_inj>SNR_THRESH]
     dLinj_det = dLinj[snr_obs_inj>SNR_THRESH]
     log_pinj_det = log_pinj[snr_obs_inj>SNR_THRESH]
     np.save(paths.data / "gw_data/m1zinj_det.npy",m1zinj_det)
-    np.save(paths.data / "gw_data/m2zinj_det.npy",m2zinj_det)
+    np.save(paths.data / "gw_data/qinj_det.npy",qinj_det)
     np.save(paths.data / "gw_data/dLinj_det.npy",dLinj_det)
     np.save(paths.data / "gw_data/log_pinj_det.npy",log_pinj_det)
     
