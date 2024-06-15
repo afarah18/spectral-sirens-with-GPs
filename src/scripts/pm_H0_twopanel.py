@@ -5,7 +5,6 @@ from scipy.stats import gaussian_kde
 
 from priors import TEST_M1S
 from data_generation import H0_FID,TRUEVALS
-from gwpop import powerlaw_peak
 from jgwpop import logpowerlaw_peak
 
 import paths
@@ -18,13 +17,15 @@ color_PLP = "#33a02c"
 color_BPL = "#fb9a99"
 
 def two_panel(path, path_PLP, path_BPL, hyperparam='H0'):
-    id = az.InferenceData.from_netcdf(path)
-    samples = id.posterior
-    r = np.nan_to_num(np.exp(samples['log_rate_test'][0]))
+    # id = az.InferenceData.from_netcdf(path)
+    # samples = id.posterior
+    # r = np.nan_to_num(np.exp(samples['log_rate_test'][0]))
 
     id_PLP = az.InferenceData.from_netcdf(path_PLP)
     samples_PLP = id_PLP.posterior.sel(chain=0).reset_coords("chain",drop=True)
     r_PLP = np.nan_to_num(np.exp(samples_PLP['log_rate']))
+    samples = samples_PLP
+    r=r_PLP
     
     id_BPL = az.InferenceData.from_netcdf(path_BPL)
     samples_BPL = id_BPL.posterior.sel(chain=0).reset_coords("chain",drop=True)
@@ -39,9 +40,9 @@ def two_panel(path, path_PLP, path_BPL, hyperparam='H0'):
 
     
     axes[0].plot(TEST_M1S, samples_PLP['rate'].mean(dim='draw').values*\
-                 powerlaw_peak(TEST_M1S,f_peak=TRUEVALS['f_peak'],
+                np.exp(logpowerlaw_peak(TEST_M1S,f_peak=TRUEVALS['f_peak'],
                                alpha=TRUEVALS['alpha'],mMax=TRUEVALS['mmax'],mMin=TRUEVALS['mmin'],
-                               mu_m1=TRUEVALS['mu_m1'],sig_m1=TRUEVALS['sig_m1']),
+                               mu_m1=TRUEVALS['mu_m1'],sig_m1=TRUEVALS['sig_m1'])),
                  c='k')
     axes[0].set_yscale('log')
     axes[0].set_xscale('log')
@@ -76,6 +77,6 @@ def two_panel(path, path_PLP, path_BPL, hyperparam='H0'):
     fig.savefig(paths.figures / "O5_pm.pdf")
     plt.clf()
 
-two_panel(paths.data / "mcmc_nonparametric.nc4", 
-          paths.data / "mcmc_parametric_PLP.nc4",
-          paths.data / "mcmc_parametric_BPL.nc4")
+two_panel(paths.data / "mcmc_parametric_PLP_fitq.nc4", 
+          paths.data / "mcmc_parametric_PLP_fitq.nc4",
+          paths.data / "mcmc_parametric_PLP_fitq.nc4")
