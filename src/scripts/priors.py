@@ -119,8 +119,8 @@ def get_sigma_gamma_params(U,alpha=0.05):
 def hyper_prior(m1det,dL,m2det,m1det_inj,dL_inj,log_pinj,log_PE_prior=0.,PC_params=dict(),remove_low_Neff=False,fit_Om0=False):
     """ Non-parametric population inference """
     mean = numpyro.sample("mean",dist.Normal(0,3))
-    # sigma = numpyro.deterministic("sigma",2.5)
-    sigma = numpyro.sample("sigma",dist.Gamma(concentration=PC_params["conc"], rate=PC_params["lam_sigma"]))
+    sigma = numpyro.deterministic("sigma",2.5)
+    # sigma = numpyro.sample("sigma",dist.Gamma(concentration=PC_params["conc"], rate=PC_params["lam_sigma"]))
     # rho = numpyro.deterministic("rho",0.5)
     rho = numpyro.sample("rho",Frechet(concentration=PC_params["concentration"],scale=PC_params["scale"]))
 
