@@ -212,7 +212,7 @@ $N_{\text{exp}}(\Lambda)$ is the expected number of detections given $\Lambda$ a
 
 In this work, we have restricted our analysis to the \ac{BBH} primary mass distribution.
 However, the method can be trivially extended to the full mass distribution of \acp{CBC} \citep[e.g.][]{fishbach_does_2020, ezquiaga_spectral_2022}.
-\new{Additionally, Appendix~\ref{ap:mass ratio} demonstrates that including secondary masses in the fit does not change the results of the analysis presented here.}
+\new{Additionally, Appendix~\ref{ap:mass ratio} demonstrates that including the mass ratio distribution in the fit does not change the results of the analysis presented here.}
 
 Since parameters of individual events are not perfectly measured, we marginalize over the possible properties of each event.
 Practically, this is done by a Monte Carlo average over the posterior samples $\{\theta_j\}_i$ of each event $i$ and dividing out the prior used when inferring those posterior samples, $\pi_{\rm PE}(\theta)$:
@@ -466,7 +466,7 @@ $\mathcal{S}$ is a smoothing function at low and high masses, and $\mathcal{N}_{
 $\bar{\Lambda}_z = \{z_p,\alpha_z,\beta_z\}$ are the parameters governing the peak of the redshift distribution, low-$z$ power law slope, and high-$z$ power law slope.
 When generating the simulated events, we have fixed $\alpha=-2.7$, $m_{\max}=78\Msun$, $m_{\min}=10~\Msun$, $\mu=30~\Msun$, $\sigma=7.0~\Msun$, $f_{\text{peak}}=0.05$, $z_p=2.4$, $\alpha_z=1.0$, and $\beta_z=3.4$.
 These choices correspond to the maximum \emph{a posteriori} values obtained by an analysis of GWTC-3 data using the \plp{} model \citep{abbott_population_2023}.
-For simplicity, we additionally assume that \new{the population of mass ratios is peaked at $q=0.9$, which is consistent with current observations.}
+For simplicity, we additionally assume \new{a uniform mass ratio distribution.}
 Thus, $\theta = \{m_1,z\}$.
 We consistently apply these assumptions to the data generation process and the population inference.
 We do not fit for or simulate spins, as they do not redshift and hence do not carry additional cosmological information, and additionally \new{fix the distribution of mass ratios.}
@@ -486,20 +486,19 @@ The full procedure for this mock data generation process is described in \citet{
 
 \section{Effects of fitting for secondary mass}
 \label{ap:mass ratio}
-We examine the effect of only fitting the distribution of primary masses on our results.
-To do so, we perform two spectral siren analyses: one that includes a fit to secondary mass, and one that does not.
+\new{We examine the effect of only fitting the distribution of primary masses on our results.
+To do so, we perform two spectral siren analyses: one that includes a fit to mass ratio, and one that does not.
 Both analyses use the parametric, \plp{} model for the distribution of primary masses.
-We model the distribution of secondary masses with a power law in mass ratio, similarly to the majority of analyses presented in \citet{abbott_population_2021,abbott_population_2023}. 
+We model the distribution of mass ratios with a power law, similarly to the majority of analyses presented in \citet{abbott_population_2021,abbott_population_2023}. 
 
 We use the same set of simulated events for both analyses.
-These are generated in the same way as described in Section~\ref{sec:data generation}, but with a uniform mass ratio distribution (rather than assuming all mass ratios are unity) in order to understand the impact of our assumptions on the results over the full range of possible mass ratios.
-We correspondingly modify our injection set to cover the same mass ratio range.
+These are generated in the same way as described in Section~\ref{sec:data generation}.
 
 The results are shown in Figure~\ref{fig:mass ratio}.
 We find the posteriors on \Ho{} to be similar between the two cases.
 Additionally, the recovered mass spectra are nearly identical.
-We therefore conclude that fitting for secondary masses does not significantly impact our main conclusions, as is to be expected from a self-consistent hierarchical analysis when the data do not exhibit correlations.
-
+We therefore conclude that fitting for mass ratios does not significantly impact our main conclusions.
+}
 \begin{figure*}
     \includegraphics[width=\textwidth]{figures/q_comparison.pdf}
     \caption{Comparison of a parametric spectral siren analysis performed while fitting for the distributions of primary and secondary masses (magenta solid) and primary masses only (green dashed).
