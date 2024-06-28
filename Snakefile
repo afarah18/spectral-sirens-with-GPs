@@ -67,3 +67,12 @@ rule GPeg:
         "src/data/bias.zip"
     script:
         "src/scripts/GP_example_plot.py"
+
+rule fit_q_comparison:
+    output:
+        "src/tex/figures/q_comparison.pdf"
+    input:
+        "src/data/samples_powerlaw_peak_smooth_Ndet_500_Nsamples_200_Nfoundinj_5672336_Ninj_50000000_Vz_zmax_15_m1z_power_law_alpha_-0.3_mmin_1.0_mmax_100.0_bq_alpha_m.nc4"
+        "src/data/samples_powerlaw_peak_smooth_Ndet_500_Nsamples_200_Nfoundinj_5672336_Ninj_50000000_Vz_zmax_15_m1z_power_law_alpha_-0.3_mmin_1.0_mmax_100.0_bq_fixed_alpha_m.nc4"
+    script:
+        "src/scripts/fit_q_comparison.py"
