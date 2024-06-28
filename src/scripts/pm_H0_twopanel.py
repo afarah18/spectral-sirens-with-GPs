@@ -17,15 +17,13 @@ color_PLP = "#33a02c"
 color_BPL = "#fb9a99"
 
 def two_panel(path, path_PLP, path_BPL, hyperparam='H0'):
-    # id = az.InferenceData.from_netcdf(path)
-    # samples = id.posterior
-    # r = np.nan_to_num(np.exp(samples['log_rate_test'][0]))
+    id = az.InferenceData.from_netcdf(path)
+    samples = id.posterior
+    r = np.nan_to_num(np.exp(samples['log_rate_test'][0]))
 
     id_PLP = az.InferenceData.from_netcdf(path_PLP)
     samples_PLP = id_PLP.posterior.sel(chain=0).reset_coords("chain",drop=True)
     r_PLP = np.nan_to_num(np.exp(samples_PLP['log_rate']))
-    samples = samples_PLP
-    r=r_PLP
     
     id_BPL = az.InferenceData.from_netcdf(path_BPL)
     samples_BPL = id_BPL.posterior.sel(chain=0).reset_coords("chain",drop=True)
@@ -77,6 +75,6 @@ def two_panel(path, path_PLP, path_BPL, hyperparam='H0'):
     fig.savefig(paths.figures / "O5_pm.pdf")
     plt.clf()
 
-two_panel(paths.data / "mcmc_parametric_PLP_fitq.nc4", 
-          paths.data / "mcmc_parametric_PLP_fitq.nc4",
-          paths.data / "mcmc_parametric_PLP_fitq.nc4")
+two_panel(paths.data / "bias/mcmc_nonparametric_16.nc4", 
+          paths.data / "bias/mcmc_parametric_PLP_16.nc4",
+          paths.data / "bias/mcmc_parametric_BPL_16.nc4")
