@@ -1,7 +1,7 @@
 #!/bin/bash
-#SBATCH --job-name=nonparametric_fewer_nonquasisep
-#SBATCH --output=/home/afarah/p2/spectral-sirens-with-GPs/src/outfiles/nonparametric_fewer_nonquasisep.out
-#SBATCH --error=/home/afarah/p2/spectral-sirens-with-GPs/src/outfiles/nonparametric_fewer_nonquasisep.err
+#SBATCH --job-name=parametric_unifq_fixbq
+#SBATCH --output=/home/afarah/projects/spectral-sirens-with-GPs/src/outfiles/parametric_unifq_fixbq.out
+#SBATCH --error=/home/afarah/projects/spectral-sirens-with-GPs/src/outfiles/parametric_unifq_fixbq.err
 #SBATCH --account=kicp
 #SBATCH --time=48:00:00
 #SBATCH --partition=kicp-gpu
@@ -14,6 +14,6 @@ module load cuda/11.5
 echo "loaded cuda"
 module load python/anaconda-2022.05
 echo "loaded anaconda"
-source activate jax_gpu
+source activate test
 echo "activated env"
-python /home/afarah/p2/spectral-sirens-with-GPs/src/scripts/nonparametric_inference.py
+python /home/afarah/projects/spectral-sirens-with-GPs/src/scripts/parametric_inference.py

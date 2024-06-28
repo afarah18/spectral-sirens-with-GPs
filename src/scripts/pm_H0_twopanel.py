@@ -4,9 +4,8 @@ import arviz as az
 from scipy.stats import gaussian_kde
 
 from priors import TEST_M1S
-from nonparametric_inference import NSAMPS
 from data_generation import H0_FID,TRUEVALS
-from gwpop import powerlaw_peak
+from jgwpop import logpowerlaw_peak
 
 import paths
 
@@ -31,32 +30,24 @@ def two_panel(path, path_PLP, path_BPL, hyperparam='H0'):
     r_BPL = np.nan_to_num(np.exp(samples_BPL['log_rate']))
 
     fig, axes = plt.subplots(ncols=2,figsize=(7.5,4*.75),facecolor='none',gridspec_kw={'width_ratios': [1.2, 1]})
-    # for i in range(NSAMPS//2):
-    #     axes[0].plot(TEST_M1S, r[i]/TEST_M1S, lw=0.1, c=color_GP,alpha=0.03)
-    #     axes[0].plot(TEST_M1S, r_PLP[i],lw=0.1, c=color_PLP,alpha=0.03)
-    #     axes[0].plot(TEST_M1S, r_BPL[i],lw=0.1, c=color_BPL,alpha=0.03)
     axes[0].plot(TEST_M1S,np.percentile(r/TEST_M1S,(5,95),axis=0).T,lw=0.2, c=color_GP,alpha=0.7)
-    # axes[0].plot(TEST_M1S,np.mean(r/TEST_M1S,axis=0),lw=1.5, c=color_GP)
     axes[0].fill_between(TEST_M1S,*np.percentile(r/TEST_M1S,(5,95),axis=0), color=color_GP_light,alpha=0.5)
     
     axes[0].plot(TEST_M1S,np.percentile(r_PLP,(5,95),axis=0).T, c=color_PLP,ls="--")
-    # axes[0].plot(TEST_M1S,np.mean(r_PLP,axis=0),lw=2, c=color_PLP,ls="--")
     axes[0].plot(TEST_M1S,np.percentile(r_BPL,(5,95),axis=0).T, c=color_BPL)
-    # axes[0].plot(TEST_M1S,np.mean(r_PLP,axis=0),lw=2, c=color_BPL,ls=":")
 
     
     axes[0].plot(TEST_M1S, samples_PLP['rate'].mean(dim='draw').values*\
-                 powerlaw_peak(TEST_M1S,f_peak=TRUEVALS['f_peak'],
+                np.exp(logpowerlaw_peak(TEST_M1S,f_peak=TRUEVALS['f_peak'],
                                alpha=TRUEVALS['alpha'],mMax=TRUEVALS['mmax'],mMin=TRUEVALS['mmin'],
-                               mu_m1=TRUEVALS['mu_m1'],sig_m1=TRUEVALS['sig_m1']),
+                               mu_m1=TRUEVALS['mu_m1'],sig_m1=TRUEVALS['sig_m1'])),
                  c='k')
     axes[0].set_yscale('log')
     axes[0].set_xscale('log')
-    axes[0].set_ylim(2e-3,2)
+    axes[0].set_ylim(2e-3,10)
     axes[0].set_xlim(5.,100)
     axes[0].set_xlabel("$m_1 \,$[M$_{\odot}$]")
     axes[0].set_ylabel(r"$\frac{{\rm d} N}{{\rm d} m_1}\,$[M$_{\odot}^{-1}$Gpc$^{-3}$yr$^{-1}$]")
-    # axes[0].legend(framealpha=0)
 
     if hyperparam=='H0':
         prior=np.linspace(50,100,num=100)

@@ -43,8 +43,8 @@ bias_PLP = np.zeros(N_CATALOGS)
 bias_BPL = np.zeros(N_CATALOGS)
 for i in trange(N_CATALOGS):
     ## draw events, find them, and generate mock PE
-    m1s_true, zt, m1z_true, dL_true = true_vals_PLP(rng=np_rng)
-    m1z_PE, m2z_PE, dL_PE, log_PE_prior = gen_snr_scaled_PE(np_rng,m1s_true,m1s_true,dL_true/1000,osnr_interp,
+    m1s_true, zt, m1z_true, dL_true, q_true = true_vals_PLP(rng=np_rng)
+    m1z_PE, m2z_PE, dL_PE, log_PE_prior = gen_snr_scaled_PE(np_rng,m1s_true,m1s_true*q_true,dL_true/1000,osnr_interp,
                                                             reference_distance,N_SAMPLES_PER_EVENT,H0_FID,OM0_FID,
                                                             mc_sigma=3.0e-2,eta_sigma=5.0e-3,theta_sigma=5.0e-2, snr_thresh=SNR_THRESH,
                                                             return_og=False)
@@ -54,7 +54,7 @@ for i in trange(N_CATALOGS):
     # Inference - power law peak
     nuts_settings = dict(target_accept_prob=0.9, max_tree_depth=10,dense_mass=False)
     nuts_kernel = numpyro.infer.NUTS(PLP,**nuts_settings)
-    kwargs = dict(m1det=m1z_PE,dL=dL_PE, m1det_inj=m1zinj_det,dL_inj=dLinj_det,
+    kwargs = dict(m1det=m1z_PE,dL=dL_PE, m2det=m2z_PE,m1det_inj=m1zinj_det,dL_inj=dLinj_det,
                     log_pinj=log_pinj_det, log_PE_prior=log_PE_prior,
                     remove_low_Neff=False)
     mcmc = numpyro.infer.MCMC(nuts_kernel,num_warmup=NSAMPS//4*3,num_samples=NSAMPS,
@@ -90,7 +90,7 @@ for i in trange(N_CATALOGS):
         conc, lam_sigma = get_sigma_gamma_params(U=2.)
         
         nuts_kernel = numpyro.infer.NUTS(hyper_prior,**nuts_settings)
-        kwargs = dict(m1det=m1z_PE,dL=dL_PE, m1det_inj=m1zinj_det,dL_inj=dLinj_det,
+        kwargs = dict(m1det=m1z_PE, m2det=m2z_PE, dL=dL_PE, m1det_inj=m1zinj_det,dL_inj=dLinj_det,
                         log_pinj=log_pinj_det, log_PE_prior=log_PE_prior,
                         PC_params=dict(conc=conc,concentration=concentration,scale=scale,lam_sigma=lam_sigma),
                         remove_low_Neff=False)
@@ -112,7 +112,13 @@ for i in trange(N_CATALOGS):
         with open(paths.output / "nonparh0offset.txt","w") as f:
             print(f"{nonpar_offset:.1f}",file=f)
 
-# save
+# calcualte more summary statistics and save
+percent_bias_PLP = np.sum(bias_PLP>1)/N_CATALOGS * 100
+percent_bias_BPL = np.sum(bias_BPL>1)/N_CATALOGS * 100
+with open(paths.output / "PLP_bias_percent.txt", "w") as f:
+    print(f"{percent_bias_PLP:.0f}", file=f)
+with open(paths.output / "BPL_bias_percent.txt", "w") as f:
+    print(f"{percent_bias_BPL:.0f}", file=f)
 np.savetxt(paths.data / "bias/bias_PLP.txt",bias_PLP)
 np.savetxt(paths.data / "bias/bias_BPL.txt",bias_BPL)
 
@@ -120,3 +126,4 @@ if plot:
     plt.xlabel("H0")
     plt.axvline(H0_FID,c='k')
     plt.savefig(paths.output / "bias.pdf")
+    plt.clf()

@@ -16,7 +16,7 @@ from tinygp.solvers import QuasisepSolver
 from jax.scipy.special import gammaln
 
 # custom
-from data_generation import NUM_INJ, OM0_FID, ZMAX, ZMIN, N_SAMPLES_PER_EVENT, TRUEVALS
+from data_generation import NUM_INJ, H0_FID, OM0_FID, ZMAX, ZMIN, N_SAMPLES_PER_EVENT, TRUEVALS
 import jgwcosmo
 import jgwpop
 import paths
@@ -116,7 +116,7 @@ def get_sigma_gamma_params(U,alpha=0.05):
     return k, rate
 
 # HYPER PRIOR / POPULATION MODEL
-def hyper_prior(m1det,dL,m1det_inj,dL_inj,log_pinj,log_PE_prior=0.,PC_params=dict(),remove_low_Neff=False,fit_Om0=False):
+def hyper_prior(m1det,dL,m2det,m1det_inj,dL_inj,log_pinj,log_PE_prior=0.,PC_params=dict(),remove_low_Neff=False,fit_Om0=False):
     """ Non-parametric population inference """
     mean = numpyro.sample("mean",dist.Normal(0,3))
     sigma = numpyro.deterministic("sigma",2.5)
@@ -138,13 +138,14 @@ def hyper_prior(m1det,dL,m1det_inj,dL_inj,log_pinj,log_PE_prior=0.,PC_params=dic
     # construct GP in the source frame
     logtestm1s = jnp.log(TEST_M1S)
     kernel = sigma**2 * kernels.quasisep.Matern52(rho) # can change kernel type
-    gp = GaussianProcess(kernel,logtestm1s,mean=mean,diag=0.001,
-                         solver=QuasisepSolver,assume_sorted=True)
+    gp = GaussianProcess(kernel,logtestm1s,mean=mean,diag=0.001)
+                         #solver=QuasisepSolver,assume_sorted=True)
     log_rate_test = numpyro.sample("log_rate_test",gp.numpyro_dist())
 
     # convert event data to source frame
     z = jgwcosmo.z_at_dl_approx(dL,H0,Om0,zmin=ZMIN,zmax=ZMAX+8.)
     logm1source = jnp.log(m1det) - jnp.log1p(z)
+    q = m2det/m1det
     
     # convert injections to source frame 
     z_injs = jgwcosmo.z_at_dl_approx(dL_inj,H0,Om0,zmin=ZMIN,zmax=ZMAX+8.)
@@ -169,12 +170,16 @@ def hyper_prior(m1det,dL,m1det_inj,dL_inj,log_pinj,log_PE_prior=0.,PC_params=dic
     # evaluate mass dist on data
     log_rate_m1s_data = jnp.interp(logm1source,logtestm1s,log_rate_test-logtestm1s,left=-jnp.inf,right=-jnp.inf)
     log_Jacobian_m1z_m1s_data = - jnp.log1p(z)
-    log_rate_m1_data = log_rate_m1s_data + log_Jacobian_m1z_m1s_data 
+    log_pq_data = 0. # jnp.log(jgwpop.truncnorm(q,mu=0.9,sigma=0.05,high=1,low=0))#jgwpop.logpowerlaw(q,mMin=0.0001,mMax=1.,alpha=bq)#,mMin=mmin,mMax=m1_injs,alpha=bq,f_peak=0.,mu_m1=25.,sig_m1=5.)
+    logJacobian_m2z_q_data = - jnp.log(m1det)
+    log_rate_m1_data = log_rate_m1s_data + log_pq_data + log_Jacobian_m1z_m1s_data  + logJacobian_m2z_q_data
 
     # evaluate mass dist on injections
     log_rate_m1s_injs = jnp.interp(logm1_injs,logtestm1s,log_rate_test-logtestm1s,left=-jnp.inf,right=-jnp.inf)
     log_Jacobian_m1z_m1s_injs = - jnp.log1p(z_injs)
-    log_rate_m1_injs = log_rate_m1s_injs + log_Jacobian_m1z_m1s_injs 
+    log_pq_injs = 0. # jnp.log(jgwpop.truncnorm(q,mu=0.9,sigma=0.05,high=1,low=0))#jgwpop.logpowerlaw(q,mMin=0.0001,mMax=1.,alpha=bq)#,mMin=mmin,mMax=m1_injs,alpha=bq,f_peak=0.,mu_m1=25.,sig_m1=5.)
+    # pdraw is in terms of q already, so no need for an extra jacobian
+    log_rate_m1_injs = log_rate_m1s_injs + log_pq_injs + log_Jacobian_m1z_m1s_injs 
 
     # event part of likelihood
     single_event_logL = jax.scipy.special.logsumexp(log_rate_m1_data + log_pz_data - log_PE_prior,
@@ -194,7 +199,7 @@ def hyper_prior(m1det,dL,m1det_inj,dL_inj,log_pinj,log_PE_prior=0.,PC_params=dic
     if remove_low_Neff:
         numpyro.factor("Neff_inj_penalty",jnp.log(1./(1.+(Neff/(4.*len(single_event_logL)))**(-30.))))
 
-def PLP(m1det,dL,m1det_inj,dL_inj,log_pinj,log_PE_prior=0.,remove_low_Neff=False,fit_Om0=False):
+def PLP(m1det,dL,m2det,m1det_inj,dL_inj,log_pinj,log_PE_prior=0.,remove_low_Neff=False,fit_Om0=False):
     """Correct parametric population inference"""
     # cosmology
     H0 = numpyro.sample("H0",dist.Uniform(H0_PRIOR_MIN,H0_PRIOR_MAX))
@@ -210,7 +215,9 @@ def PLP(m1det,dL,m1det_inj,dL_inj,log_pinj,log_PE_prior=0.,remove_low_Neff=False
     mu_m1 = numpyro.sample("mu_m1",dist.Uniform(20,60))# TRUEVALS['mu_m1']
     sig_m1 = numpyro.sample("sig_m1",dist.Uniform(1,10))# TRUEVALS['sig_m1']
     f_peak = TRUEVALS['f_peak'] #numpyro.sample("f_peak",dist.Uniform(0,1))
-    #Fixed
+    # bq = 0# numpyro.sample("bq",dist.Normal(0,5))
+
+    # Fixed
     alpha_z = TRUEVALS['alpha_z']# numpyro.sample("alpha_z",dist.Uniform(0,2)) #
     zp = TRUEVALS['zp']#numpyro.sample("zp",dist.Uniform(0,5)) #
     beta = TRUEVALS['beta_z'] #numpyro.sample("beta_z",dist.Uniform(0,5)) # numpyro.deterministic('beta',TRUEVALS['beta_z'])# 
@@ -218,6 +225,7 @@ def PLP(m1det,dL,m1det_inj,dL_inj,log_pinj,log_PE_prior=0.,remove_low_Neff=False
     # convert event data to source frame
     z = jgwcosmo.z_at_dl_approx(dL,H0,Om0,zmin=ZMIN,zmax=ZMAX+8.)
     m1source = m1det / (1 + z)
+    q = m2det/m1det
 
     # convert injections to source frame 
     z_injs = jgwcosmo.z_at_dl_approx(dL_inj,H0,Om0,zmin=ZMIN,zmax=ZMAX+8.)
@@ -237,17 +245,19 @@ def PLP(m1det,dL,m1det_inj,dL_inj,log_pinj,log_PE_prior=0.,remove_low_Neff=False
     logJacobian_dL_z_injs = - jnp.log(jnp.abs(jgwcosmo.dDLdz_approx(z_injs,H0,Om0))) 
     log_pz_injs = logcosmo_injs + logRzs_injs + z_taper_injs + logJacobian_dL_z_injs
 
-    # evaluate mass dist on data
+    # evaluate mass dist on data - final mass dist is in terms of m1z and m2z
     log_pm1_data = jgwpop.logpowerlaw_peak(m1source,mmin,mmax,alpha,sig_m1,mu_m1,f_peak)
-    log_pm2_data = 0.
+    log_pq_data = 0. # jnp.log(jgwpop.truncnorm(q,mu=0.9,sigma=0.05,high=1,low=0))#jgwpop.logpowerlaw(q,mMin=0.0001,mMax=1.,alpha=bq)#,mMin=mmin,mMax=m1_injs,alpha=bq,f_peak=0.,mu_m1=25.,sig_m1=5.)
     logJacobian_m1z_m1_data = - 1.0*jnp.log1p(z)
-    log_pm_data = log_pm1_data + log_pm2_data + logJacobian_m1z_m1_data
+    logJacobian_m2z_q_data = - 1.0*jnp.log(m1det)
+    log_pm_data = log_pm1_data + log_pq_data + logJacobian_m1z_m1_data + logJacobian_m2z_q_data
 
-    # evaluate mass dist on injs
+    # evaluate mass dist on injs - final mass dist is in terms of m1s and q
     log_pm1_injs = jgwpop.logpowerlaw_peak(m1_injs,mmin,mmax,alpha,sig_m1,mu_m1,f_peak)
-    log_pm2_injs = 0.
+    log_pq_injs = 0. # jnp.log(jgwpop.truncnorm(q_inj,mu=0.9,sigma=0.05,high=1,low=0))#jgwpop.logpowerlaw(q_inj,mMin=0.0001,mMax=1.,alpha=bq)#,mMin=mmin,mMax=m1_injs,alpha=bq,f_peak=0.,mu_m1=25.,sig_m1=5.)
     logJacobian_m1z_m1_injs = - 1.0*jnp.log1p(z_injs)
-    log_pm_injs = log_pm1_injs + log_pm2_injs + logJacobian_m1z_m1_injs
+    # pdraw is in terms of q already, so no need for an extra jacobian
+    log_pm_injs = log_pm1_injs + log_pq_injs + logJacobian_m1z_m1_injs
 
     # event part of likelihood
     single_event_logL = jax.scipy.special.logsumexp(log_pm_data + log_pz_data +jnp.log(rate) - log_PE_prior,
@@ -255,7 +265,7 @@ def PLP(m1det,dL,m1det_inj,dL_inj,log_pinj,log_PE_prior=0.,remove_low_Neff=False
     numpyro.factor("logp",jnp.sum(single_event_logL))
 
     # injection part of likelihood
-    log_weights = log_pm_injs  + log_pz_injs +jnp.log(rate) - log_pinj
+    log_weights = log_pm_injs + log_pz_injs + jnp.log(rate) - log_pinj
     Nexp = jnp.sum(jnp.exp(log_weights))/NUM_INJ
     numpyro.factor("Nexp",-1*Nexp)
     numpyro.deterministic("nexp",Nexp)
@@ -269,7 +279,7 @@ def PLP(m1det,dL,m1det_inj,dL_inj,log_pinj,log_PE_prior=0.,remove_low_Neff=False
     # for plotting
     numpyro.deterministic("log_rate", jnp.log(rate) + jgwpop.logpowerlaw_peak(TEST_M1S,mmin,mmax,alpha,sig_m1,mu_m1,f_peak))
     
-def BPL(m1det,dL,m1det_inj,dL_inj,log_pinj,log_PE_prior=0.,remove_low_Neff=False,fit_Om0=False):
+def BPL(m1det,dL,m2det,m1det_inj,dL_inj,log_pinj,log_PE_prior=0.,remove_low_Neff=False,fit_Om0=False):
     # cosmology
     H0 = numpyro.sample("H0",dist.Uniform(H0_PRIOR_MIN,H0_PRIOR_MAX))
     # H0 = numpyro.deterministic("H0",H0_FID)
@@ -293,6 +303,7 @@ def BPL(m1det,dL,m1det_inj,dL_inj,log_pinj,log_PE_prior=0.,remove_low_Neff=False
     # convert event data to source frame
     z = jgwcosmo.z_at_dl_approx(dL,H0,Om0,zmin=ZMIN,zmax=ZMAX+8.)
     m1source = m1det / (1 + z)
+    q = m2det/m1det
 
     # convert injections to source frame 
     z_injs = jgwcosmo.z_at_dl_approx(dL_inj,H0,Om0,zmin=ZMIN,zmax=ZMAX+8.)
@@ -313,20 +324,18 @@ def BPL(m1det,dL,m1det_inj,dL_inj,log_pinj,log_PE_prior=0.,remove_low_Neff=False
     # evaluate mass dist on data
     # log_pm1_data = jgwpop.logpowerlaw_peak(m1source,mmin,mmax,alpha,sig_m1,mu_m1,f_peak)
     log_pm1_data = jgwpop.logbroken_powerlaw(m1source,mmin,mmax,alpha1,alpha2,b_m1)
-    # log_pq_data = jgwpop.logpowerlaw(m2det/m1det,0.,1.,bq)
+    log_pq_data = 0. # jnp.log(jgwpop.truncnorm(q,mu=0.9,sigma=0.05,high=1,low=0))#jgwpop.logpowerlaw(q,mMin=0.0001,mMax=1.,alpha=bq)#,mMin=mmin,mMax=m1_injs,alpha=bq,f_peak=0.,mu_m1=25.,sig_m1=5.)
     logJacobian_m1z_m1_data = - 1.0*jnp.log1p(z)
-    logJacobian_m2z_m2_data = - 1.0*jnp.log1p(z)
-    logJacobian_m1m2_m1q_data =  - jnp.log(m1source)
-    log_pm_data = log_pm1_data + logJacobian_m1z_m1_data #+ log_pq_data + logJacobian_m2z_m2_data + logJacobian_m1m2_m1q_data
+    logJacobian_m2z_q_data = - 1.0*jnp.log(m1det)
+    log_pm_data = log_pm1_data + log_pq_data + logJacobian_m1z_m1_data + logJacobian_m2z_q_data
 
     # evaluate mass dist on injs
     # log_pm1_injs = jgwpop.logpowerlaw_peak(m1_injs,mmin,mmax,alpha,sig_m1,mu_m1,f_peak)
     log_pm1_injs = jgwpop.logbroken_powerlaw(m1_injs,mmin,mmax,alpha1,alpha2,b_m1)
-    # log_pq_injs = jgwpop.logpowerlaw(m2det_inj/m1det_inj,0.,1.,bq)
+    log_pq_injs = 0. # jnp.log(jgwpop.truncnorm(q_inj,mu=0.9,sigma=0.05,high=1,low=0))#jgwpop.logpowerlaw(q_inj,mMin=0.0001,mMax=1.,alpha=bq)#,mMin=mmin,mMax=m1_injs,alpha=bq,f_peak=0.,mu_m1=25.,sig_m1=5.)
     logJacobian_m1z_m1_injs = - 1.0*jnp.log1p(z_injs)
-    logJacobian_m2z_m2_injs = - 1.0*jnp.log1p(z_injs)
-    logJacobian_m1m2_m1q_injs =  - jnp.log(m1_injs)
-    log_pm_injs = log_pm1_injs + logJacobian_m1z_m1_injs #+ log_pq_injs + logJacobian_m2z_m2_injs + logJacobian_m1m2_m1q_injs
+    # pdraw is in terms of q already, so no need for an extra jacobian
+    log_pm_injs = log_pm1_injs + log_pq_injs + logJacobian_m1z_m1_injs
     
     # event part of likelihood
     single_event_logL = jax.scipy.special.logsumexp(log_pm_data + log_pz_data +jnp.log(rate) - log_PE_prior,
