@@ -133,7 +133,7 @@ We find that our non-parametric model allows for a $\variable{output/nonparh0per
 % \new{This is to be compared with a $\variable{output/PLPh0percent.txt}\%$ measurement of $H(z=\variable{output/mostsensitivez.txt})$ with the correct parametric model, which does not represent a statistically-significant difference.}
 We highlight measurements of \Ho{} \new{within a $\Lambda$CDM universe} in order to benchmark the accuracy and precision of our non-parametric method, as well as explore the role of spectral sirens in elucidating the Hubble tension.
 However, a primary utility of spectral siren measurements will be in constraining $H(z)$ \new{under different cosmological models, and} at redshifts that are relatively inaccessible by electromagnetic observations, especially with next-generation gravitational-wave detectors \citep{You:2020wju, Ezquiaga:2020tns, ezquiaga_spectral_2022, Chen:2024gdn}.\footnote{See example spectral siren cosmological inference using parametric mass spectrum models: \href{https://github.com/ezquiaga/spectral_sirens}{https://github.com/ezquiaga/spectral\_sirens}.}
-When applied to data from next-generation detectors, this method will measure \new{all cosmological parameters that govern $H(z)$, such as the curvature parameter, $\kappa$, matter density, \Omm, dark energy density, $\Omega_\Lambda$, and dark energy equation of state parameter, $w$.}
+%When applied to data from next-generation detectors, this method will measure \new{cosmological parameters that govern $H(z)$.}
 
 This paper is organized as follows: Section~\ref{sec:data generation} describes the simulated dataset.
 Section~\ref{sec:ss} introduces the spectral siren method, demonstrating how cosmological parameters are inferred from the mass distribution of \ac{GW} sources.
@@ -212,6 +212,7 @@ $N_{\text{exp}}(\Lambda)$ is the expected number of detections given $\Lambda$ a
 
 In this work, we have restricted our analysis to the \ac{BBH} primary mass distribution.
 However, the method can be trivially extended to the full mass distribution of \acp{CBC} \citep[e.g.][]{fishbach_does_2020, ezquiaga_spectral_2022}.
+\new{Additionally, Appendix~\ref{ap:mass ratio} demonstrates that including secondary masses in the fit does not change the results of the analysis presented here.}
 
 Since parameters of individual events are not perfectly measured, we marginalize over the possible properties of each event.
 Practically, this is done by a Monte Carlo average over the posterior samples $\{\theta_j\}_i$ of each event $i$ and dividing out the prior used when inferring those posterior samples, $\pi_{\rm PE}(\theta)$:
@@ -391,7 +392,7 @@ In our approach, the black hole mass function is \textit{itself} described by a 
 In \citet{magana_hernandez_beyond_2024}, on the other hand, the mass distribution is fundamentally a binned piecewise constant function, with a \ac{GP} prior governing the relative heights of these bins.
 While this binned model is flexible, sharp bin edges at predefined locations nevertheless constitute unphysical features.
 These features may yield overly optimistic constraints on cosmological parameters, possibly explaining the increase in precision that \citet{magana_hernandez_beyond_2024} find relative to the parametric analysis on the exact same dataset performed in \citet{gwtc3_cosmo}.
-\citet{magana_hernandez_beyond_2024} also include a  binned reconstruction of the \ac{BBH} merger rate as a function of redshift, which we fix or model parametrically in our own work.
+\citet{magana_hernandez_beyond_2024} also include a binned reconstruction of the \ac{BBH} merger rate as a function of redshift, which we fix or model parametrically in our own work.
 We stress, though, that this is not an intrinsic limitation of our method; one could straightforwardly adopt a second Gaussian process to govern the overall scaling of the merger rate with redshift.
 
 More interesting is the possibility that the black hole mass distribution itself evolves with redshift.
@@ -465,9 +466,10 @@ $\mathcal{S}$ is a smoothing function at low and high masses, and $\mathcal{N}_{
 $\bar{\Lambda}_z = \{z_p,\alpha_z,\beta_z\}$ are the parameters governing the peak of the redshift distribution, low-$z$ power law slope, and high-$z$ power law slope.
 When generating the simulated events, we have fixed $\alpha=-2.7$, $m_{\max}=78\Msun$, $m_{\min}=10~\Msun$, $\mu=30~\Msun$, $\sigma=7.0~\Msun$, $f_{\text{peak}}=0.05$, $z_p=2.4$, $\alpha_z=1.0$, and $\beta_z=3.4$.
 These choices correspond to the maximum \emph{a posteriori} values obtained by an analysis of GWTC-3 data using the \plp{} model \citep{abbott_population_2023}.
-For simplicity, we additionally assume that the population has equal masses, $m_1=m_2$, and thus, $\theta = \{m_1,z\}$.
-We consistently apply this assumption to the data generation process and the population inference.
-We do not fit for or simulate spins, as they do not redshift and hence do not carry additional cosmological information, and additionally neglect secondary masses.
+For simplicity, we additionally assume that \new{the population of mass ratios is peaked at $q=0.9$, which is consistent with current observations.}
+Thus, $\theta = \{m_1,z\}$.
+We consistently apply these assumptions to the data generation process and the population inference.
+We do not fit for or simulate spins, as they do not redshift and hence do not carry additional cosmological information, and additionally \new{fix the distribution of mass ratios.}
 
 We use cosmological parameters \Ho$=\variable{output/H0_FID.txt}\Hunits$, \Omm$=0.3$, and $\Omega_\Lambda=1-$\Omm, consistent with those found by \citet{planck_collaboration_planck_2016}.
 We emphasize, however, that the choice of cosmological parameters for data generation is arbitrary and does not impact the results, since we are concerned only with the ability of our method to recover the injected values.
@@ -481,6 +483,30 @@ We use the software package \texttt{GWMockCat} \citep{farah_things_2023} to simu
 \texttt{GWMockCat} also simulates a set of software injections, which we use to estimate selection effects in the inference.
 To determine the detectability of both injections and simulated events in O5, we use the projected \ac{O5} LIGO power spectral density \citep{obsscen_noise_curves,abbott_prospects_2020} for a single detector to calculate observed signal-to-noise ratios $\rho_{\text{obs}}$, and we consider events and injections with a single-detector SNR $\rho_{\text{obs}}>8$ to be detectable. 
 The full procedure for this mock data generation process is described in \citet{fishbach_where_2017, farah_things_2023, essick_ensuring_2024}.
+
+\section{Effects of fitting for secondary mass}
+\label{ap:mass ratio}
+We examine the effect of only fitting the distribution of primary masses on our results.
+To do so, we perform two spectral siren analyses: one that includes a fit to secondary mass, and one that does not.
+Both analyses use the parametric, \plp{} model for the distribution of primary masses.
+We model the distribution of secondary masses with a power law in mass ratio, similarly to the majority of analyses presented in \citet{abbott_population_2021,abbott_population_2023}. 
+
+We use the same set of simulated events for both analyses.
+These are generated in the same way as described in Section~\ref{sec:data generation}, but with a uniform mass ratio distribution (rather than assuming all mass ratios are unity) in order to understand the impact of our assumptions on the results over the full range of possible mass ratios.
+We correspondingly modify our injection set to cover the same mass ratio range.
+
+The results are shown in Figure~\ref{fig:mass ratio}.
+We find the posteriors on \Ho{} to be similar between the two cases.
+Additionally, the recovered mass spectra are nearly identical.
+We therefore conclude that fitting for secondary masses does not significantly impact our main conclusions, as is to be expected from a self-consistent hierarchical analysis when the data do not exhibit correlations.
+
+\begin{figure*}
+    \includegraphics[width=\textwidth]{figures/q_comparison.pdf}
+    \caption{Comparison of a parametric spectral siren analysis performed while fitting for the distributions of primary and secondary masses (magenta solid) and primary masses only (green dashed).
+    The posterior on \Ho{} is relatively unchanged between the two, and only minor changes are observed in the mass spectrum.}
+    \label{fig:mass ratio}
+    \script{fit_q_comparison.py}
+\end{figure*}
 
 \section{Gaussian process-based mass distribution}
 \label{ap:GP}
