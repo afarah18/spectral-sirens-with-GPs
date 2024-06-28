@@ -49,4 +49,4 @@ if  __name__ == "__main__":
 
     # save results
     id = az.from_numpyro(mcmc)
-    id.to_netcdf(paths.data / "mcmc_nonparametric_fitsigma.nc4")
+    id.to_netcdf(paths.data / "mcmc_nonparametric.nc4")

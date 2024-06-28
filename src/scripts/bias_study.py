@@ -66,7 +66,7 @@ for i in trange(N_CATALOGS):
     mcmc.run(jax_rng,**kwargs)
 
     id_PLP = az.from_numpyro(mcmc)
-    id_PLP.to_netcdf(paths.data / f"bias/mcmc_parametric_PLP_unifq_{i}.nc4")
+    id_PLP.to_netcdf(paths.data / f"bias/mcmc_parametric_PLP_{i}.nc4")
     bias_PLP[i] = np.abs(id_PLP.posterior['H0'][0].mean() - H0_FID)/id_PLP.posterior['H0'][0].std()
     if plot:
         plt.hist(id_PLP.posterior['H0'][0],density=True, bins=50,histtype='step',color='green',alpha=0.5,lw=0.5)
@@ -79,7 +79,7 @@ for i in trange(N_CATALOGS):
     mcmc.run(jax_rng,**kwargs)
 
     id_BPL = az.from_numpyro(mcmc)
-    id_BPL.to_netcdf(paths.data / f"bias/mcmc_parametric_BPL_unifq_{i}.nc4")
+    id_BPL.to_netcdf(paths.data / f"bias/mcmc_parametric_BPL_{i}.nc4")
     bias_BPL[i] = np.abs(id_BPL.posterior['H0'][0].mean() - H0_FID)/id_BPL.posterior['H0'][0].std()
     if plot:
         plt.hist(id_BPL.posterior['H0'][0],density=True, bins=50,histtype='step',color='orange',alpha=0.5,lw=0.5)
@@ -110,7 +110,7 @@ for i in trange(N_CATALOGS):
                                 num_chains=1,progress_bar=True)   
         mcmc.run(jax_rng,**kwargs)
         id = az.from_numpyro(mcmc)
-        id.to_netcdf(paths.data / f"bias/mcmc_nonparametric_unifq_{i}.nc4")
+        id.to_netcdf(paths.data / f"bias/mcmc_nonparametric_{i}.nc4")
         
         # GP-specific summary stats
         h0samps = id.posterior['H0'][0]

@@ -40,18 +40,18 @@ if  __name__ == "__main__":
     kwargs = dict(m1det=m1z_PE,dL=dL_PE,m2det=m2z_PE,m1det_inj=m1zinj_det,dL_inj=dLinj_det,
                     log_pinj=log_pinj_det, log_PE_prior=log_PE_prior,
                     remove_low_Neff=remove_low_Neff)
-    # mcmc = numpyro.infer.MCMC(nuts_kernel,num_warmup=NSAMPS,num_samples=NSAMPS,
-    #                           num_chains=1,progress_bar=True)   
-    # mcmc.run(jax_rng,**kwargs)
+    mcmc = numpyro.infer.MCMC(nuts_kernel,num_warmup=NSAMPS,num_samples=NSAMPS,
+                              num_chains=1,progress_bar=True)   
+    mcmc.run(jax_rng,**kwargs)
 
-    # # save results
-    # id = az.from_numpyro(mcmc)
-    # id.to_netcdf(paths.data / "mcmc_parametric_PLP_fitq_unif.nc4")
-    # offset = np.abs(id.posterior['H0'][0].mean()-H0_FID)/id.posterior['H0'][0].std()
-    # with open(paths.output / "PLPh0offset.txt","w") as f:
-    #     print(f"{offset:.1f}",file=f)
-    # with open(paths.output / "PLPh0percent.txt","w") as f:
-    #     print(f"{np.std(id.posterior['H0'][0])/np.mean(id.posterior['H0'][0])*100:.0f}",file=f)
+    # save results
+    id = az.from_numpyro(mcmc)
+    id.to_netcdf(paths.data / "mcmc_parametric_PLP.nc4")
+    offset = np.abs(id.posterior['H0'][0].mean()-H0_FID)/id.posterior['H0'][0].std()
+    with open(paths.output / "PLPh0offset.txt","w") as f:
+        print(f"{offset:.1f}",file=f)
+    with open(paths.output / "PLPh0percent.txt","w") as f:
+        print(f"{np.std(id.posterior['H0'][0])/np.mean(id.posterior['H0'][0])*100:.0f}",file=f)
 
     # Inference - broken power law
     nuts_settings = dict(target_accept_prob=0.9, max_tree_depth=10,dense_mass=False)
@@ -62,12 +62,7 @@ if  __name__ == "__main__":
 
     # save results
     id = az.from_numpyro(mcmc)
-    id.to_netcdf(paths.data / "mcmc_parametric_BPL_fitq_unif.nc4")
+    id.to_netcdf(paths.data / "mcmc_parametric_BPL.nc4")
     offset = np.abs(id.posterior['H0'][0].mean()-H0_FID)/id.posterior['H0'][0].std()
     with open(paths.output / "BPLh0offset.txt","w") as f:
         print(f"{offset:.1f}",file=f)
-
-    from pm_H0_twopanel import two_panel
-    two_panel(paths.data / "mcmc_parametric_PLP_fitq_unif.nc4", 
-          paths.data / "mcmc_parametric_PLP_fitq_unif.nc4",
-          paths.data / "mcmc_parametric_PLP_fitq_unif.nc4")
