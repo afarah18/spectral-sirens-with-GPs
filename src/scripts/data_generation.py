@@ -52,11 +52,9 @@ def true_vals_PLP(rng, n_sources=N_SOURCES):
 def make_injections(rng, alpha, mmax_inj, mmin_inj, zmax_inj=ZMAX,num_inj=NUM_INJ):
     m1zinj = inverse_transform_sample(gwpop.powerlaw, [mmin_inj,mmax_inj],rng, N=num_inj, 
                                  alpha=-alpha, high=mmax_inj, low=mmin_inj)
-    qmin = mmin_inj/m1zinj
     qinj = rng.uniform(0,1,size=num_inj)
     log_pinj = -alpha * np.log(m1zinj) + np.log(
         (-alpha + 1)/(mmax_inj**(-alpha + 1)-mmin_inj**(-alpha + 1)))
-    # log_pinj -= np.log(m1zinj-mmin_inj)
     dLinj = gwcosmo.dL_approx(inverse_transform_sample(
         gwpop.unif_comoving_rate, [ZMIN,zmax_inj], rng, N=num_inj, H0=H0_FID, Om0=OM0_FID),
           H0=H0_FID, Om0=OM0_FID)
@@ -126,8 +124,6 @@ if  __name__ == "__main__":
             m2z_PE[i,m2z_PE[i]>0.05], dL_PE[i,m2z_PE[i]>0.05], log_PE_prior[i,m2z_PE[i]>0.05]
         if len(m1z_PE[i]) < n_samps:
             n_samps = len(m1z_PE[i])
-    print(n_samps)
-    print(np.mean(np.diff(np.sort(np.log(m1z_PE).mean(axis=1)))))
     # make all events have the same # of samples
     if n_samps < N_SAMPLES_PER_EVENT:
         for i in range(len(m1z_PE)):
