@@ -13,7 +13,6 @@ from data_generation import (true_vals_PLP, SNR_THRESH, N_SAMPLES_PER_EVENT,N_SO
 from GWMockCat.vt_utils import interpolate_optimal_snr_grid 
 from parametric_inference import NSAMPS
 from priors import PLP, BPL, hyper_prior, get_ell_frechet_params, get_sigma_gamma_params
-import gwcosmo
 
 jax.config.update("jax_enable_x64", True)
 
@@ -43,7 +42,6 @@ if plot:
     import matplotlib.pyplot as plt
 bias_PLP = np.zeros(N_CATALOGS)
 bias_BPL = np.zeros(N_CATALOGS)
-mmin_PE,mmin_true = np.zeros(N_CATALOGS),np.zeros(N_CATALOGS)
 for i in trange(N_CATALOGS):
     ## draw events, find them, and generate mock PE
     m1s_true, zt, m1z_true, dL_true, q_true = true_vals_PLP(rng=np_rng)
@@ -53,7 +51,6 @@ for i in trange(N_CATALOGS):
                                                             return_og=False)
 
     dL_PE *= 1000 # unit matching
-    mmin_PE[i], mmin_true[i] = (m1z_PE/(1+gwcosmo.z_at_dl_approx(dL_PE,H0_FID, OM0_FID))).mean(axis=1).min(), m1s_true.min()
 
     # Inference - power law peak
     nuts_settings = dict(target_accept_prob=0.9, max_tree_depth=10,dense_mass=False)
@@ -138,10 +135,4 @@ if plot:
     plt.xlabel("H0")
     plt.axvline(H0_FID,c='k')
     plt.savefig(paths.output / "bias.pdf")
-    plt.clf()
-
-    plt.hist(mmin_PE,bins=15,histtype='step',color='b',label='mean of lightest found event')
-    plt.hist(mmin_true,bins=15,histtype='step',color='k',label='direct draws from underlying distribution')
-    plt.xlabel("smallest mass")
-    plt.savefig(paths.figures / "mmin_events_1ksamps.png")
     plt.clf()
