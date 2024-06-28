@@ -27,16 +27,14 @@ datasets:
   10.5281/zenodo.8428643:
     contents:
       optimal_snr_aplus_design_O5.h5: src/data/optimal_snr_aplus_design_O5.h5
-  10.5072/zenodo.45078:
+  10.5281/zenodo.10967202:
     contents:
       bias.zip: src/data/bias.zip
       gw_data.zip: src/data/gw_data.zip
-      mcmc_nonparametric_fitOm0_old.nc4: src/data/mcmc_nonparametric_fitOm0.nc4
+      mcmc_nonparametric_fitOm0.nc4: src/data/mcmc_nonparametric_fitOm0.nc4
       PLPh0offset.txt: src/tex/output/PLPh0offset.txt
       PLPh0percent.txt: src/tex/output/PLPh0percent.txt
       PLP_bias_percent.txt: src/tex/output/PLP_bias_percent.txt
-      nonparh0offset.txt: src/tex/output/nonparh0offset.txt
-      nonparh0percent.txt: src/tex/output/nonparh0percent.txt
       BPLh0offset.txt: src/tex/output/BPLh0offset.txt
       BPL_bias_percent.txt: src/tex/output/BPL_bias_percent.txt
 
@@ -48,26 +46,28 @@ dependencies:
     - src/data/bias.zip
   src/scripts/data_generation.py:
     - src/data/optimal_snr_aplus_design_O5.h5
+    - src/scripts/mock_posteriors.py
   src/scripts/data_numbers.py:
-    - src/data/gw_data/
-  src/scripts/nonparametric_inference.py:
-    - src/data/gw_data/
-  src/scripts/parametric_inference.py:
     - src/data/gw_data/
   src/scripts/bias_study.py:
     - src/data/gw_data/
+    - src/scripts/priors.py
+  src/scripts/priors.py:
+    - src/scripts/jgwpop.py
+    - src/scripts/jgwcosmo.py
+    - jutils.py
   src/scripts/nonparametric_numbers.py:
-    - src/data/mcmc_nonparametric.nc4
-  src/scripts/pm_H0_twopanel.py:
-    - src/data/mcmc_nonparametric.nc4
+    - src/data/bias/
   src/scripts/pm_H0_twopanel.py:
     - src/data/bias/mcmc_nonparametric_16.nc4
     - src/data/bias/mcmc_parametric_PLP_16.nc4
     - src/data/bias/mcmc_parametric_BPL_16.nc4
+    - src/data/bias.zip
   src/scripts/nonparametric_corner.py:
     - src/data/mcmc_nonparametric_fitOm0.nc4
   src/scripts/GP_example_plot.py:
     - src/data/bias/mcmc_nonparametric_16.nc4
+    - src/data/bias.zip
 
   src/tex/ms.tex:
     - src/tex/figures/O5_pm.pdf
@@ -98,7 +98,7 @@ optimize_caching: false
 # Overleaf sync settings
 overleaf:
   # Overleaf project ID (blank = disabled)
-  id: # 63fe92421f02c027b185fef6
+  id: 63fe92421f02c027b185fef6
   # Perform sync on GitHub Actions?
   gh_actions_sync: true
   # List of files to push to Overleaf
