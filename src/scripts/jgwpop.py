@@ -40,7 +40,7 @@ def powerlaw_smooth(m,mMin,mMax,alpha):
 
 def logpowerlaw(m,mMin,mMax,alpha):
     lognorm = jnp.log(1. + alpha) - jnp.log(mMax**(alpha+1.) - mMin**(alpha+1.))
-    return lognorm + alpha * jnp.log(m)
+    return jnp.where(m<mMin,-jnp.inf,jnp.where(m>mMax,-jnp.inf,lognorm + alpha * jnp.log(m)))
 
 def logbroken_powerlaw(m1,mMin,mMax,alpha1,alpha2,b_m1):
     dmMax = 2
