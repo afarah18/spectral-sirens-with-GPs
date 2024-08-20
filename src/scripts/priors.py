@@ -116,7 +116,7 @@ def get_sigma_gamma_params(U,alpha=0.05):
     return k, rate
 
 # HYPER PRIOR / POPULATION MODEL
-def hyper_prior(m1det,dL,m2det,m1det_inj,dL_inj,log_pinj,log_PE_prior=0.,PC_params=dict(),remove_low_Neff=False,fit_Om0=False):
+def hyper_prior(m1det,dL,m2det,m1det_inj,q_inj,dL_inj,log_pinj,log_PE_prior=0.,PC_params=dict(),remove_low_Neff=False,fit_Om0=False):
     """ Non-parametric population inference """
     mean = numpyro.sample("mean",dist.Normal(0,3))
     sigma = numpyro.deterministic("sigma",2.5)
@@ -138,8 +138,8 @@ def hyper_prior(m1det,dL,m2det,m1det_inj,dL_inj,log_pinj,log_PE_prior=0.,PC_para
     # construct GP in the source frame
     logtestm1s = jnp.log(TEST_M1S)
     kernel = sigma**2 * kernels.quasisep.Matern52(rho) # can change kernel type
-    gp = GaussianProcess(kernel,logtestm1s,mean=mean,diag=0.001)
-                         #solver=QuasisepSolver,assume_sorted=True)
+    gp = GaussianProcess(kernel,logtestm1s,mean=mean,diag=0.001,
+                         solver=QuasisepSolver,assume_sorted=True)
     log_rate_test = numpyro.sample("log_rate_test",gp.numpyro_dist())
 
     # convert event data to source frame
@@ -177,7 +177,7 @@ def hyper_prior(m1det,dL,m2det,m1det_inj,dL_inj,log_pinj,log_PE_prior=0.,PC_para
     # evaluate mass dist on injections
     log_rate_m1s_injs = jnp.interp(logm1_injs,logtestm1s,log_rate_test-logtestm1s,left=-jnp.inf,right=-jnp.inf)
     log_Jacobian_m1z_m1s_injs = - jnp.log1p(z_injs)
-    log_pq_injs = 0. # jnp.log(jgwpop.truncnorm(q,mu=0.9,sigma=0.05,high=1,low=0))#jgwpop.logpowerlaw(q,mMin=0.0001,mMax=1.,alpha=bq)#,mMin=mmin,mMax=m1_injs,alpha=bq,f_peak=0.,mu_m1=25.,sig_m1=5.)
+    log_pq_injs = 0. # jnp.log(jgwpop.truncnorm(q_inj,mu=0.9,sigma=0.05,high=1,low=0))#jgwpop.logpowerlaw(q,mMin=0.0001,mMax=1.,alpha=bq)#,mMin=mmin,mMax=m1_injs,alpha=bq,f_peak=0.,mu_m1=25.,sig_m1=5.)
     # pdraw is in terms of q already, so no need for an extra jacobian
     log_rate_m1_injs = log_rate_m1s_injs + log_pq_injs + log_Jacobian_m1z_m1s_injs 
 
@@ -199,12 +199,15 @@ def hyper_prior(m1det,dL,m2det,m1det_inj,dL_inj,log_pinj,log_PE_prior=0.,PC_para
     if remove_low_Neff:
         numpyro.factor("Neff_inj_penalty",jnp.log(1./(1.+(Neff/(4.*len(single_event_logL)))**(-30.))))
 
-def PLP(m1det,dL,m2det,m1det_inj,dL_inj,log_pinj,log_PE_prior=0.,remove_low_Neff=False,fit_Om0=False):
+def PLP(m1det,dL,m2det,m1det_inj,q_inj,dL_inj,log_pinj,log_PE_prior=0.,remove_low_Neff=False,fit_Om0=False):
     """Correct parametric population inference"""
     # cosmology
     H0 = numpyro.sample("H0",dist.Uniform(H0_PRIOR_MIN,H0_PRIOR_MAX))
     # H0 = numpyro.deterministic("H0",H0_FID)
-    Om0=OM0_FID
+    if fit_Om0:
+        Om0 = numpyro.sample("Om0",dist.Uniform(0.01,0.99))
+    else:
+        Om0=OM0_FID
 
     rate = numpyro.sample('rate',dist.TruncatedNormal(loc=10.,scale=30.,low=0.01))
 
@@ -247,14 +250,14 @@ def PLP(m1det,dL,m2det,m1det_inj,dL_inj,log_pinj,log_PE_prior=0.,remove_low_Neff
 
     # evaluate mass dist on data - final mass dist is in terms of m1z and m2z
     log_pm1_data = jgwpop.logpowerlaw_peak(m1source,mmin,mmax,alpha,sig_m1,mu_m1,f_peak)
-    log_pq_data = 0. # jnp.log(jgwpop.truncnorm(q,mu=0.9,sigma=0.05,high=1,low=0))#jgwpop.logpowerlaw(q,mMin=0.0001,mMax=1.,alpha=bq)#,mMin=mmin,mMax=m1_injs,alpha=bq,f_peak=0.,mu_m1=25.,sig_m1=5.)
+    log_pq_data = 0. # jnp.log(jgwpop.truncnorm(q,mu=0.9,sigma=0.05,high=1,low=0))# jgwpop.logpowerlaw(q,mMin=0.0001,mMax=1.,alpha=bq)#,mMin=mmin,mMax=m1_injs,alpha=bq,f_peak=0.,mu_m1=25.,sig_m1=5.) 
     logJacobian_m1z_m1_data = - 1.0*jnp.log1p(z)
     logJacobian_m2z_q_data = - 1.0*jnp.log(m1det)
     log_pm_data = log_pm1_data + log_pq_data + logJacobian_m1z_m1_data + logJacobian_m2z_q_data
 
     # evaluate mass dist on injs - final mass dist is in terms of m1s and q
     log_pm1_injs = jgwpop.logpowerlaw_peak(m1_injs,mmin,mmax,alpha,sig_m1,mu_m1,f_peak)
-    log_pq_injs = 0. # jnp.log(jgwpop.truncnorm(q_inj,mu=0.9,sigma=0.05,high=1,low=0))#jgwpop.logpowerlaw(q_inj,mMin=0.0001,mMax=1.,alpha=bq)#,mMin=mmin,mMax=m1_injs,alpha=bq,f_peak=0.,mu_m1=25.,sig_m1=5.)
+    log_pq_injs =  0. # jnp.log(jgwpop.truncnorm(q_inj,mu=0.9,sigma=0.05,high=1,low=0)) # jgwpop.logpowerlaw(q_inj,mMin=0.0001,mMax=1.,alpha=bq)#,mMin=mmin,mMax=m1_injs,alpha=bq,f_peak=0.,mu_m1=25.,sig_m1=5.)
     logJacobian_m1z_m1_injs = - 1.0*jnp.log1p(z_injs)
     # pdraw is in terms of q already, so no need for an extra jacobian
     log_pm_injs = log_pm1_injs + log_pq_injs + logJacobian_m1z_m1_injs
@@ -279,11 +282,14 @@ def PLP(m1det,dL,m2det,m1det_inj,dL_inj,log_pinj,log_PE_prior=0.,remove_low_Neff
     # for plotting
     numpyro.deterministic("log_rate", jnp.log(rate) + jgwpop.logpowerlaw_peak(TEST_M1S,mmin,mmax,alpha,sig_m1,mu_m1,f_peak))
     
-def BPL(m1det,dL,m2det,m1det_inj,dL_inj,log_pinj,log_PE_prior=0.,remove_low_Neff=False,fit_Om0=False):
+def BPL(m1det,dL,m2det,m1det_inj,q_inj,dL_inj,log_pinj,log_PE_prior=0.,remove_low_Neff=False,fit_Om0=False):
     # cosmology
     H0 = numpyro.sample("H0",dist.Uniform(H0_PRIOR_MIN,H0_PRIOR_MAX))
     # H0 = numpyro.deterministic("H0",H0_FID)
-    Om0=OM0_FID
+    if fit_Om0:
+        Om0 = numpyro.sample("Om0",dist.Uniform(0.01,0.99))
+    else:
+        Om0=OM0_FID
 
     rate = numpyro.sample('rate',dist.TruncatedNormal(loc=10.,scale=30.,low=0.01))
 
@@ -324,7 +330,7 @@ def BPL(m1det,dL,m2det,m1det_inj,dL_inj,log_pinj,log_PE_prior=0.,remove_low_Neff
     # evaluate mass dist on data
     # log_pm1_data = jgwpop.logpowerlaw_peak(m1source,mmin,mmax,alpha,sig_m1,mu_m1,f_peak)
     log_pm1_data = jgwpop.logbroken_powerlaw(m1source,mmin,mmax,alpha1,alpha2,b_m1)
-    log_pq_data = 0. # jnp.log(jgwpop.truncnorm(q,mu=0.9,sigma=0.05,high=1,low=0))#jgwpop.logpowerlaw(q,mMin=0.0001,mMax=1.,alpha=bq)#,mMin=mmin,mMax=m1_injs,alpha=bq,f_peak=0.,mu_m1=25.,sig_m1=5.)
+    log_pq_data = 0. #jnp.log(jgwpop.truncnorm(q,mu=0.9,sigma=0.05,high=1,low=0))#jgwpop.logpowerlaw(q,mMin=0.0001,mMax=1.,alpha=bq)#,mMin=mmin,mMax=m1_injs,alpha=bq,f_peak=0.,mu_m1=25.,sig_m1=5.)
     logJacobian_m1z_m1_data = - 1.0*jnp.log1p(z)
     logJacobian_m2z_q_data = - 1.0*jnp.log(m1det)
     log_pm_data = log_pm1_data + log_pq_data + logJacobian_m1z_m1_data + logJacobian_m2z_q_data

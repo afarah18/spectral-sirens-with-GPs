@@ -11,7 +11,7 @@ import numpyro
 # data
 import numpy as np
 
-NSAMPS = 50
+NSAMPS = 1000
 
 jax.config.update("jax_enable_x64", True)
 # random number generators
@@ -29,6 +29,7 @@ if  __name__ == "__main__":
     # load injection set
     m1zinj_det = np.load(paths.data / "gw_data/m1zinj_det.npy")
     dLinj_det = np.load(paths.data / "gw_data/dLinj_det.npy")
+    qinj_det = np.load(paths.data / "gw_data/qinj_det.npy")
     log_pinj_det = np.load(paths.data / "gw_data/log_pinj_det.npy")
 
     # Penalized complexity priors on the hyper-hyper parameters
@@ -38,7 +39,7 @@ if  __name__ == "__main__":
     # Inference
     nuts_settings = dict(target_accept_prob=0.9, max_tree_depth=10,dense_mass=False)
     nuts_kernel = numpyro.infer.NUTS(hyper_prior,**nuts_settings)
-    kwargs = dict(m1det=m1z_PE,dL=dL_PE, m2det=m2z_PE, m1det_inj=m1zinj_det,dL_inj=dLinj_det,
+    kwargs = dict(m1det=m1z_PE,dL=dL_PE, m2det=m2z_PE, m1det_inj=m1zinj_det,q_inj=qinj_det,dL_inj=dLinj_det,
                     log_pinj=log_pinj_det, log_PE_prior=log_PE_prior,
                     PC_params=dict(conc=conc,concentration=concentration,scale=scale,lam_sigma=lam_sigma),
                     remove_low_Neff=remove_low_Neff,fit_Om0=True)
