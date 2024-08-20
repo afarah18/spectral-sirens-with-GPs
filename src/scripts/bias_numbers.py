@@ -48,25 +48,24 @@ with open(paths.output / "nonparh0offset.txt","w") as f:
 # make a plot of recovered H0 posteriors
 fig = plt.figure(figsize=(7.5/2,4*.75),facecolor='none')
 prior=np.linspace(30,110,num=100)
+a=0.3
+l=1
 for i in range(N_CATALOGS):
     id_PLP = az.from_netcdf(paths.data / f"bias/mcmc_parametric_PLP_{i}.nc4")
     id_BPL = az.from_netcdf(paths.data / f"bias/mcmc_parametric_BPL_{i}.nc4")
     kde_PLP = gaussian_kde(id_PLP.posterior['H0'][0].values)
     kde_BPL = gaussian_kde(id_BPL.posterior['H0'][0].values)
-    a=0.3
-    l=1
-    label=None
-    zorder=None
-    plt.plot(prior,kde_PLP(prior),color=color_PLP,alpha=a,lw=l,zorder=zorder)
-    plt.plot(prior,kde_BPL(prior),color=color_BPL,alpha=a,lw=l,zorder=zorder)
+    plt.plot(prior,kde_PLP(prior),color=color_PLP,alpha=a,lw=l)
+    plt.plot(prior,kde_BPL(prior),color=color_BPL,alpha=a,lw=l)
 plt.plot([],c=color_PLP,label=r'\textsc{Power Law + Peak}')
 plt.plot([],c=color_BPL,label=r'\textsc{Broken Power Law}')
 # plt.plot([],c='k',lw=l,alpha=a,label="all other runs")
 plt.ylabel('posterior density')
-plt.legend(framealpha=0.9)
+leg=plt.legend(framealpha=1)
+leg.get_frame().set_linewidth(0.0)
 plt.xlabel('$H_0$ [km/s/Mpc]')
-plt.axvline(H0_FID, c='k',zorder=100)
-plt.ylim(0,0.14)
+plt.axvline(H0_FID, c='k')
+plt.ylim(0,0.12)
 plt.xlim(30,110)
 plt.savefig(paths.figures / "bias.pdf")
 plt.clf()
