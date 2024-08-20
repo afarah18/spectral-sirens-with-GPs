@@ -18,7 +18,6 @@ jax.config.update("jax_enable_x64", True)
 
 # options
 N_CATALOGS=50
-N_SOURCES = N_SOURCES
 plot = True
 
 # random number generators
@@ -86,15 +85,7 @@ for i in trange(N_CATALOGS):
     # this is expensive so we will by default only do it one time.
     # arbitrarily choose an index to do it on so that its reproducible every time.
     # I like 16 bc 4^2 = 2^4 = 16, so why not use that
-    if i==16:       
-        # parametric summary stats that we only need for this catalog
-        with open(paths.output / "PLPh0offset.txt","w") as f:
-            print(f"{bias_PLP[i]:.1f}",file=f)
-        with open(paths.output / "PLPh0percent.txt","w") as f:
-            print(f"{np.std(id_PLP.posterior['H0'][0])/np.mean(id_PLP.posterior['H0'][0])*100:.0f}",file=f)
-        with open(paths.output / "BPLh0offset.txt","w") as f:
-            print(f"{bias_BPL[i]:.1f}",file=f)
-        
+    if i==16:               
         # Penalized complexity priors on the hyper-hyper parameters
         scale, concentration, L = get_ell_frechet_params(np.log(m1z_PE).mean(axis=1),return_L=True)
         conc, lam_sigma = get_sigma_gamma_params(U=2.)

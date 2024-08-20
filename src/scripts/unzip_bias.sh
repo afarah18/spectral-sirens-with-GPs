@@ -1,3 +1,3 @@
 cd src/data
-unzip bias.zip
+unzip -o bias.zip
 cd ../../
