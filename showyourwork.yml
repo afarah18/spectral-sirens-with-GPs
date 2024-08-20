@@ -32,6 +32,8 @@ datasets:
       bias.zip: src/data/bias.zip
       gw_data.zip: src/data/gw_data.zip
       mcmc_nonparametric_fitOm0.nc4: src/data/mcmc_nonparametric_fitOm0.nc4
+      # samples_powerlaw_peak_smooth_Ndet_500_Nsamples_200_Nfoundinj_5672336_Ninj_50000000_Vz_zmax_15_m1z_power_law_alpha_-0.3_mmin_1.0_mmax_100.0_bq_alpha_m.nc4: src/data/samples_powerlaw_peak_smooth_Ndet_500_Nsamples_200_Nfoundinj_5672336_Ninj_50000000_Vz_zmax_15_m1z_power_law_alpha_-0.3_mmin_1.0_mmax_100.0_bq_alpha_m.nc4
+      # samples_powerlaw_peak_smooth_Ndet_500_Nsamples_200_Nfoundinj_5672336_Ninj_50000000_Vz_zmax_15_m1z_power_law_alpha_-0.3_mmin_1.0_mmax_100.0_bq_fixed_alpha_m.nc4: src/data/samples_powerlaw_peak_smooth_Ndet_500_Nsamples_200_Nfoundinj_5672336_Ninj_50000000_Vz_zmax_15_m1z_power_law_alpha_-0.3_mmin_1.0_mmax_100.0_bq_fixed_alpha_m.nc4
       PLPh0offset.txt: src/tex/output/PLPh0offset.txt
       PLPh0percent.txt: src/tex/output/PLPh0percent.txt
       PLP_bias_percent.txt: src/tex/output/PLP_bias_percent.txt
@@ -52,6 +54,8 @@ dependencies:
   src/scripts/bias_study.py:
     - src/data/gw_data/
     - src/scripts/priors.py
+  src/scripts/bias_numbers.py:
+    - src/data/bias/
   src/scripts/priors.py:
     - src/scripts/jgwpop.py
     - src/scripts/jgwcosmo.py
