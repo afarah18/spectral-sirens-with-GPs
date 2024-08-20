@@ -28,6 +28,7 @@ np_rng = np.random.default_rng(516)
 # load injection set
 m1zinj_det = np.load(paths.data / "gw_data/m1zinj_det.npy")
 dLinj_det = np.load(paths.data / "gw_data/dLinj_det.npy")
+qinj_det = np.load(paths.data / "gw_data/qinj_det.npy")
 log_pinj_det = np.load(paths.data / "gw_data/log_pinj_det.npy")
 
 # load SNR interpolator
@@ -55,7 +56,7 @@ for i in trange(N_CATALOGS):
     # Inference - power law peak
     nuts_settings = dict(target_accept_prob=0.9, max_tree_depth=10,dense_mass=False)
     nuts_kernel = numpyro.infer.NUTS(PLP,**nuts_settings)
-    kwargs = dict(m1det=m1z_PE,dL=dL_PE, m2det=m2z_PE,m1det_inj=m1zinj_det,dL_inj=dLinj_det,
+    kwargs = dict(m1det=m1z_PE,dL=dL_PE, m2det=m2z_PE,m1det_inj=m1zinj_det,q_inj=qinj_det,dL_inj=dLinj_det,
                     log_pinj=log_pinj_det, log_PE_prior=log_PE_prior,
                     remove_low_Neff=False)
     mcmc = numpyro.infer.MCMC(nuts_kernel,num_warmup=NSAMPS//4*3,num_samples=NSAMPS,
@@ -99,7 +100,7 @@ for i in trange(N_CATALOGS):
         conc, lam_sigma = get_sigma_gamma_params(U=2.)
         
         nuts_kernel = numpyro.infer.NUTS(hyper_prior,**nuts_settings)
-        kwargs = dict(m1det=m1z_PE, m2det=m2z_PE, dL=dL_PE, m1det_inj=m1zinj_det,dL_inj=dLinj_det,
+        kwargs = dict(m1det=m1z_PE, m2det=m2z_PE, dL=dL_PE, m1det_inj=m1zinj_det,q_inj=qinj_det,dL_inj=dLinj_det,
                         log_pinj=log_pinj_det, log_PE_prior=log_PE_prior,
                         PC_params=dict(conc=conc,concentration=concentration,scale=scale,lam_sigma=lam_sigma),
                         remove_low_Neff=False)
