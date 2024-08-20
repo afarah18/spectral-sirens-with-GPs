@@ -76,6 +76,7 @@ dependencies:
     - src/tex/figures/O5_pm.pdf
     - src/tex/figures/O5_GP_corner.pdf
     - src/tex/figures/GP_example.pdf
+    - src/tex/figures/bias.pdf
     - src/tex/output/num_found_events.txt
     - src/tex/output/H0_FID.txt
     - src/tex/output/PLP_bias_percent.txt

@@ -31,7 +31,8 @@ rule biasnumbers:
         "src/tex/output/PLPh0offset.txt",
         "src/tex/output/BPLh0offset.txt",
         "src/tex/output/BPL_bias_percent.txt",
-        "src/tex/output/PLP_bias_percent.txt"
+        "src/tex/output/PLP_bias_percent.txt",
+        "src/tex/figures/bias.pdf"
     input:
         "src/data/bias"
     script:
