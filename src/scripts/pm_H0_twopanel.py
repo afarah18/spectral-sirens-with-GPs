@@ -76,6 +76,6 @@ def two_panel(path, path_PLP, path_BPL, hyperparam='H0'):
     plt.clf()
 
 if  __name__ == "__main__":
-    two_panel(paths.data / "bias/mcmc_nonparametric_16.nc4", 
-            paths.data / "bias/mcmc_parametric_PLP_16.nc4",
-            paths.data / "bias/mcmc_parametric_BPL_16.nc4")
+    two_panel(paths.data / "bias/mcmc_nonparametric_29.nc4", 
+            paths.data / "bias/mcmc_parametric_PLP_29.nc4",
+            paths.data / "bias/mcmc_parametric_BPL_29.nc4")

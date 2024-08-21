@@ -17,7 +17,7 @@ fig, axes = plt.subplots(ncols=2,figsize=(7.5,4*.75),facecolor='none',sharex=Tru
 
 # posterior
 axes[1].set_title("Population Posterior")
-path_fit = paths.data / "bias/mcmc_nonparametric_16.nc4"
+path_fit = paths.data / "bias/mcmc_nonparametric_29.nc4"
 
 id = az.InferenceData.from_netcdf(path_fit)
 samples = id.posterior

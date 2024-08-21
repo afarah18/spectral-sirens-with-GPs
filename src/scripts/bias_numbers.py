@@ -8,8 +8,8 @@ from data_generation import H0_FID
 import paths
 
 # load data
-id_PLP = az.InferenceData.from_netcdf(paths.data / "bias/mcmc_parametric_PLP_16.nc4")
-id_BPL = az.InferenceData.from_netcdf(paths.data / "bias/mcmc_parametric_BPL_16.nc4")
+id_PLP = az.InferenceData.from_netcdf(paths.data / "bias/mcmc_parametric_PLP_29.nc4")
+id_BPL = az.InferenceData.from_netcdf(paths.data / "bias/mcmc_parametric_BPL_29.nc4")
 bias_PLP = np.loadtxt(paths.data / "bias/bias_PLP.txt")
 bias_BPL = np.loadtxt(paths.data / "bias/bias_BPL.txt")
 
@@ -31,7 +31,7 @@ with open(paths.output / "BPLh0offset.txt","w") as f:
     print(f"{bias_BPL[16]:.1f}",file=f)
 
 # same thing for nonparametric case
-id = az.InferenceData.from_netcdf(paths.data / "bias/mcmc_nonparametric_16.nc4")
+id = az.InferenceData.from_netcdf(paths.data / "bias/mcmc_nonparametric_29.nc4")
 h0samps = id.posterior['H0'][0].values
 
 with open(paths.output / "nonparh0percent.txt", "w") as f:
