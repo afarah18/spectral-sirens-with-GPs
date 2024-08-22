@@ -132,7 +132,7 @@ We find that our non-parametric model allows for a $\variable{output/nonparh0per
 % \new{This is to be compared with a $\variable{output/PLPh0percent.txt}\%$ measurement of $H(z=\variable{output/mostsensitivez.txt})$ with the correct parametric model, which does not represent a statistically-significant difference.}
 We highlight measurements of \Ho{} within a $\Lambda$CDM universe in order to benchmark the accuracy and precision of our non-parametric method, as well as explore the role of spectral sirens in elucidating the Hubble tension.
 However, a primary utility of spectral siren measurements will be in constraining $H(z)$ under different cosmological models, and at redshifts that are relatively inaccessible by electromagnetic observations, especially with next-generation gravitational-wave detectors \citep{You:2020wju, Ezquiaga:2020tns, ezquiaga_spectral_2022, Chen:2024gdn}.\footnote{See example spectral siren cosmological inference using parametric mass spectrum models: \href{https://github.com/ezquiaga/spectral_sirens}{https://github.com/ezquiaga/spectral\_sirens}.}
-%When applied to data from next-generation detectors, this method will measure \new{cosmological parameters that govern $H(z)$.}
+%When applied to data from next-generation detectors, this method will measure cosmological parameters that govern $H(z)$.
 
 This paper is organized as follows: Section~\ref{sec:data generation} describes the simulated dataset.
 Section~\ref{sec:ss} introduces the spectral siren method, demonstrating how cosmological parameters are inferred from the mass distribution of \ac{GW} sources.
@@ -301,14 +301,14 @@ This bias is not due to the need to know the morphology of the mass distribution
 In reality, we do not know the true functional form of the mass distribution, %so the additional statistical uncertainty introduced by non-parametric approaches may be desirable over the possible systematic errors introduced by choosing a parametric model that likely does not contain the true mass distribution within its hyper-prior.
 so it may be desirable to use a non-parametric approach to avoid potential systematic errors introduced by choosing a parametric model that likely does not contain the true mass distribution within its hyper-prior.
 
-To obtain a quantitative measure of the systematic bias introduced by mismodeling the mass distribution, we repeat the parametric analyses with 50 separate simulated catalogs of $\sim1,000$ events each.
+To obtain a quantitative measure of the systematic bias introduced by mis-modeling the mass distribution, we repeat the parametric analyses with 50 separate simulated catalogs of $\sim1,000$ events each.
 We find that the \bpl{} model produces an over- or under-estimate of \Ho{} at greater than $1\sigma$ $\variable{output/BPL_bias_percent.txt}\%$ of the time, %whereas the \ac{GP}-based model reaches that level of bias only \result{Z}\% of the time, 
 and the \plp{} model reaches the same level of bias only $\variable{output/PLP_bias_percent.txt}\%$ 
 of the time, \new{meaning that the \bpl{} model produces a bias more than three times as often as the \plp{} model.}
 \new{Additionally, we show in Appendix~\ref{ap:parametric bias} that the \bpl{} model typically overestimates \Ho{} whereas the \plp{} model produces a roughly equal number of over- and underestimates of \Ho{}.
-This implies a systematic bias in the incorrect but not the correct parametric model.}
+This demonstrates that mis-modeling the mass distribution can introduce statistically significant systematic biases into measurements of cosmological parameters.}
 
-Collectively, these results indicate that prior knowledge of the shape of the mass distribution is not required to perform an unbiased spectral siren measurement, so long as strong assumptions about the shape of the mass distribution are not made.
+Collectively, our results indicate that \emph{prior knowledge of the shape of the mass distribution is not required to perform an unbiased spectral siren measurement, so long as strong assumptions about the shape of the mass distribution are not made}.
 
 \subsection{Projections for Future Measurements}
 Figure~\ref{fig:O5_GP} demonstrates an expected $\variable{output/nonparh0percent.txt}\%$ ($1\sigma$ uncertainties) measurement of \Ho{} after one year of \ac{O5} using the \ac{GP}-based spectral siren method, and a $\variable{output/PLPh0percent.txt}\%$ measurement with parametric spectral sirens, demonstrating comparable statistical uncertainties.
@@ -464,10 +464,10 @@ The smoothing creates support for masses below $m_{\min}$ and above $m_{\max}$.
 $\bar{\Lambda}_z = \{z_p,\alpha_z,\beta_z\}$ are the parameters governing the peak of the redshift distribution, low-$z$ power law slope, and high-$z$ power law slope.
 When generating the simulated events, we have fixed $\alpha=-2.7$, $m_{\max}=78\Msun$, $m_{\min}=10~\Msun$, $\mu=30~\Msun$, $\sigma=7.0~\Msun$, $f_{\text{peak}}=0.05$, $z_p=2.4$, $\alpha_z=1.0$, and $\beta_z=3.4$.
 These choices correspond to the maximum \emph{a posteriori} values obtained by an analysis of GWTC-3 data using the \plp{} model \citep{abbott_population_2023}.
-For simplicity, we additionally assume \new{a uniform mass ratio distribution.}
+For simplicity, we assume \new{a uniform mass ratio distribution.}
 Thus, $\theta = \{m_1,z\}$.
 We consistently apply these assumptions to the data generation process and the population inference.
-We do not fit for or simulate spins, as they do not redshift and hence do not carry additional cosmological information, and additionally \new{fix the distribution of mass ratios.}
+We do not fit for or simulate spins, as they do not redshift and hence do not carry additional cosmological information, and \new{we fix the distribution of mass ratios.}
 
 We use cosmological parameters \Ho$=\variable{output/H0_FID.txt}\Hunits$, \Omm$=0.3$, and $\Omega_\Lambda=1-$\Omm, consistent with those found by \citet{planck_collaboration_planck_2016}.
 We emphasize, however, that the choice of cosmological parameters for data generation is arbitrary and does not impact the results, since we are concerned only with the ability of our method to recover the injected values.
@@ -490,7 +490,8 @@ Both analyses use the parametric, \plp{} model for the distribution of primary m
 We model the distribution of mass ratios with a power law, similarly to the majority of analyses presented in \citet{abbott_population_2021,abbott_population_2023}.}
 
 \new{We use the same set of simulated events for both analyses.
-These are generated in the same way as described in Section~\ref{sec:data generation}. The results are shown in Figure~\ref{fig:mass ratio}.
+These are generated in the same way as described in Section~\ref{sec:data generation}.
+The inference results are shown in Figure~\ref{fig:mass ratio}.
 We find the posteriors on \Ho{} to be similar between the two cases.
 Additionally, the recovered mass spectra are nearly identical.
 We therefore conclude that fitting for mass ratios does not significantly impact our main conclusions.
@@ -498,7 +499,7 @@ We therefore conclude that fitting for mass ratios does not significantly impact
 \begin{figure*}
     \includegraphics[width=\textwidth]{figures/q_comparison.pdf}
     \caption{Comparison of a parametric spectral siren analysis performed while fitting for the distributions of primary and secondary masses (magenta solid) and primary masses only (green dashed).
-    The posterior on \Ho{} is relatively unchanged between the two, and only minor changes are observed in the mass spectrum.}
+    The posterior on \Ho{} is relatively unchanged between the two, and only minor differences are observed in the mass spectra.}
     \label{fig:mass ratio}
     \script{fit_q_comparison.py}
 \end{figure*}
@@ -547,13 +548,15 @@ Algorithmically, each posterior evaluation contains the following steps: \variab
 We perform these steps within \texttt{numpyro} \citep{bingham_pyro_2019,phan_composable_2019}, sampling the posterior using the no-u-turn sampler for Hamiltonian Monte Carlo \citep{hoffman_no-u-turn_2011}. 
 This can be seen explicitly in the source code accompanying this paper, in the \texttt{scripts/priors.py} \variable{output/priors_placeholder.txt}script.
 
-\section{Biases observed in parametric models}
+\section{Biases induced by the \bpl{} model}
 \label{ap:parametric bias}
 \new{Figure~\ref{fig:parametric bias} shows recovered posteriors on \Ho{} as inferred from 50 mock catalogs using both the \bpl{} and \plp{} parametric models.
 We find that the \plp{} model recovers \Ho{} posteriors that are largely symmetric about the true value, whereas the \bpl{} model typically finds more support for larger \Ho{} values.
-We note that \citep{pierra_study_2023} report an underestimate of \Ho{} with a fit of their Broken Power Law model to a single dataset generated with \plp, but their prior bounds on the maximum mass parameter do not extend below the injected value of that parameter, which in turn does not allow for the possibility of an overestimated \Ho{}.}
+We note that \citep{pierra_study_2023} report an underestimate of \Ho{} when fitting their Broken Power Law model to a single dataset generated with \plp, but the prior bounds on the maximum mass parameter of their model do not extend below the injected value of that parameter, which in turn does 
+not allow for the possibility of an overestimated \Ho{}.
+It is therefore not possible to directly compare the direction of our observed \Ho{} offset with theirs, despite the similarities bewteen our chosen population models.}
 
-\new{Regardless, this systematic offset further demonstrates that incorrect parametric models induce a systematic bias in cosmological inference rather than an increased statistical uncertainty. 
+\new{Regardless, this systematic offset demonstrates that incorrect parametric models unfortunately induce a systematic bias in cosmological inference, not an increase in statistical uncertainty. 
 Other parametric models may show different trends depending on which parts of the mass distribution they incorrectly model and how.
 Therefore, while we are able to identify the shortcomings of \bpl{} when \plp{} describes the true mass distribution, it is not possible in practice to know which direction an incorrect parametric model will bias \Ho{}.
 Mitigating the bias by using more flexible models may thus be the simplest solution to this problem.}
